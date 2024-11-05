@@ -23,8 +23,11 @@
 #include <Logging.h>
 #include <SystemToolbox.h>
 
+#include "../../Resources/Orthanc/Plugins/OrthancPluginCppWrapper.h"
+
 #define ORTHANC_PLUGIN_NAME  "report"
 
+static OrthancPluginContext* context = NULL;
 
 extern "C"
 {
@@ -49,7 +52,7 @@ extern "C"
     {
       std::string explorer;
       Orthanc::EmbeddedResources::GetFileResource(
-        explorer, Orthanc::EmbeddedResources::ORTHANC_EXPLORER);
+        explorer, Orthanc::EmbeddedResources::ORTHANC_EXPLORER_JS);
       OrthancPlugins::ExtendOrthancExplorer(ORTHANC_PLUGIN_NAME, explorer);
     }
  
