@@ -18,7 +18,7 @@
 
 function CreateReport(resourceId)
 {
-  $('#' + 'Reports').remove();
+//  $('#' + 'Reports').remove();
 
   var b = $('<a>')
       .attr('id', 'Reports')
@@ -27,17 +27,16 @@ function CreateReport(resourceId)
       .attr('data-icon', 'forward')
       .attr('data-theme', 'e')
       .text('Create Radiology Report');
-      .button();
 
   b.insertBefore($('#series-delete').parent().parent());
 
   b.click(function() {
     if ($.mobile.pageData) {
-      alert('here I am');
+      alert('I have been selected! I am ready to think about templates!');
     }
   });
 }
 
 $('#study').live('pagebeforeshow', function() {
-  CreateReport($.mobile.pageData.uuid);
+CreateReport($.mobile.pageData.uuid);
 });
