@@ -51,16 +51,14 @@ function CreateReport(resourceId)
                       break;
                   }
               }
+              console.log(study);
               if (session != "none" && mrn != "none") {
                   console.log("Study " + resourceId + ' has ACESSION_NUMBER ' + session + ' and PATIENT_ID ' + mrn);
               } else if (session == "none" && mrn == "none") {
-                  console.log(study);
                   alert("Study has no ACCESSION_NUMBER or PATIENT_ID defined");
               } else if (session == "none") {
-                  console.log(study);
                   alert("Study has no ACCESSION_NUMBER defined");
               } else if (mrn == "none") {
-                  console.log(study);
                   alert("Study has no PATIENT_ID defined");
               }
           }
