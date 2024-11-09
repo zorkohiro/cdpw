@@ -15,29 +15,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
-var resourceId;
-
-function CreateReport(rid)
+function CreateReport(resourceId)
 {
-  resourceId = rid;
   console.log('In CreateReport: ' + resourceId);
-
-//  var b = $('<a>')
-//      .attr('id', 'kp-report')
-//      .attr('data-role', 'button')
-//      .attr('href', '#')
-//      .attr('data-theme', 'e') // yellow
-//      .attr('data-icon', 'forward')
-//      .text('Create Radiology Report')
-//      .button();
-
   var b = $('<a>')
       .attr('id', 'kp-report')
       .attr('data-role', 'button')
       .attr('href', '#')
       .attr('data-theme', 'b') // blue
       .attr('data-icon', 'forward')
-      .text('Create Radiology Report')
+      .text('Create Study Report')
       .button();
 
   b.insertBefore($('#study-delete').parent().parent());
