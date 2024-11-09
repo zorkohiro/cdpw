@@ -35,27 +35,34 @@ function CreateReport(resourceId)
           async: false,
           cache: false,
           success: function(study) {
-              console.log('In Ajax success: ' + resourceId);
-              console.log(study);
+              var session = "none";
+              var mrn = "none";
               var ACCESSION_NUMBER = '0008,0050';
               var PATIENT_ID = '0010,0020';
               for (var i in study.MainDicomTags) {
                   if (i == ACCESSION_NUMBER) {
-                      var val = study.MainDicomTags[i].Value;
-                      alert('Found ACCESSION_NUMBER: ' + val);
+                      session = study.MainDicomTags[i].Value;
+                      break;
                   }
               }
               for (var i in study.PatientMainDicomTags) {
                   if (i == PATIENT_ID) {
-                      var val = study.PatientMainDicomTags[i].Value;
-                      alert('Found PATIENT_ID: ' + val);
+                      mrn = study.PatientMainDicomTags[i].Value;
+                      break;
                   }
               }
-          },
-          error: function(XMLHttpRequest, textStatus, errorThrown) {
-              console.log('In Ajax error: ' + resourceId);
-              console.log("Status: " + textStatus);
-              console.log("Error: " + errorThrown);
+              if (session != "none" && mrn != "none") {
+                  console.log("Study " + resourceId + ' has ACESSION_NUMBER ' + session + ' and PATIENT_ID ' + mrn);
+              } else if (session == "none" && mrn == "none") {
+                  console.log(study);
+                  alert("Study has no ACCESSION_NUMBER or PATIENT_ID defined");
+              } else if (session == "none") {
+                  console.log(study);
+                  alert("Study has no ACCESSION_NUMBER defined");
+              } else if (mrn == "none") {
+                  console.log(study);
+                  alert("Study has no PATIENT_ID defined");
+              }
           }
       });
   });
@@ -63,30 +70,28 @@ function CreateReport(resourceId)
 
 $('#study').live('pagebeforeshow', function() {
     if ($.mobile.pageData) {
-        CreateReport($.mobile.pageData.uuid);
+        if ($.mobile.pageData.uuid) {
+            CreateReport($.mobile.pageData.uuid);
+        }
     }
 });
 $('#patient').live('pagebeforeshow', function() {
     if ($.mobile.pageData) {
-        console.log('In Patient for ' + $.mobile.pageData.uuid);
         $('#' + 'kp-report').remove();
     }
 });
 $('#series').live('pagebeforeshow', function() {
     if ($.mobile.pageData) {
-        console.log('In Series for ' + $.mobile.pageData.uuid);
         $('#' + 'kp-report').remove();
     }
 });
 $('#instance').live('pagebeforeshow', function() {
     if ($.mobile.pageData) {
-        console.log('In Instance for ' + $.mobile.pageData.uuid);
         $('#' + 'kp-report').remove();
     }
 });
 $('#lookup').live('pagebeforeshow', function() {
     if ($.mobile.pageData) {
-        console.log('In Lookup for ' + $.mobile.pageData.uuid);
         $('#' + 'kp-report').remove();
     }
 });
