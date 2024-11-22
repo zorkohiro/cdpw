@@ -15,6 +15,50 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+function ChooseTemplate(callback)
+{
+  var clickedTemplate = '';
+  var clickedPeer = '';
+  var templates = ["first", "second", "third", "fourth"];
+  var items = $('<ul>')
+    .attr('data-divider-theme', 'd')
+    .attr('data-role', 'listview');
+
+  items.append('<li data-role="list-divider">Report Templates</li>');
+  for (var i = 0, len = templates.length; i < len; i++) {
+    var name = templates[i];
+    var item = $('<li>')
+      .html('<a href="#" rel="close">' + name + '</a>')
+      .attr('name', name)
+      .click(function() { 
+        clickedTemplate = $(this).attr('name');
+      });
+    items.append(item);
+    console.log('template['+i+'] is '+name);
+  }
+
+  // Launch the dialog
+  $(document).simpledialog2({
+    mode: 'blank',
+    animate: false,
+    headerText: 'Choose Report Template',
+    headerClose: true,
+    forceInput: false,
+    width: '100%',
+    blankContent: items,
+    callbackClose: function() {
+      var timer;
+      function WaitForDialogToClose() {
+        if (!$('#dialog').is(':visible')) {
+          clearInterval(timer);
+          callback(clickedTemplate, clickedPeer);
+        }
+      }
+      timer = setInterval(WaitForDialogToClose, 100);
+    }
+  });
+}
+
 function CreateReport(resourceId)
 {
   console.log('In CreateReport: ' + resourceId);
@@ -65,7 +109,14 @@ function CreateReport(resourceId)
     }).done(function(){
       console.log("session is " + session + "; mrn is " + mrn);
       if (session != "none" && mrn != "none") {
-        console.log("will be putting up a template choice box here");
+        console.log("Calling ChooseTemplate");
+        ChooseTemplate(function(server) {
+            if (server != '') {
+              console.log("back from ChooseTemplate: " + server);
+            } else {
+              console.log("back from ChooseTemplate with no cboice");
+            }
+        });
       }
     });
   });
