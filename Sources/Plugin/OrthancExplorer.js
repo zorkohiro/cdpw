@@ -17,17 +17,16 @@
  **/
 function ChooseTemplate(callback)
 {
+  const templates = ["first", "second", "third", "fourth"];
   var clickedTemplate = '';
-  var clickedPeer = '';
-  var templates = ["first", "second", "third", "fourth"];
   var items = $('<ul>')
     .attr('data-divider-theme', 'd')
     .attr('data-role', 'listview');
 
   items.append('<li data-role="list-divider">Report Templates</li>');
-  for (var i = 0, len = templates.length; i < len; i++) {
-    var name = templates[i];
-    var item = $('<li>')
+  for (let i = 0, len = templates.length; i < len; i++) {
+    let name = templates[i];
+    let item = $('<li>')
       .html('<a href="#" rel="close">' + name + '</a>')
       .attr('name', name)
       .click(function() { 
@@ -51,7 +50,7 @@ function ChooseTemplate(callback)
       function WaitForDialogToClose() {
         if (!$('#dialog').is(':visible')) {
           clearInterval(timer);
-          callback(clickedTemplate, clickedPeer);
+          callback(clickedTemplate);
         }
       }
       timer = setInterval(WaitForDialogToClose, 100);
@@ -83,13 +82,13 @@ function CreateReport(resourceId)
       success: function(study) {
         var ACCESSION_NUMBER = '0008,0050';
         var PATIENT_ID = '0010,0020';
-        for (var i in study.MainDicomTags) {
+        for (let i in study.MainDicomTags) {
           if (i == ACCESSION_NUMBER) {
             session = study.MainDicomTags[i].Value;
             break;
           }
         }
-        for (var i in study.PatientMainDicomTags) {
+        for (let i in study.PatientMainDicomTags) {
           if (i == PATIENT_ID) {
             mrn = study.PatientMainDicomTags[i].Value;
             break;
