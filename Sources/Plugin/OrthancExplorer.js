@@ -15,17 +15,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+// static content for now
+const template_files = [ "US_RUQ.odt", "ct_abd_pelvis_with_contrast.odt", "ct_chest_without_contrast.od", "xray_chest.odt" ];
+const template_title = [ "ULTRASOUND RIGHT UPPER QUADRANT ABDOMEN", "CT ABDOMEN PELVIS WITH CONTRAST", "CT CHEST WITHOUT CONTRAST", "XRAY CHEST" ];
+
 function ChooseTemplate(callback)
 {
-  const templates = ["first", "second", "third", "fourth"];
   var clickedTemplate = '';
   var items = $('<ul>')
     .attr('data-divider-theme', 'd')
     .attr('data-role', 'listview');
 
   items.append('<li data-role="list-divider">Report Templates</li>');
-  for (let i = 0, len = templates.length; i < len; i++) {
-    let name = templates[i];
+  for (let i = 0, len = template_title.length; i < len; i++) {
+    let name = template_title[i];
     let item = $('<li>')
       .html('<a href="#" rel="close">' + name + '</a>')
       .attr('name', name)
@@ -109,11 +112,25 @@ function CreateReport(resourceId)
       console.log("session is " + session + "; mrn is " + mrn);
       if (session != "none" && mrn != "none") {
         console.log("Calling ChooseTemplate");
-        ChooseTemplate(function(server) {
-            if (server != '') {
-              console.log("back from ChooseTemplate: " + server);
-            } else {
+        ChooseTemplate(function(template_choice) {
+            if (template_choice == '') {
               console.log("back from ChooseTemplate with no cboice");
+              return;
+            }
+            console.log("back from ChooseTemplate: " + template_choice);
+            var found = false;
+            for (let i = 0; i < template_title.length; i++) {
+              if (template_choice == template_title[i]) {
+                let template = template_files[i];
+                let filename = "study_" + mrn + "_" + session + ".odt";
+                console.log("will be using template filename " + template);
+                console.log("will be creating filename " + filename);
+                found = true;
+                break;
+              }
+            }
+            if (!found) {
+              console.log("Did not find a choice!");
             }
         });
       }
