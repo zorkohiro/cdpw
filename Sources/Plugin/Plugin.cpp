@@ -29,6 +29,36 @@
 
 static OrthancPluginContext* context = NULL;
 
+static void fetch_templates(OrthancPluginRestOutput* output, const char* url, const OrthancPluginHttpRequest* request) {
+  OrthancPluginContext* context = OrthancPlugins::GetGlobalContext();
+  
+  if (request->method != OrthancPluginHttpMethod_Get) {
+    OrthancPluginSendMethodNotAllowed(context, output, "GET");
+  } else {
+    char buffer[1024];
+    snprintf(buffer, sizeof (buffer), "Get Callback on URL [%s]\n", url);
+    OrthancPluginAnswerBuffer(context, output, buffer, strlen(buffer), "text/plain");
+  }
+}
+
+static void create_report(OrthancPluginRestOutput* output, const char* url, const OrthancPluginHttpRequest* request) {
+
+  OrthancPluginContext* context = OrthancPlugins::GetGlobalContext();
+  
+  if (request->method != OrthancPluginHttpMethod_Post) {
+    OrthancPluginSendMethodNotAllowed(context, output, "POST");
+  } else {
+    char buffer[1024];
+    sprintf(buffer, "Post on URL [%s] with body [%s]", url, (const char*) request->body);
+    OrthancPluginLogWarning(context, buffer);
+/*
+    std::string tmp = "nothing to say for myself\n";
+    OrthancPluginAnswerBuffer(context, output, tmp.c_str(), tmp.size(), "text/plain");
+*/
+    OrthancPluginAnswerBuffer(context, output, NULL, 0, "text/plain");
+  }
+}
+
 extern "C"
 {
   ORTHANC_PLUGINS_API int32_t OrthancPluginInitialize(OrthancPluginContext* context)
@@ -39,8 +69,7 @@ extern "C"
     Orthanc::Logging::EnableInfoLevel(true);
 
     /* Check the version of the Orthanc core */
-    if (OrthancPluginCheckVersion(context) == 0)
-    {
+    if (OrthancPluginCheckVersion(context) == 0) {
       OrthancPlugins::ReportMinimalOrthancVersion(ORTHANC_PLUGINS_MINIMAL_MAJOR_NUMBER,
                                                   ORTHANC_PLUGINS_MINIMAL_MINOR_NUMBER,
                                                   ORTHANC_PLUGINS_MINIMAL_REVISION_NUMBER);
@@ -48,6 +77,8 @@ extern "C"
     }
 
     OrthancPlugins::SetDescription(ORTHANC_PLUGIN_NAME, "Add support for Study Report Writing in Orthanc.");
+    OrthancPlugins::RegisterRestCallback<fetch_templates>("/kp-report/templates", true /* thread safe */);
+    OrthancPlugins::RegisterRestCallback<create_report>("/kp-report/create", true /* thread safe */);
 
     {
       std::string explorer;
@@ -55,7 +86,6 @@ extern "C"
         explorer, Orthanc::EmbeddedResources::ORTHANC_EXPLORER_JS);
       OrthancPlugins::ExtendOrthancExplorer(ORTHANC_PLUGIN_NAME, explorer);
     }
- 
     return 0;
   }
 
