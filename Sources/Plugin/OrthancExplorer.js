@@ -89,6 +89,7 @@ function CreateReport(resourceId)
   b.click(function() {
     var session = "none";
     var mrn = "none";
+    var studyid = "";
     $.ajax({
       url: '../studies/' + resourceId + '?full',
       dataType: 'json',
@@ -111,6 +112,7 @@ function CreateReport(resourceId)
         }
         console.log(study);
         if (session != "none" && mrn != "none") {
+          studyid = study.ID;
           console.log("Study " + resourceId + ' has ACESSION_NUMBER ' + session + ' and PATIENT_ID ' + mrn);
         } else if (session == "none" && mrn == "none") {
           alert("Study has no ACCESSION_NUMBER or PATIENT_ID defined");
@@ -150,7 +152,7 @@ function CreateReport(resourceId)
               url: '../kp-report/create',
               type: 'POST',
               dataType: 'text',
-              data: filename + ':' + template,
+              data: filename + ':' + template + ':' + studyid,
               async: false,
               success: function(job) {
               }
