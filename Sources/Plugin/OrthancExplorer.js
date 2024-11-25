@@ -27,36 +27,48 @@ function ChooseTemplate(callback)
     .attr('data-role', 'listview');
 
   items.append('<li data-role="list-divider">Report Templates</li>');
-  for (let i = 0, len = template_title.length; i < len; i++) {
-    let name = template_title[i];
-    let item = $('<li>')
-      .html('<a href="#" rel="close">' + name + '</a>')
-      .attr('name', name)
-      .click(function() { 
-        clickedTemplate = $(this).attr('name');
-      });
-    items.append(item);
-    console.log('template['+i+'] is '+name);
-  }
-
-  // Launch the dialog
-  $(document).simpledialog2({
-    mode: 'blank',
-    animate: false,
-    headerText: 'Choose Report Template',
-    headerClose: true,
-    forceInput: false,
-    width: '100%',
-    blankContent: items,
-    callbackClose: function() {
-      var timer;
-      function WaitForDialogToClose() {
-        if (!$('#dialog').is(':visible')) {
-          clearInterval(timer);
-          callback(clickedTemplate);
-        }
+  $.ajax({
+    url: '../kp-report/templates',
+    type: 'GET',
+    dataType: 'text',
+    async: false,
+    cache: false,
+    success: function(servers) {
+      console.log('callback returned: ' + servers);
+      for (let i = 0, len = template_title.length; i < len; i++) {
+        let name = template_title[i];
+        let item = $('<li>')
+          .html('<a href="#" rel="close">' + name + '</a>')
+          .attr('name', name)
+          .click(function() { 
+            clickedTemplate = $(this).attr('name');
+          });
+        items.append(item);
+        console.log('template['+i+'] is '+name);
       }
-      timer = setInterval(WaitForDialogToClose, 100);
+      // Launch the dialog
+      $(document).simpledialog2({
+        mode: 'blank',
+        animate: false,
+        headerText: 'Choose Report Template',
+        headerClose: true,
+        forceInput: false,
+        width: '100%',
+        blankContent: items,
+        callbackClose: function() {
+          var timer;
+          function WaitForDialogToClose() {
+            if (!$('#dialog').is(':visible')) {
+              clearInterval(timer);
+              callback(clickedTemplate);
+            }
+          }
+          timer = setInterval(WaitForDialogToClose, 100);
+        }
+      });
+    },
+    error: function(xhr, status, error) {
+      console.log("failed to run GET, status: " + status + " error: " + error);
     }
   });
 }
@@ -113,6 +125,7 @@ function CreateReport(resourceId)
       if (session != "none" && mrn != "none") {
         console.log("Calling ChooseTemplate");
         ChooseTemplate(function(template_choice) {
+            var filename, template;
             if (template_choice == '') {
               console.log("back from ChooseTemplate with no cboice");
               return;
@@ -121,8 +134,8 @@ function CreateReport(resourceId)
             var found = false;
             for (let i = 0; i < template_title.length; i++) {
               if (template_choice == template_title[i]) {
-                let template = template_files[i];
-                let filename = "study_" + mrn + "_" + session + ".odt";
+                template = template_files[i];
+                filename = "study_" + mrn + "_" + session + ".odt";
                 console.log("will be using template filename " + template);
                 console.log("will be creating filename " + filename);
                 found = true;
@@ -131,7 +144,17 @@ function CreateReport(resourceId)
             }
             if (!found) {
               console.log("Did not find a choice!");
+              return;
             }
+            $.ajax({
+              url: '../kp-report/create',
+              type: 'POST',
+              dataType: 'text',
+              data: filename + ':' + template,
+              async: false,
+              success: function(job) {
+              }
+            });
         });
       }
     });
