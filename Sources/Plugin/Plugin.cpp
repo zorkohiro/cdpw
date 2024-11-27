@@ -26,6 +26,7 @@
 #include "../../Resources/Orthanc/Plugins/OrthancPluginCppWrapper.h"
 #include <iostream>
 #include <fstream>
+#include <dirent.h>
 
 #define ORTHANC_PLUGIN_NAME  "report"
 #define TEMPLATES_DIR "/usr/share/orthanc/templates"
@@ -39,8 +40,26 @@ static void fetch_templates(OrthancPluginRestOutput* output, const char* url, co
   if (request->method != OrthancPluginHttpMethod_Get) {
     OrthancPluginSendMethodNotAllowed(context, output, "GET");
   } else {
-    char buffer[1024];
-    snprintf(buffer, sizeof (buffer), "Get Callback on URL [%s]\n", url);
+    char buffer[1024] = { 0 };
+    DIR *dir = opendir(TEMPLATES_DIR);
+    if (dir) {
+      struct dirent *ent;
+      while ((ent = readdir(dir)) != NULL) {
+        char *suffix = strstr(ent->d_name, ".odt");
+        if (suffix && strlen(suffix) == 4) {
+          if (buffer[0]) {
+            strcat(buffer, ", ");
+            strcat(buffer, ent->d_name);
+          } else {
+            strcpy(buffer, ent->d_name);
+          }
+        }
+      }
+      closedir(dir);
+    }
+    if (buffer[0] == '\0') {
+      snprintf(buffer, sizeof (buffer), "no templates found");
+    }
     OrthancPluginAnswerBuffer(context, output, buffer, strlen(buffer), "text/plain");
   }
 }

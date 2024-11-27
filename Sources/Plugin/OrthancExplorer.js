@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 // static content for now
-const template_files = [ "US_RUQ.odt", "ct_abd_pelvis_with_contrast.odt", "ct_chest_without_contrast.od", "xray_chest.odt" ];
+const template_files = [ "US_RUQ.odt", "ct_abd_pelvis_with_contrast.odt", "ct_chest_without_contrast.odt", "xray_chest.odt" ];
 const template_title = [ "ULTRASOUND RIGHT UPPER QUADRANT ABDOMEN", "CT ABDOMEN PELVIS WITH CONTRAST", "CT CHEST WITHOUT CONTRAST", "XRAY CHEST" ];
 
 function ChooseTemplate(callback)
@@ -33,8 +33,8 @@ function ChooseTemplate(callback)
     dataType: 'text',
     async: false,
     cache: false,
-    success: function(servers) {
-      console.log('callback returned: ' + servers);
+    success: function(templates) {
+      console.log('GET callback returned: ' + templates);
       for (let i = 0, len = template_title.length; i < len; i++) {
         let name = template_title[i];
         let item = $('<li>')
@@ -75,7 +75,6 @@ function ChooseTemplate(callback)
 
 function CreateReport(resourceId)
 {
-  console.log('In CreateReport: ' + resourceId);
   var b = $('<a>')
     .attr('id', 'kp-report')
     .attr('data-role', 'button')
@@ -123,21 +122,17 @@ function CreateReport(resourceId)
         }
       }
     }).done(function(){
-      console.log("session is " + session + "; mrn is " + mrn);
       if (session != "none" && mrn != "none") {
-        console.log("Calling ChooseTemplate");
         ChooseTemplate(function(template_choice) {
             var templfil;
             if (template_choice == '') {
               console.log("back from ChooseTemplate with no cboice");
               return;
             }
-            console.log("back from ChooseTemplate: " + template_choice);
             var found = false;
             for (let i = 0; i < template_title.length; i++) {
               if (template_choice == template_title[i]) {
                 templfil = template_files[i];
-                console.log("will be using template filename " + templfil);
                 found = true;
                 break;
               }
@@ -154,8 +149,15 @@ function CreateReport(resourceId)
               data: pdata,
               async: false,
               success: function(job) {
+              },
+              error: function(xhr, status, error) {
+                console.log("failed to run POST, status: " + xhr.status);
+                if (xhr.status == 500) {
+                  alert(xhr.responseText);
+                }
               }
             });
+            // alert("This functionality is not yet enabled");
         });
       }
     });
