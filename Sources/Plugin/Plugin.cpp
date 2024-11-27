@@ -24,8 +24,12 @@
 #include <SystemToolbox.h>
 
 #include "../../Resources/Orthanc/Plugins/OrthancPluginCppWrapper.h"
+#include <iostream>
+#include <fstream>
 
 #define ORTHANC_PLUGIN_NAME  "report"
+#define TEMPLATES_DIR "/usr/share/orthanc/templates"
+#define REPORT_DIR "/var/tmp"
 
 static OrthancPluginContext* context = NULL;
 
@@ -48,14 +52,100 @@ static void create_report(OrthancPluginRestOutput* output, const char* url, cons
   if (request->method != OrthancPluginHttpMethod_Post) {
     OrthancPluginSendMethodNotAllowed(context, output, "POST");
   } else {
-    char buffer[1024];
-    sprintf(buffer, "Post on URL [%s] with body [%s]", url, (const char*) request->body);
+    char buffer[1024], localb[1024], *sptr = NULL, *rqb = localb;
+    strcpy(rqb, (char *) request->body);
+    snprintf(buffer, sizeof (buffer), "Post on URL [%s] with body [%s]", url, rqb);
     OrthancPluginLogWarning(context, buffer);
-/*
-    std::string tmp = "nothing to say for myself\n";
-    OrthancPluginAnswerBuffer(context, output, tmp.c_str(), tmp.size(), "text/plain");
-*/
-    OrthancPluginAnswerBuffer(context, output, NULL, 0, "text/plain");
+    const char *colon = ":";
+    char *mrn = strtok_r(rqb, colon, &sptr);
+    char *session = strtok_r(NULL, colon, &sptr);
+    char *odt_template = strtok_r(NULL, colon, &sptr);
+    char *uuid = strtok_r(NULL, colon, &sptr);
+    bool failure = false;
+    if (mrn == NULL) {
+      failure = true;
+      OrthancPluginLogWarning(context, "No discernible mrn passed");
+    } else if (session == NULL) {
+      failure = true;
+      OrthancPluginLogWarning(context, "No discernible session passed");
+    } else if (odt_template == NULL) {
+      failure = true;
+      OrthancPluginLogWarning(context, "No discernible template type passed");
+    } else if (uuid == NULL) {
+      failure = true;
+      OrthancPluginLogWarning(context, "No discernible uuid passed");
+    }
+    if (failure) {
+      OrthancPluginSendHttpStatusCode(context, output, 400);
+      return;
+    }
+    char wfile[256];
+    size_t snr = snprintf(wfile, sizeof (wfile), "%s/study_%s_%s.odt", REPORT_DIR, mrn, session);
+    char tfile[256];
+    size_t snt =  snprintf(tfile, sizeof (tfile), "%s/%s", TEMPLATES_DIR, odt_template);
+
+    if (snr < 0 || snr >= sizeof (wfile) || snt < 0 || snt >= sizeof (tfile)) {
+      strcpy(buffer, "one of the filenames too long or unparseable");
+      OrthancPluginSetHttpHeader(context, output, "Content-Type", "text/plain");
+      OrthancPluginSendHttpStatus(context, output, 500, buffer, strlen(buffer));
+      return;
+    }
+
+    if (access(wfile, F_OK) == 0) {
+      strcpy(buffer, "report file for this study already exists");
+      OrthancPluginSetHttpHeader(context, output, "Content-Type", "text/plain");
+      OrthancPluginSendHttpStatus(context, output, 500, buffer, strlen(buffer));
+      return;
+    }
+    if (access(tfile, R_OK) != 0) {
+      snprintf(buffer, sizeof (buffer), "template file %s does not exist in %s", odt_template, TEMPLATES_DIR);
+      OrthancPluginSetHttpHeader(context, output, "Content-Type", "text/plain");
+      OrthancPluginSendHttpStatus(context, output, 500, buffer, strlen(buffer));
+      return;
+    }
+    int statusCode = 200;
+
+    failure = false;
+    char emsg[1024];
+    sprintf(emsg, "exception in copying from template");
+    try {
+      do {
+        std::ifstream source(tfile, std::ifstream::binary);
+        if (!source) {
+          sprintf(emsg, "failed to open %s", odt_template);
+          failure = true;
+          break;
+        }
+
+        std::ofstream dest(wfile, std::ofstream::binary);
+        if (!dest) {
+          sprintf(emsg, "failed to create study_%s_%s.odt", mrn, session);
+          failure = true;
+          break;
+        }
+
+        sprintf(emsg, "reading source file");
+        dest << source.rdbuf();
+
+        sprintf(emsg, "closing source file");
+        source.close();
+
+        sprintf(emsg, "closing destination file");
+        dest.close();
+
+      } while (false);
+    } catch (...) {
+      failure = true;
+    }
+
+    if (failure) {
+      snprintf(buffer, sizeof (buffer), "%s", emsg);
+      OrthancPluginSetHttpHeader(context, output, "Content-Type", "text/plain");
+      OrthancPluginSendHttpStatus(context, output, 500, buffer, strlen(buffer));
+    } else {
+      OrthancPluginSetHttpHeader(context, output, "Content-Type", "text/plain");
+      OrthancPluginSendHttpStatus(context, output, statusCode, NULL, 0);
+    }
   }
 }
 

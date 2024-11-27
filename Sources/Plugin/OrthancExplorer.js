@@ -127,7 +127,7 @@ function CreateReport(resourceId)
       if (session != "none" && mrn != "none") {
         console.log("Calling ChooseTemplate");
         ChooseTemplate(function(template_choice) {
-            var filename, template;
+            var templfil;
             if (template_choice == '') {
               console.log("back from ChooseTemplate with no cboice");
               return;
@@ -136,10 +136,8 @@ function CreateReport(resourceId)
             var found = false;
             for (let i = 0; i < template_title.length; i++) {
               if (template_choice == template_title[i]) {
-                template = template_files[i];
-                filename = "study_" + mrn + "_" + session + ".odt";
-                console.log("will be using template filename " + template);
-                console.log("will be creating filename " + filename);
+                templfil = template_files[i];
+                console.log("will be using template filename " + templfil);
                 found = true;
                 break;
               }
@@ -148,11 +146,12 @@ function CreateReport(resourceId)
               console.log("Did not find a choice!");
               return;
             }
+            var pdata = mrn + ":" + session + ":" + templfil + ":" + resourceId;
             $.ajax({
               url: '../kp-report/create',
               type: 'POST',
               dataType: 'text',
-              data: filename + ':' + template + ':' + studyid,
+              data: pdata,
               async: false,
               success: function(job) {
               }
