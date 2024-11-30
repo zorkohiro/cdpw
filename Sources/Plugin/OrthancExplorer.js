@@ -84,11 +84,10 @@ function CreateReport(resourceId)
     .text('Create Study Report')
     .button();
 
+  console.log("resource ID is " + resourceId);
   b.insertBefore($('#study-delete').parent().parent());
   b.click(function() {
-    var session = "none";
-    var mrn = "none";
-    var studyid = "";
+    var session, mrn, studyid;
     $.ajax({
       url: '../studies/' + resourceId + '?full',
       dataType: 'json',
@@ -110,19 +109,19 @@ function CreateReport(resourceId)
           }
         }
         console.log(study);
-        if (session != "none" && mrn != "none") {
+        if (session && mrn) {
           studyid = study.ID;
           console.log("Study " + resourceId + ' has ACESSION_NUMBER ' + session + ' and PATIENT_ID ' + mrn);
-        } else if (session == "none" && mrn == "none") {
+        } else if (!session && !mrn) {
           alert("Study has no ACCESSION_NUMBER or PATIENT_ID defined");
-        } else if (session == "none") {
+        } else if (!session) {
           alert("Study has no ACCESSION_NUMBER defined");
-        } else if (mrn == "none") {
+        } else if (!mrn) {
           alert("Study has no PATIENT_ID defined");
         }
       }
     }).done(function(){
-      if (session != "none" && mrn != "none") {
+      if (session  && mrn) {
         ChooseTemplate(function(template_choice) {
             var templfil;
             if (template_choice == '') {
@@ -151,7 +150,7 @@ function CreateReport(resourceId)
               success: function(job) {
               },
               error: function(xhr, status, error) {
-                console.log("failed to run POST, status: " + xhr.status);
+                alert("failed to run POST, status: " + xhr.status);
                 if (xhr.status == 500) {
                   alert(xhr.responseText);
                 }
