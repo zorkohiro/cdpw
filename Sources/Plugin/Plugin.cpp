@@ -27,6 +27,8 @@
 #include <iostream>
 #include <fstream>
 #include <dirent.h>
+#include <fcntl.h>
+#include <syslog.h>
 
 #define ORTHANC_PLUGIN_NAME  "report"
 #define TEMPLATES_DIR "/usr/share/orthanc/templates"
@@ -62,6 +64,34 @@ static void fetch_templates(OrthancPluginRestOutput* output, const char* url, co
     }
     OrthancPluginAnswerBuffer(context, output, buffer, strlen(buffer), "text/plain");
   }
+}
+
+static int spawn_libreoffice(OrthancPluginContext* context, char *file, char *emsgbuf) {
+  pid_t pid = fork();
+  if (pid < 0) {
+    sprintf(emsgbuf, "fork failed: %s", strerror(errno));
+    return -1;
+  } else if (pid == 0) {
+    for (int i = 0; i < 100; i++)
+      close(i);
+    setsid();
+    open("/dev/null", O_RDONLY);
+    int fdo = open("/tmp/lo.log", O_RDWR|O_APPEND|O_CREAT, 0644);
+    int fds = dup(fdo);
+    int rslt = execl("/usr/bin/spawn_ol", "spawn_ol", file, (char *) NULL);
+    if (rslt < 0) {
+      char buffer[1024];
+      sprintf(buffer, "exec failed: %s\n", strerror(errno));
+      if (write(fdo, buffer, strlen(buffer)) != (ssize_t) strlen(buffer)) {
+        buffer[strlen(buffer) - 1] = '\0';
+        syslog(LOG_USER|LOG_WARNING, "%s", buffer);
+      }
+      if (fds > 0) // quiesce compiler
+        close(fds);
+      exit(0);
+    }
+  }
+  return 0;
 }
 
 static void create_report(OrthancPluginRestOutput* output, const char* url, const OrthancPluginHttpRequest* request) {
@@ -105,24 +135,40 @@ static void create_report(OrthancPluginRestOutput* output, const char* url, cons
 
     if (snr < 0 || snr >= sizeof (wfile) || snt < 0 || snt >= sizeof (tfile)) {
       strcpy(buffer, "one of the filenames too long or unparseable");
+      OrthancPluginLogWarning(context, buffer);
       OrthancPluginSetHttpHeader(context, output, "Content-Type", "text/plain");
       OrthancPluginSendHttpStatus(context, output, 500, buffer, strlen(buffer));
       return;
     }
 
+    int statusCode = 200;
     if (access(wfile, F_OK) == 0) {
+      // Temporarily disable this block until we can distinguish "signed" reports
+      // We just re-edit the existing file
       strcpy(buffer, "report file for this study already exists");
+      OrthancPluginLogWarning(context, buffer);
+#if 0
       OrthancPluginSetHttpHeader(context, output, "Content-Type", "text/plain");
       OrthancPluginSendHttpStatus(context, output, 500, buffer, strlen(buffer));
+#else
+      if (spawn_libreoffice(context, wfile, buffer) < 0) {
+        OrthancPluginSetHttpHeader(context, output, "Content-Type", "text/plain");
+        OrthancPluginSendHttpStatus(context, output, 500, buffer, strlen(buffer));
+      } else {
+        OrthancPluginSetHttpHeader(context, output, "Content-Type", "text/plain");
+        OrthancPluginSendHttpStatus(context, output, statusCode, NULL, 0);
+      }
+#endif
       return;
     }
+
     if (access(tfile, R_OK) != 0) {
       snprintf(buffer, sizeof (buffer), "template file %s does not exist in %s", odt_template, TEMPLATES_DIR);
+      OrthancPluginLogWarning(context, buffer);
       OrthancPluginSetHttpHeader(context, output, "Content-Type", "text/plain");
       OrthancPluginSendHttpStatus(context, output, 500, buffer, strlen(buffer));
       return;
     }
-    int statusCode = 200;
 
     failure = false;
     char emsg[1024];
@@ -157,8 +203,17 @@ static void create_report(OrthancPluginRestOutput* output, const char* url, cons
       failure = true;
     }
 
+    if (!failure) {
+      if (spawn_libreoffice(context, wfile, buffer) < 0) {
+        OrthancPluginSetHttpHeader(context, output, "Content-Type", "text/plain");
+        OrthancPluginSendHttpStatus(context, output, 500, buffer, strlen(buffer));
+        failure = true;
+      }
+    }
+
     if (failure) {
       snprintf(buffer, sizeof (buffer), "%s", emsg);
+      OrthancPluginLogWarning(context, buffer);
       OrthancPluginSetHttpHeader(context, output, "Content-Type", "text/plain");
       OrthancPluginSendHttpStatus(context, output, 500, buffer, strlen(buffer));
     } else {

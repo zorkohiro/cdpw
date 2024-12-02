@@ -150,9 +150,10 @@ function CreateReport(resourceId)
               success: function(job) {
               },
               error: function(xhr, status, error) {
-                alert("failed to run POST, status: " + xhr.status);
                 if (xhr.status == 500) {
                   alert(xhr.responseText);
+                } else {
+                  alert("failed to run POST, status: " + xhr.status);
                 }
               }
             });
