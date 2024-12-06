@@ -1,6 +1,6 @@
 MAJORV  ?= 0
 MINORV  ?= 9
-MICROV  ?= 0
+MICROV  ?= 1
 RELEASE := $(MAJORV).$(MINORV).$(MICROV)
 
 BASE    := kp-report
