@@ -3,7 +3,6 @@
 Kaiser Permanente Report Writer plugin for Orthanc
 ==================================================
 
-
 General Information
 -------------------
 
@@ -31,3 +30,8 @@ Licensing
 ---------
 
 The Kaiser Permanente Report Writer plugin for Orthanc is licensed under the GPL license.
+
+Build Requirements
+---------
+Ubuntu 24
+build-essential, cmake, libjsoncpp-dev, uuid-dev, orthanc-dev
