@@ -1,0 +1,47 @@
+12/6/2024
+
+1. Install kubuntu 24.04.1 from the iso (on USB or DVD) from
+
+ https://cdimage.ubuntu.com/kubuntu/releases/24.04.1/release/kubuntu-24.04.1-desktop-amd64.iso
+
+Select 'orthanc' as the user, 'orthanc' as the password.
+Everything should be the 'default' and you should have
+it erase whatever target installation media you are using.
+Check the box that says automatically log in after boot.
+
+Note that there seems to be a bug sometimes with previously installed media,
+so starting with erased target media is the safest.
+
+2. After booting up the installed system, do the following:
+
+Open a Kconsole window (look under Favorites under the selection lower left) and enter:
+
+  sudo apt install https://feralsw.com/cdw/kp-report-0.9.1.deb
+
+You will be prompted for the orthanc password- enter it. This should install all
+of the main Orthanc binaries plus our changes.
+
+3. Open up firefox (click on the rightmost icon on the toolbar below)
+
+It will open a bunch ad-ware tabs. Create a new tab and delete those others.
+Enter 'http://localhost:4242' in the address bar. That shoudl bring up the
+main Orthanc screen. After it does this, bookmark this page on the bookmarks
+toolbar in Firefox for convenience of startup.
+
+4. Correct blank screen after reboot issue
+
+Extra credit- reboot gets you a blank screen. A power cycle solves the
+problem. This change is a temp workaround for the problem:
+
+Edit the file /etc/default/grub with your favorite editor using sudo, e.g.:
+
+  sudo nano /etc/default/grub
+
+go to the line that has 'quiet splash' to the right of an equal sign and
+remove the 'splash' word. Write and quite.
+
+Then do
+  sudo update-grub
+
+
+
