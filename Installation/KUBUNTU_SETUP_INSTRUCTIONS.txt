@@ -24,7 +24,7 @@ of the main Orthanc binaries plus our changes.
 3. Open up firefox (click on the rightmost icon on the toolbar below)
 
 It will open a bunch ad-ware tabs. Create a new tab and delete those others.
-Enter 'http://localhost:4242' in the address bar. That shoudl bring up the
+Enter 'http://localhost:8042' in the address bar. That shoudl bring up the
 main Orthanc screen. After it does this, bookmark this page on the bookmarks
 toolbar in Firefox for convenience of startup.
 
