@@ -44,4 +44,7 @@ Then do
   sudo update-grub
 
 
+5. Keep the system from going to lockscreen
 
+Click the settings icon (2nd one from the left on bottom bar) and go to Power Management
+and uncheck the Suspend Session and Screen Energy Saving buttons.
