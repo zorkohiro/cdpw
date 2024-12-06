@@ -1,0 +1,9 @@
+This is the top of the kp-report source tree. It is a work in progress.
+
+We have one sub-package to build, manually- ReportPlugin. Go to that
+directory and look at BUILD and follow the steps there.
+
+
+At the end of the building the sub-packages, go into Installation and
+type 'make'. This will produce a .deb package suitable for use with
+dpkg or apt install on Ubuntu 24.04.
