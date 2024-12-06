@@ -48,3 +48,8 @@ Then do
 
 Click the settings icon (2nd one from the left on bottom bar) and go to Power Management
 and uncheck the Suspend Session and Screen Energy Saving buttons.
+
+6. Open viewer in a separate window
+
+If you want spin up viewer in a separate window, go into Firefox settings and uncheck
+the box that says "open in tabs instead of separate windows".
