@@ -1,0 +1,65 @@
+12/8/2024
+
+How to upgrade a CDW system connected to the Internet.
+
+1. On a running system, open a Konsole app (this is a terminal inside of window).
+It can be found under Favorites or under System Tools. This will open up and
+present you with bash shell prompt that looks something like: 'orthanc@....:~$'.
+
+2. In this window, enter the following command followed by a RETURN key:
+
+ rm -f kp-report-latest.deb
+
+3. In this window, enter the following command followed by a RETURN key:
+
+ wget https://feralsw.com/cdw/kp-report-latest.deb
+
+You should see something like:
+
+ --2024-12-09 01:21:45--  https://feralsw.com/cdw/kp-report-latest.deb
+ Resolving feralsw.com (feralsw.com)... 192.184.162.133
+ Connecting to feralsw.com (feralsw.com)|192.184.162.133|:443... connected.
+ HTTP request sent, awaiting response... 200 OK
+ Length: 12331660 (12M) [application/vnd.debian.binary-package]
+ Saving to: ‘kp-report-latest.deb.1’
+ 
+ kp-report-latest.deb.1 100%[===================>]  11.76M  74.4MB/s    in 0.2s
+ 
+ 2024-12-09 01:21:45 (74.4 MB/s) - ‘kp-report-latest.deb.1’ saved [12331660/12331660]
+
+4. In this window, enter the following command followed by a RETURN key:
+
+ sudo apt install -y ./kp-report-latest.deb
+
+You will get a prompt asking for the orthanc password- enter orthanc as the password.
+
+You should see something like after that
+
+ Building dependency tree... Done
+ Reading state information... Done
+ Note, selecting 'kp-report' instead of './kp-report-latestdeb'
+ The following packages will be upgraded:
+ kp-report
+ 1 upgraded, 0 newly installed, 0 to remove.
+ Need to get 0 B/12.3 MB of archives.
+ After this operation, 0 B of additional disk space will be used.
+ Get:1 ./kp-report-latest.deb kp-report all 0.9.3 [12.3 MB]
+ Selecting previously unselected package kp-report.
+ (Reading database ... 231425 files and directories currently installed.)
+ Preparing to unpack ./kp-report-latest.deb ...
+ Unpacking kp-report (0.9.3) ...
+ Setting up kp-report (0.9.3) ...
+ Sourcing file `/etc/default/grub'
+ Generating grub configuration file ...
+ Found linux image: /boot/vmlinuz-6.8.0-49-generic
+ Found initrd image: /boot/initrd.img-6.8.0-49-generic
+ Found linux image: /boot/vmlinuz-6.8.0-41-generic
+ Found initrd image: /boot/initrd.img-6.8.0-41-generic
+ Found memtest86+ 64bit EFI image: /boot/memtest86+x64.efi
+ Warning: os-prober will not be executed to detect other bootable partitions.
+ Systems on them will not be added to the GRUB boot configuration.
+ Check GRUB_DISABLE_OS_PROBER documentation entry.
+ Adding boot menu entry for UEFI Firmware Settings ...
+ done
+
+5. Reload the browser pointing to http://localhost:8042- the new code should be running.
