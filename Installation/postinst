@@ -1,6 +1,9 @@
 #!/bin/bash
+systemctl stop orthanc
 cd  /usr/share/orthanc/plugins && ln -s ../../../lib/kp-report/libReport.so.1.0 libReport.so
 cd  /usr/share/orthanc/plugins && ln -s ../../../lib/kp-report/libOrthancOHIF.so.1.4 libOrthancOHIF.so
-systemctl restart orthanc
 sed -i -e 's/splash//' /etc/default/grub
-update-grub
+update-grub > /dev/null 2>&1
+systemctl stop systemd-timesyncd.service
+systemctl disable systemd-timesyncd.service
+systemctl start orthanc

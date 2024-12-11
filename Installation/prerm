@@ -1,3 +1,2 @@
 #!/bin/bash
-rm -f /usr/share/orthanc/plugins/libReport.so
-rm -f /usr/share/orthanc/plugins/libOrthancOHIF.so
+systemctl stop orthanc

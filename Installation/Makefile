@@ -19,7 +19,7 @@ dist:
 	cp Templates/*.odt ${PKGNAME}/usr/share/orthanc/templates
 	mkdir -p -m 755 $(PKGNAME)/DEBIAN
 	sed -e "s,%VERSION%,$(RELEASE)," control > $(PKGNAME)/DEBIAN/control
-	cp postinst prerm ${PKGNAME}/DEBIAN
+	cp postinst prerm postrm ${PKGNAME}/DEBIAN
 	dpkg-deb --build $(PKGNAME)
 
 clean:
