@@ -15,9 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
-// static content for now
-const template_files = [ "US_RUQ.odt", "ct_abd_pelvis_with_contrast.odt", "ct_chest_without_contrast.odt", "xray_chest.odt" ];
-const template_title = [ "ULTRASOUND RIGHT UPPER QUADRANT ABDOMEN", "CT ABDOMEN PELVIS WITH CONTRAST", "CT CHEST WITHOUT CONTRAST", "XRAY CHEST" ];
 
 function ChooseTemplate(callback)
 {
@@ -30,21 +27,24 @@ function ChooseTemplate(callback)
   $.ajax({
     url: '../kp-report/templates',
     type: 'GET',
-    dataType: 'text',
+    dataType: 'json',
     async: false,
     cache: false,
     success: function(templates) {
       console.log('GET callback returned: ' + templates);
-      for (let i = 0, len = template_title.length; i < len; i++) {
-        let name = template_title[i];
-        let item = $('<li>')
-          .html('<a href="#" rel="close">' + name + '</a>')
-          .attr('name', name)
-          .click(function() { 
-            clickedTemplate = $(this).attr('name');
-          });
-        items.append(item);
-        console.log('template['+i+'] is '+name);
+      var name, item;
+      if (templates.length > 0) {
+        for (var i = 0; i < templates.length; i++) {
+          name = templates[i];
+          let item = $('<li>')
+            .html('<a href="#" rel="close">' + name + '</a>')
+            .attr('name', name)
+            .click(function() { 
+              clickedTemplate = $(this).attr('name');
+            });
+          items.append(item);
+          console.log("adding attr " + name);
+        }
       }
       // Launch the dialog
       $(document).simpledialog2({
@@ -123,24 +123,11 @@ function CreateReport(resourceId)
     }).done(function(){
       if (session  && mrn) {
         ChooseTemplate(function(template_choice) {
-            var templfil;
             if (template_choice == '') {
-              console.log("back from ChooseTemplate with no cboice");
+              console.log("back from ChooseTemplate with no choice");
               return;
             }
-            var found = false;
-            for (let i = 0; i < template_title.length; i++) {
-              if (template_choice == template_title[i]) {
-                templfil = template_files[i];
-                found = true;
-                break;
-              }
-            }
-            if (!found) {
-              console.log("Did not find a choice!");
-              return;
-            }
-            var pdata = mrn + ":" + session + ":" + templfil + ":" + resourceId;
+            var pdata = mrn + ":" + session + ":" + template_choice + ":" + resourceId;
             $.ajax({
               url: '../kp-report/create',
               type: 'POST',
@@ -157,7 +144,6 @@ function CreateReport(resourceId)
                 }
               }
             });
-            // alert("This functionality is not yet enabled");
         });
       }
     });

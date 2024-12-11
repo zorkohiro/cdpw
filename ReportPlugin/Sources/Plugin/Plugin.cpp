@@ -34,6 +34,7 @@
 #define TEMPLATES_DIR "/usr/share/orthanc/templates"
 #define REPORT_DIR "/var/tmp"
 
+/*#sizeof (emsstatic OrthancPluginContext* context = NULL;*/
 static OrthancPluginContext* context = NULL;
 
 static void fetch_templates(OrthancPluginRestOutput* output, const char* url, const OrthancPluginHttpRequest* request) {
@@ -42,27 +43,47 @@ static void fetch_templates(OrthancPluginRestOutput* output, const char* url, co
   if (request->method != OrthancPluginHttpMethod_Get) {
     OrthancPluginSendMethodNotAllowed(context, output, "GET");
   } else {
-    char buffer[1024] = { 0 };
+    Json::Value result;
+    char prtbuf[1024] = { 0 };
+    int nent = 0;
     DIR *dir = opendir(TEMPLATES_DIR);
+
     if (dir) {
+      snprintf(prtbuf, sizeof (prtbuf) - 1, "Opened TEMPLATES_DIR %s", TEMPLATES_DIR);
+      OrthancPluginLogWarning(context, prtbuf);
       struct dirent *ent;
       while ((ent = readdir(dir)) != NULL) {
         char *suffix = strstr(ent->d_name, ".odt");
         if (suffix && strlen(suffix) == 4) {
-          if (buffer[0]) {
-            strcat(buffer, ", ");
-            strcat(buffer, ent->d_name);
-          } else {
-            strcpy(buffer, ent->d_name);
-          }
+          snprintf(prtbuf, sizeof (prtbuf) - 1, "Appending %s", ent->d_name);
+          OrthancPluginLogWarning(context, prtbuf);
+          char jname[128];
+          strcpy(jname, ent->d_name);
+          char *ptr = jname + (suffix - ent->d_name);
+          *ptr = '\0';
+          result.append(jname);
+          nent++;
+        } else {
+          snprintf(prtbuf, sizeof (prtbuf) - 1, "Did not append %s", ent->d_name);
+          OrthancPluginLogWarning(context, prtbuf);
         }
       }
       closedir(dir);
+    } else {
+      snprintf(prtbuf, sizeof (prtbuf) - 1,  "failed to open TEMPLATES_DIR %s", TEMPLATES_DIR);
+      OrthancPluginLogWarning(context, prtbuf);
     }
-    if (buffer[0] == '\0') {
+    if (nent == 0) {
+      char buffer[64];
       snprintf(buffer, sizeof (buffer), "no templates found");
+      OrthancPluginLogWarning(context, buffer);
+      OrthancPluginAnswerBuffer(context, output, buffer, strlen(buffer), "text/plain");
+    } else {
+      snprintf(prtbuf, sizeof (prtbuf) - 1, "sending back json list of %d entries", nent);
+      OrthancPluginLogWarning(context, prtbuf);
+      std::string answer = result.toStyledString();
+      OrthancPluginAnswerBuffer(context, output, answer.c_str(), answer.size(), "application/json");
     }
-    OrthancPluginAnswerBuffer(context, output, buffer, strlen(buffer), "text/plain");
   }
 }
 
@@ -131,7 +152,7 @@ static void create_report(OrthancPluginRestOutput* output, const char* url, cons
     char wfile[256];
     size_t snr = snprintf(wfile, sizeof (wfile), "%s/study_%s_%s.odt", REPORT_DIR, mrn, session);
     char tfile[256];
-    size_t snt =  snprintf(tfile, sizeof (tfile), "%s/%s", TEMPLATES_DIR, odt_template);
+    size_t snt =  snprintf(tfile, sizeof (tfile), "%s/%s.odt", TEMPLATES_DIR, odt_template);
 
     if (snr < 0 || snr >= sizeof (wfile) || snt < 0 || snt >= sizeof (tfile)) {
       strcpy(buffer, "one of the filenames too long or unparseable");
