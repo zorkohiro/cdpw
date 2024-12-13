@@ -1,0 +1,79 @@
+#!/bin/bash
+
+#
+# Hacky udev called function. Because we are waiting
+# for two partitions, and we mount them asynchronously,
+# we have no clean way of knowing, given the number of
+# calls we would get, when they are both mounted
+# and we can then start the orthanc service.
+#
+# So we make some simplifying assumptions- only get called
+# the CDW_CONFIG partition- but then mount both CDW_CONFIG
+# and CDW_DATA- but do that with constructed device names
+#
+
+
+#
+# Validate args
+#
+if [[ $# -ne 2 ]]; then
+ exit 0
+fi
+case $1 in
+ mount|unmount);;
+ *) exit 0;;
+esac
+case $2 in
+ /dev/sd*) ;;
+ *) exit 0 ;;
+esac
+echo ROOTDEV is $2 >> /tmp/om.log
+ROOTDEV=$(echo $2 | sed 's/.$//')
+C_DEV=${ROOTDEV}1
+D_DEV=${ROOTDEV}2
+
+#
+# Fetch orthanc's uid/gid from the password file.
+#
+# If they aren't present, then we assume orthanc isn't installed
+# so we do nothing.
+#
+ORTHANC_UID=$(grep orthanc /etc/passwd 2> /dev/null|awk -F: '{print $3}')
+if [[ -z "${ORTHANC_UID}" ]]; then
+ exit 0
+fi
+
+#
+# Set some parameters
+#
+C_MNT=/run/cdw/config
+mkdir -p ${C_MNT}
+
+D_MNT=/var/lib/orthanc/db-v6
+M_OPTS="--no-pager --no-legend --collect --no-block"
+
+#
+# just in case- we need it stopped first whether we are mounting or unmounting
+systemctl stop orthanc
+
+mount -l | grep -qw CDW_CONFIG
+if [[ $? -eq 0 ]]; then
+ C_MOUNTED=true
+else
+ C_MOUNTED=false
+fi
+mount -l | grep -qw CDW_DATA
+if [[ $? -eq 0 ]]; then
+ D_MOUNTED=true
+else
+ D_MOUNTED=false
+fi
+
+if [[ $1 == "mount" ]]; then
+ /usr/bin/systemd-mount ${M_OPTS} -t ntfs-3g --options="noatime,uid=${ORTHANC_UID},hide_hid_files,umask=0,dmask=27,fmask=137" ${C_DEV} ${C_MNT} >> /tmp/om.log 2>&1
+ /usr/bin/systemd-mount ${M_OPTS} -t ntfs-3g --options="noatime,uid=${ORTHANC_UID},hide_hid_files,umask=0,dmask=27,fmask=137" ${D_DEV} ${D_MNT} >> /tmp/om.log 2>&1
+ systemctl start orthanc >> /tmp/om.log 2>&1
+else
+ /usr/bin/systemd-umount ${C_MNT}
+ /usr/bin/systemd-umount ${D_MNT}
+fi
