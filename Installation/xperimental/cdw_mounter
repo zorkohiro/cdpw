@@ -1,0 +1,96 @@
+#!/bin/bash
+
+#
+# systemd-udev calls this script so we can mount our
+# secure storage key when it appears.
+#
+
+
+#
+# Validate args
+#
+if [[ $# -ne 2 ]]; then
+ echo not enough arguments | tee -a /run/cdw_mounter.log
+ exit 0
+fi
+echo mount arg is $1 | tee -a /run/cdw_mounter.log
+case $1 in
+ mount|unmount);;
+ *)
+    echo unknown first argument $1 | tee -a /run/cdw_mounter.log
+    exit 0
+    ;;
+esac
+echo dev arg is $2 | tee -a /run/cdw_mounter.log
+case $2 in
+ /dev/sd*)
+    #
+    # This is from hotplug events
+    #
+    DEV=$2
+    ;;
+ unknown)
+    #
+    # This is the normal boot path- we boot with the storage
+    # attached and unlocked- so we have to hunt for it.
+    #
+    DEV=$(blkid|grep -w CODE_DARK | sed 's/:.*$//')
+    if [[ -z "$DEV" ]]; then
+        echo device with CODED_RARK is not present | tee -a /run/cdw_mounter.log
+        exit 0
+    fi
+    echo unknown device is actually $DEV | tee -a /run/cdw_mounter.log
+    ;;
+ *)
+    exit 0
+    ;;
+esac
+
+#
+# Fetch orthanc's uid/gid from the password file.
+#
+# If they aren't present, then we assume orthanc isn't installed
+# so we do nothing.
+#
+ORTHANC_UID=$(grep orthanc /etc/passwd 2> /dev/null|awk -F: '{print $3}')
+if [[ -z "${ORTHANC_UID}" ]]; then
+ echo no ORTHANC_UID present | tee -a /run/cdw_mounter.log
+ exit 0
+fi
+
+#
+# Set some parameters
+#
+D_MNT=/var/lib/orthanc/db-v6
+M_OPTS="--collect --no-block --no-ask-password"
+O_OPTS="--options=noatime,uid=${ORTHANC_UID},hide_hid_files,umask=0,dmask=27,fmask=137"
+
+#
+# just in case- we need it stopped first whether we are mounting or unmounting
+#
+
+if [[ $1 == "mount" ]]; then
+ #
+ # Find out if this is already mounted
+ #
+ mount -l |grep -qw CODE_DARK
+ if [[ $? -eq 0 ]]; then
+  mount -l |grep -w CODE_DARK |tee -a /run/cdw_mounter.log
+  echo CODE_RED already mounted | tee -a /run/cdw_mounter.log
+  exit 0
+ fi
+ echo stopping orthanc | tee -a /run/cdw_mounter.log
+ 2>&1 systemctl stop orthanc | tee -a /run/cdw_mounter.log
+ echo mounting: systemd-mount ${M_OPTS} -t ntfs-3g ${O_OPTS} ${DEV} ${D_MNT} | tee -a /run/cdw_mounter.log
+ 2>&1 /usr/bin/systemd-mount ${M_OPTS} -t ntfs-3g ${O_OPTS} ${DEV} ${D_MNT} | tee -a /run/cdw_mounter.log
+ echo mount result is $? | tee -a /run/cdw_mounter.log
+ sleep 1
+ echo starting orthanc |tee -a /run/cdw_mounter.log
+ 2>&1 systemctl start orthanc |tee -a /run/cdw_mounter.log
+else
+ echo stopping orthanc | tee -a /run/cdw_mounter.log
+ 2>&1 systemctl stop orthanc |tee -a /run/cdw_mounter.log
+ echo unmounting CODE_DARK: ${D_MNT} | tee -a /run/cdw_mounter.log
+ 2>&1 /usr/bin/systemd-umount ${D_MNT} |tee -a /run/cdw_mounter.log
+fi
+echo exiting cdw_mounter |tee -a /run/cdw_mounter.log

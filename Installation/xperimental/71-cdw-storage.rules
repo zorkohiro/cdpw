@@ -1,0 +1,7 @@
+ACTION=="add", KERNEL=="sd*", ENV{ID_BUS}=="usb", \
+    ENV{DEVTYPE}=="partition", ENV{ID_FS_LABEL}=="CODE_DARK", ENV{UDISKS_IGNORE}="1", \
+    RUN+="/usr/bin/cdw_mounter mount %E{DEVNAME}"
+
+ACTION=="remove", KERNEL=="sd*", ENV{ID_BUS}=="usb", \
+    ENV{DEVTYPE}=="partition", ENV{ID_FS_LABEL}=="CODE_DARK", \
+    RUN+="/usr/bin/cdw_mounter unmount %E{DEVNAME}"
