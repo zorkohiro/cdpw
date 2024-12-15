@@ -31,8 +31,8 @@
 #include <syslog.h>
 
 #define ORTHANC_PLUGIN_NAME  "report"
-#define TEMPLATES_DIR "/usr/share/orthanc/templates"
-#define REPORT_DIR "/var/tmp"
+#define TEMPLATES_DIR "/var/lib/orthanc/db-v6/templates"
+#define REPORT_DIR "/var/lib/orthanc/db-v6/reports"
 
 /*#sizeof (emsstatic OrthancPluginContext* context = NULL;*/
 static OrthancPluginContext* context = NULL;

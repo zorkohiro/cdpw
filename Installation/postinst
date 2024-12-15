@@ -1,9 +1,25 @@
 #!/bin/bash
+# Stop (if running) and disable orthanc from autostarrt.
 systemctl stop orthanc
+systemctl disable orthanc
+#
 cd  /usr/share/orthanc/plugins && ln -s ../../../lib/kp-report/libReport.so.1.0 libReport.so
 cd  /usr/share/orthanc/plugins && ln -s ../../../lib/kp-report/libOrthancOHIF.so.1.4 libOrthancOHIF.so
+# Clean up blank/black screen on reboot issue
 sed -i -e 's/splash//' /etc/default/grub
 update-grub > /dev/null 2>&1
+# Disable NTP- we will be air-gapped
 systemctl stop systemd-timesyncd.service
 systemctl disable systemd-timesyncd.service
-systemctl start orthanc
+# Run a trigger to get storage mounted and orthanc restarted
+udevadm trigger
+udevadm settle
+# Do we have the Secure Storage already present?
+dev=$(blkid 2>/dev/null | grep CODE_DARK | sed 's/:.*$//')
+if [[ -n "$dev" ]]; then
+ # See if it is already mounted
+ mount -l |grep -qw CODE_DARK
+ if [[ $? -ne 0 ]]; then
+  cdw_mount mount $dev
+ fi
+fi
