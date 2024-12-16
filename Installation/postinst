@@ -12,9 +12,9 @@ systemctl enable orthanc
 # Get orthanc's UID (needed for ntfs-3g mounts)
 #
 OUID=$(grep orthanc /etc/passwd 2> /dev/null|awk -F: '{print $3}')
-if [[ -z "${ORTHANC_UID}" ]]; then
+if [[ -z "${OUID}" ]]; then
  # Hack.
- OUID=121
+ OUID=1000
 fi
 
 #
