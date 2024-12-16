@@ -1,25 +1,49 @@
 #!/bin/bash
-# Stop (if running) and disable orthanc from autostarrt.
+
+#
+# Stop orthanc while we are changing what it will depend upon.
+# Enable it- if it is installed as a dependency it seems
+# to not automatically become enabled.
+#
 systemctl stop orthanc
-systemctl disable orthanc
+systemctl enable orthanc
+
+#
+# Get orthanc's UID (needed for ntfs-3g mounts)
+#
+OUID=$(grep orthanc /etc/passwd 2> /dev/null|awk -F: '{print $3}')
+if [[ -z "${ORTHANC_UID}" ]]; then
+ # Hack.
+ OUID=121
+fi
+
+#
+# Put the mount line we want in /etc/fstab
+#
+sed -i -e '/CODE_DARK/d' /etc/fstab
+echo "LABEL=CODE_DARK /var/lib/orthanc/db-v6 ntfs-3g defaults,noatime,uid=${OUID},hide_hid_files,umask=0,dmask=27,fmask=137 0 0" >> /etc/fstab
+systemctl daemon-reload
+
+#
+# Hand install symlinks to install our plugins into orthanc
 #
 cd  /usr/share/orthanc/plugins && ln -s ../../../lib/kp-report/libReport.so.1.0 libReport.so
 cd  /usr/share/orthanc/plugins && ln -s ../../../lib/kp-report/libOrthancOHIF.so.1.4 libOrthancOHIF.so
+
+#
+# Kubuntu bug fixes we need.
+#
+
+#
 # Clean up blank/black screen on reboot issue
-sed -i -e 's/splash//' /etc/default/grub
-update-grub > /dev/null 2>&1
-# Disable NTP- we will be air-gapped
-systemctl stop systemd-timesyncd.service
-systemctl disable systemd-timesyncd.service
-# Run a trigger to get storage mounted and orthanc restarted
-udevadm trigger
-udevadm settle
-# Do we have the Secure Storage already present?
-dev=$(blkid 2>/dev/null | grep CODE_DARK | sed 's/:.*$//')
-if [[ -n "$dev" ]]; then
- # See if it is already mounted
- mount -l |grep -qw CODE_DARK
- if [[ $? -ne 0 ]]; then
-  cdw_mount mount $dev
- fi
+#
+grep -q 'splash' /etc/default/grub
+if [[ $? -eq 0 ]]; then
+ sed -i -e 's/splash//' /etc/default/grub
+ update-grub > /dev/null 2>&1
 fi
+#
+# Mask automatic ntp- we will be air-gapped.
+#
+systemctl stop systemd-timesyncd.service
+systemctl mask systemd-timesyncd.service

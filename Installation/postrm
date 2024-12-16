@@ -1,4 +1,5 @@
 #!/bin/bash
 rm -f /usr/share/orthanc/plugins/libReport.so
 rm -f /usr/share/orthanc/plugins/libOrthancOHIF.so
-systemctl start orthanc
+sed -i -e '/CODE_DARK/d' /etc/fstab
+systemctl daemon-reload
