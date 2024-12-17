@@ -24,6 +24,11 @@ chown root:root /etc/sudoers.d/orthanc
 chown -R $OUID ~orthanc/.local
 
 #
+# Give orthanc the ability to bind to privileged ports
+#
+setcap 'cap_net_bind_service=+ep' /sbin/Orthanc
+
+#
 # Put the mount line we want in /etc/fstab
 #
 sed -i -e '/CODE_DARK/d' /etc/fstab
