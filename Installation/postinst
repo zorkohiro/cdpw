@@ -18,6 +18,12 @@ if [[ -z "${OUID}" ]]; then
 fi
 
 #
+# Clean up permissions
+#
+chown root:root /etc/sudoers.d/orthanc
+chown -R $OUID ~orthanc/.local
+
+#
 # Put the mount line we want in /etc/fstab
 #
 sed -i -e '/CODE_DARK/d' /etc/fstab
@@ -27,8 +33,20 @@ systemctl daemon-reload
 #
 # Hand install symlinks to install our plugins into orthanc
 #
+rm -f /usr/share/orthanc/plugins/libReport.so
 cd  /usr/share/orthanc/plugins && ln -s ../../../lib/kp-report/libReport.so.1.0 libReport.so
+cd -
+rm -f /usr/share/orthanc/plugins/libOrthancOHIF.so
 cd  /usr/share/orthanc/plugins && ln -s ../../../lib/kp-report/libOrthancOHIF.so.1.4 libOrthancOHIF.so
+cd -
+
+#
+# Install symlink to python tkinter time and date changer
+#
+mkdir -p ~orthanc/.local/share/applications
+rm -f ~orthanc/.local/share/applications/SetSystemTime.desktop
+cd  ~orthanc/.local/share/applications && ln -s /usr/lib/kp-report/SetSystemTime.desktop
+cd -
 
 #
 # Kubuntu bug fixes we need.

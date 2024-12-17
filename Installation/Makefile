@@ -1,13 +1,12 @@
 MAJORV  ?= 0
 MINORV  ?= 9
 MICROV  ?= 5
-BUILDV  ?= -2
+BUILDV  ?= -3
 RELEASE := $(MAJORV).$(MINORV).$(MICROV)${BUILDV}
-#RELEASE := $(MAJORV).$(MINORV).$(MICROV)
 
 BASE    := kp-report
 PKGNAME := $(BASE)-$(RELEASE)
-BINS    := spawn_ol
+BINS    := spawn_ol SetSystemTime
 
 all:    dist
 
@@ -15,8 +14,10 @@ all:    dist
 dist:
 	rm -rf ${BASE}-*
 	for c in $(BINS); do install -D -m 755 $$c $(PKGNAME)/usr/bin/$$c; done
+	install -D -m 440 orthanc.sudo ${PKGNAME}/etc/sudoers.d/orthanc
 	install -D -m 644 ../ReportPlugin/Build/libReport.so.1.0 ${PKGNAME}/usr/lib/kp-report/libReport.so.1.0
 	install -D -m 644 ../OHIFPlugin/Build/libOrthancOHIF.so.1.4 ${PKGNAME}/usr/lib/kp-report/libOrthancOHIF.so.1.4
+	install -D -m 555 SetSystemTime.desktop ${PKGNAME}/usr/lib/kp-report/SetSystemTime.desktop
 	mkdir -p -m 755 $(PKGNAME)/DEBIAN
 	sed -e "s,%VERSION%,$(RELEASE)," control > $(PKGNAME)/DEBIAN/control
 	cp postinst prerm postrm ${PKGNAME}/DEBIAN

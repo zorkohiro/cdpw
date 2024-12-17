@@ -9,32 +9,49 @@ Everything should be the 'default' and you should have
 it erase whatever target installation media you are using.
 Check the box that says automatically log in after boot.
 
-Note that there seems to be a bug sometimes with previously installed media,
-so starting with erased target media is the safest.
+Note that there seems to be a bug sometimes with previously
+installed media, so starting with erased target media is the
+safest. This can also be worked around by selecting 'try Ubuntu'
+first and using wipefs -a on the target installation media.
 
-2. After booting up the installed system, do the following:
+2. Open up firefox (click on the rightmost icon on the toolbar below)
 
-Open a Kconsole window (look under Favorites under the selection lower left) and enter:
+It will open a bunch ad-ware tabs.
 
-  wget https://feralsw.com/cdw/kp-report-0.9.1.deb
-  apt install ./kp-report-0.9.1.deb
+Go into Settings:
 
-You will be prompted for the orthanc password- enter it. This should install all
-of the main Orthanc binaries plus our changes.
+ Under HOME: Change the default pages/tabs to Blank
+ Under Settings/Settings: Uncheck the box that says "open in tabs instead of separate windows".
 
-3. Open up firefox (click on the rightmost icon on the toolbar below)
+Create a new tab and delete those adware tabs. Delete the bookmarks bar excess.
 
-It will open a bunch ad-ware tabs. Create a new tab and delete those others.
-Enter 'http://localhost:8042' in the address bar. That shoudl bring up the
-main Orthanc screen. After it does this, bookmark this page on the bookmarks
-toolbar in Firefox for convenience of startup.
 
-4. Keep the system from going to lockscreen
+3. Keep the system from going to lockscreen
 
 Click the settings icon (2nd one from the left on bottom bar) and go to Power Management
 and uncheck the Suspend Session and Screen Energy Saving buttons.
 
-5. Open viewer in a separate window
+Click the settings icon and go to Workspace Behaviour, then go to Screen Locking
+and uncheck the Lockscreen Automatically button.
 
-If you want spin up viewer in a separate window, go into Firefox settings and uncheck
-the box that says "open in tabs instead of separate windows".
+4. After booting up the installed system, do the following:
+
+Open a Kconsole window (look under Favorites under the selection lower left) and enter:
+
+  wget https://feralsw.com/cdw/kp-report-latest.deb
+  apt install ./kp-report-latest.deb
+
+You will be prompted for the orthanc password- enter it. This should install all
+of the main Orthanc binaries plus our changes.
+
+Enter 'http://localhost:8042' in the address bar. That shoudl bring up the
+main Orthanc screen. After it does this, bookmark this page on the bookmarks
+toolbar in Firefox for convenience of startup.
+
+5. Link to the desktop some helpers.
+
+Open the Applications menu (icon to the leftmost on the bottom bar) by left clicking on it.
+Enter SetSystemTime in the search bar at the top. It should bring up SetSystemTime Helper
+with a 'key' icon. Do a 'right click' over that brought up item and click the '+'
+to left of "Add to Desktop".
+

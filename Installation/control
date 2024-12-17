@@ -3,7 +3,7 @@ Version: %VERSION%
 Section: base
 Priority: optional
 Architecture: all
-Depends: libreoffice-writer, orthanc, orthanc-dicomweb, orthanc-gdcm, orthanc-imagej, orthanc-webviewer
+Depends: libreoffice-writer, orthanc, orthanc-dicomweb, orthanc-gdcm, orthanc-imagej, orthanc-webviewer, python3-tk, sudo
 Maintainer: Matthew Jacob <lydianconcepts@gmail.com>
 Description: Kaiser Permanente Report Writer Plugin for Orthanc
  This is a pluging and auxillary scripts and data to create study
