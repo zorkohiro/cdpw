@@ -1,0 +1,14 @@
+#
+# Check for the Orthanc secure data volume being mounted
+#
+[Unit]
+Description=Checker for Secure Storage being mounted for Orthanc
+
+[Service]
+User=orthanc
+Group=orthanc
+ExecStart=/usr/bin/CheckOrthancDataMount
+Restart=on-failure
+
+[Install]
+WantedBy=graphical.target
