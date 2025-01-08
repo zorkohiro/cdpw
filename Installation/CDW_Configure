@@ -1,0 +1,43 @@
+#!/bin/bash
+
+#
+# Set up primary wired connection address.
+#
+# Usually it should be a static address and no routing
+# from a config file. If the file is not present,
+# we go with DHCP.
+#
+nmcli con down 'Wired connection 1' > /dev/null 2>&1
+
+#
+# This is not idempotent- it's a oneshot when booting.
+#
+clause=
+if [[ -f /var/lib/orthanc/db-v6/config/network ]]; then
+ clause=$(cat /var/lib/orthanc/db-v6/config/network)
+ echo $clause | grep -q dhcp
+ if [[ $? -eq 0 ]]; then
+  clause=
+ fi
+fi
+if [[ -n "$clause" ]]; then
+ nmcli con modify --temporary 'Wired connection 1' ipv4.method manual ipv4.addresses $clause
+ echo setting static network address $clause
+else
+ nmcli con modify --temporary 'Wired connection 1' ipv4.method auto
+ echo setting automatic network address
+fi
+nmcli con up 'Wired connection 1'
+
+#
+# Change Dicom Port if there is a file containing a new port number in it.
+#
+port=
+if [[ -f /var/lib/orthanc/db-v6/config/dicomport ]]; then
+ port=$(cat /var/lib/orthanc/db-v6/config/dicomport)
+fi
+if [[ -n "$port" ]]; then
+ echo changing Dicom port to $port
+ sed -i -e "/DicomPort/c\\ \"DicomPort\" : ${port}," /etc/orthanc/orthanc.json
+ systemctl restart orthanc
+fi

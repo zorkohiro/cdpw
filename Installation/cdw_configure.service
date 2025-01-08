@@ -1,0 +1,15 @@
+#
+# Check for the Orthanc secure data volume being mounted
+#
+[Unit]
+Description=CDW configuration agent
+Requires=orthanc_datamount_checker.service
+After=orthanc_datamount_checker.service, NetworkManager.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/CDW_Configure
+RemainAfterExit=yes
+
+[Install]
+WantedBy=graphical.target

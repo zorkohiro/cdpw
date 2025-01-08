@@ -38,29 +38,6 @@ cd  ~orthanc/.local/share/applications && ln -s /usr/lib/kp-report/SetSystemTime
 cd -
 
 #
-# Kubuntu bug fixes and adjustments we need.
+# Enable cdw_configure service
 #
-
-#
-# Clean up blank/black screen on reboot issue
-#
-egrep -q 'quiet|splash' /etc/default/grub
-if [[ $? -eq 0 ]]; then
- sed -i -e 's/quiet//' -e 's/splash//' /etc/default/grub
- update-grub > /dev/null 2>&1
-fi
-#
-# Mask automatic ntp- we will be air-gapped.
-#
-systemctl mask systemd-timesyncd.service
-
-#
-# Enable orthanc data mount checker service
-#
-systemctl enable orthanc_datamount_checker.service
-
-#
-# Disable automatic updates && upgrades
-#
-sed 'g/APT::Periodic::Update-Package-Lists/s/1/0/' /etc/apt.conf.d/20auto-upgrades
-sed 'g/APT::Periodic::Unattended-Upgrade/s/1/0/' /etc/apt.conf.d/20auto-upgrades
+systemctl enable cdw_configure.service

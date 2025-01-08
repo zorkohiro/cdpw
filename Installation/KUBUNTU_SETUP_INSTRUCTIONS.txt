@@ -1,4 +1,4 @@
-12/6/2024
+1/8/2025
 
 1. Install kubuntu 24.04.1 from the iso (on USB or DVD) from
 
@@ -25,7 +25,6 @@ Go into Settings:
 
 Create a new tab and delete those adware tabs. Delete the bookmarks bar excess.
 
-
 3. Keep the system from going to lockscreen
 
 Click the settings icon (2nd one from the left on bottom bar) and go to Power Management
@@ -44,7 +43,7 @@ Open a Kconsole window (look under Favorites under the selection lower left) and
 You will be prompted for the orthanc password- enter it. This should install all
 of the main Orthanc binaries plus our changes.
 
-Enter 'http://localhost:8042' in the address bar. That shoudl bring up the
+Enter 'http://localhost:8042' in the address bar. That should bring up the
 main Orthanc screen. After it does this, bookmark this page on the bookmarks
 toolbar in Firefox for convenience of startup.
 
@@ -55,3 +54,53 @@ Enter SetSystemTime in the search bar at the top. It should bring up SetSystemTi
 with a 'key' icon. Do a 'right click' over that brought up item and click the '+'
 to left of "Add to Desktop".
 
+6. Additional Steps
+
+These used to be part of kp-report install- now they are done manually to the image.
+
+#
+# Enable orthanc data mount checker service
+#
+systemctl enable orthanc_datamount_checker.service
+
+
+#
+# Clean up blank/black screen on reboot issue- make it verbose
+#
+egrep -q 'quiet|splash' /etc/default/grub
+if [[ $? -eq 0 ]]; then
+ sed -i -e 's/quiet//' -e 's/splash//' /etc/default/grub
+ update-grub > /dev/null 2>&1
+fi
+
+#
+# Mask automatic ntp- we will be air-gapped.
+#
+systemctl mask systemd-timesyncd.service
+
+
+#
+# Disable automatic updates && upgrades
+#
+sed 'g/APT::Periodic::Update-Package-Lists/s/1/0/' /etc/apt/apt.conf.d/20auto-upgrades
+sed 'g/APT::Periodic::Unattended-Upgrade/s/1/0/' /etc/apt/apt.conf.d/20auto-upgrades
+
+#
+# Disable automatic networking on boot
+#
+nmcli c modify 'Wired connection 1' connection.autoconnect no
+
+#
+# Disable KDE wallet subsystem
+#
+go to system settings for this
+
+#
+# Disable systray notifications
+#
+right click over down arrow on bottom bar to the right and configure
+notifications for system tray to almost everything hidden or disabled
+
+#
+# Set wallpaper to plain color gray-like
+#
