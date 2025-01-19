@@ -10,6 +10,11 @@ if [[ -z "${OUID}" ]]; then
 fi
 
 #
+# Make sure mount point exists
+#
+mkdir -p /code_dark
+
+#
 # Put the mount line we want in /etc/fstab
 #
 # Do this at preinst time so that orthanc reconfiguration
@@ -17,5 +22,5 @@ fi
 #
 #
 sed -i -e '/CODE_DARK/d' /etc/fstab
-echo "LABEL=CODE_DARK /var/lib/orthanc/db-v6 ntfs-3g defaults,noauto,noatime,uid=${OUID},hide_hid_files,umask=0,dmask=27,fmask=137,x-systemd.automount 0 0" >> /etc/fstab
+echo "LABEL=CODE_DARK /code_dark ntfs-3g defaults,noauto,noatime,uid=${OUID},hide_hid_files,umask=0,dmask=27,fmask=137,x-systemd.automount 0 0" >> /etc/fstab
 systemctl daemon-reload

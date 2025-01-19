@@ -1,5 +1,0 @@
-#!/bin/bash
-export DISPLAY=:0
-export PATH=/usr/local/bin:/usr/bin:/usr/sbin
-echo calling libreoffice directly on `date` >> /tmp/spawn_ol.log
-libreoffice $1 >>  /tmp/spawn_ol.log 2>&1

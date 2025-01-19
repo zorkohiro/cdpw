@@ -30,9 +30,10 @@
 #include <fcntl.h>
 #include <syslog.h>
 
-#define ORTHANC_PLUGIN_NAME  "report"
-#define TEMPLATES_DIR "/var/lib/orthanc/db-v6/templates"
-#define REPORT_DIR "/var/lib/orthanc/db-v6/reports"
+#define ORTHANC_PLUGIN_NAME	"report"
+#define DATA_BASEDIR		"/code_dark"
+#define TEMPLATES_DIR		DATA_BASEDIR "/templates"
+#define REPORT_DIR		DATA_BASEDIR "/reports"
 
 /*#sizeof (emsstatic OrthancPluginContext* context = NULL;*/
 static OrthancPluginContext* context = NULL;
@@ -53,7 +54,7 @@ static void fetch_templates(OrthancPluginRestOutput* output, const char* url, co
       OrthancPluginLogWarning(context, prtbuf);
       struct dirent *ent;
       while ((ent = readdir(dir)) != NULL) {
-        char *suffix = strstr(ent->d_name, ".odt");
+        char *suffix = strstr(ent->d_name, ".txt");
         if (suffix && strlen(suffix) == 4) {
           snprintf(prtbuf, sizeof (prtbuf) - 1, "Appending %s", ent->d_name);
           OrthancPluginLogWarning(context, prtbuf);
@@ -61,6 +62,11 @@ static void fetch_templates(OrthancPluginRestOutput* output, const char* url, co
           strcpy(jname, ent->d_name);
           char *ptr = jname + (suffix - ent->d_name);
           *ptr = '\0';
+          // Convert all '_' to ' ' for pretty print in a menu
+          for (ptr = jname; *ptr; ptr++) {
+            if (*ptr == '_')
+              *ptr = ' ';
+          }
           result.append(jname);
           nent++;
         } else {
@@ -87,7 +93,7 @@ static void fetch_templates(OrthancPluginRestOutput* output, const char* url, co
   }
 }
 
-static int spawn_libreoffice(OrthancPluginContext* context, char *file, char *emsgbuf) {
+static int spawn_editor(OrthancPluginContext* context, char *file, char *emsgbuf) {
   pid_t pid = fork();
   if (pid < 0) {
     sprintf(emsgbuf, "fork failed: %s", strerror(errno));
@@ -97,9 +103,9 @@ static int spawn_libreoffice(OrthancPluginContext* context, char *file, char *em
       close(i);
     setsid();
     open("/dev/null", O_RDONLY);
-    int fdo = open("/tmp/lo.log", O_RDWR|O_APPEND|O_CREAT, 0644);
+    int fdo = open("/tmp/editor.log", O_RDWR|O_APPEND|O_CREAT, 0644);
     int fds = dup(fdo);
-    int rslt = execl("/usr/bin/spawn_ol", "spawn_ol", file, (char *) NULL);
+    int rslt = execl("/usr/bin/spawn_editor", "spawn_editor", file, (char *) NULL);
     if (rslt < 0) {
       char buffer[1024];
       sprintf(buffer, "exec failed: %s\n", strerror(errno));
@@ -107,7 +113,7 @@ static int spawn_libreoffice(OrthancPluginContext* context, char *file, char *em
         buffer[strlen(buffer) - 1] = '\0';
         syslog(LOG_USER|LOG_WARNING, "%s", buffer);
       }
-      if (fds > 0) // quiesce compiler
+      if (fds >= 0) // quiesce compiler
         close(fds);
       exit(0);
     }
@@ -129,7 +135,7 @@ static void create_report(OrthancPluginRestOutput* output, const char* url, cons
     const char *colon = ":";
     char *mrn = strtok_r(rqb, colon, &sptr);
     char *session = strtok_r(NULL, colon, &sptr);
-    char *odt_template = strtok_r(NULL, colon, &sptr);
+    char *txt_template = strtok_r(NULL, colon, &sptr);
     char *uuid = strtok_r(NULL, colon, &sptr);
     bool failure = false;
     if (mrn == NULL) {
@@ -138,7 +144,7 @@ static void create_report(OrthancPluginRestOutput* output, const char* url, cons
     } else if (session == NULL) {
       failure = true;
       OrthancPluginLogWarning(context, "No discernible session passed");
-    } else if (odt_template == NULL) {
+    } else if (txt_template == NULL) {
       failure = true;
       OrthancPluginLogWarning(context, "No discernible template type passed");
     } else if (uuid == NULL) {
@@ -150,9 +156,9 @@ static void create_report(OrthancPluginRestOutput* output, const char* url, cons
       return;
     }
     char wfile[256];
-    size_t snr = snprintf(wfile, sizeof (wfile), "%s/study_%s_%s.odt", REPORT_DIR, mrn, session);
+    size_t snr = snprintf(wfile, sizeof (wfile), "%s/study_%s_%s.txt", REPORT_DIR, mrn, session);
     char tfile[256];
-    size_t snt =  snprintf(tfile, sizeof (tfile), "%s/%s.odt", TEMPLATES_DIR, odt_template);
+    size_t snt =  snprintf(tfile, sizeof (tfile), "%s/%s.txt", TEMPLATES_DIR, txt_template);
 
     if (snr < 0 || snr >= sizeof (wfile) || snt < 0 || snt >= sizeof (tfile)) {
       strcpy(buffer, "one of the filenames too long or unparseable");
@@ -160,6 +166,11 @@ static void create_report(OrthancPluginRestOutput* output, const char* url, cons
       OrthancPluginSetHttpHeader(context, output, "Content-Type", "text/plain");
       OrthancPluginSendHttpStatus(context, output, 500, buffer, strlen(buffer));
       return;
+    }
+    // Convert ' ' in txt_template to '_' which is how it is stored in reality
+    for (char *ptr = tfile; *ptr; ptr++) {
+      if (*ptr == ' ')
+        *ptr = '_';
     }
 
     int statusCode = 200;
@@ -172,7 +183,7 @@ static void create_report(OrthancPluginRestOutput* output, const char* url, cons
       OrthancPluginSetHttpHeader(context, output, "Content-Type", "text/plain");
       OrthancPluginSendHttpStatus(context, output, 500, buffer, strlen(buffer));
 #else
-      if (spawn_libreoffice(context, wfile, buffer) < 0) {
+      if (spawn_editor(context, wfile, buffer) < 0) {
         OrthancPluginSetHttpHeader(context, output, "Content-Type", "text/plain");
         OrthancPluginSendHttpStatus(context, output, 500, buffer, strlen(buffer));
       } else {
@@ -184,7 +195,7 @@ static void create_report(OrthancPluginRestOutput* output, const char* url, cons
     }
 
     if (access(tfile, R_OK) != 0) {
-      snprintf(buffer, sizeof (buffer), "template file %s does not exist in %s", odt_template, TEMPLATES_DIR);
+      snprintf(buffer, sizeof (buffer), "template file %s does not exist in %s", txt_template, TEMPLATES_DIR);
       OrthancPluginLogWarning(context, buffer);
       OrthancPluginSetHttpHeader(context, output, "Content-Type", "text/plain");
       OrthancPluginSendHttpStatus(context, output, 500, buffer, strlen(buffer));
@@ -198,14 +209,14 @@ static void create_report(OrthancPluginRestOutput* output, const char* url, cons
       do {
         std::ifstream source(tfile, std::ifstream::binary);
         if (!source) {
-          sprintf(emsg, "failed to open %s", odt_template);
+          sprintf(emsg, "failed to open %s", txt_template);
           failure = true;
           break;
         }
 
         std::ofstream dest(wfile, std::ofstream::binary);
         if (!dest) {
-          sprintf(emsg, "failed to create study_%s_%s.odt", mrn, session);
+          sprintf(emsg, "failed to create study_%s_%s.txt", mrn, session);
           failure = true;
           break;
         }
@@ -225,7 +236,7 @@ static void create_report(OrthancPluginRestOutput* output, const char* url, cons
     }
 
     if (!failure) {
-      if (spawn_libreoffice(context, wfile, buffer) < 0) {
+      if (spawn_editor(context, wfile, buffer) < 0) {
         OrthancPluginSetHttpHeader(context, output, "Content-Type", "text/plain");
         OrthancPluginSendHttpStatus(context, output, 500, buffer, strlen(buffer));
         failure = true;

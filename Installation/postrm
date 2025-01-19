@@ -1,5 +1,4 @@
 #!/bin/bash
-systemctl disable cdw_configure.service
 rm -f /usr/share/orthanc/plugins/libReport.so
 rm -f /usr/share/orthanc/plugins/libOrthancOHIF.so
 rm -f ~orthanc/.local/share/applications/SetSystemTime.desktop

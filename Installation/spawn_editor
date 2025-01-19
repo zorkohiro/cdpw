@@ -1,0 +1,5 @@
+#!/bin/bash
+export DISPLAY=:0
+export PATH=/usr/local/bin:/usr/bin:/usr/sbin
+echo calling kate directly for $1 on `date` >> /tmp/spawn_editor.log
+kate $1 >>  /tmp/spawn_editor.log 2>&1

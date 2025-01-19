@@ -13,8 +13,8 @@ nmcli con down 'Wired connection 1' > /dev/null 2>&1
 # This is not idempotent- it's a oneshot when booting.
 #
 clause=
-if [[ -f /var/lib/orthanc/db-v6/config/network ]]; then
- clause=$(cat /var/lib/orthanc/db-v6/config/network)
+if [[ -f /code_dark/config/network ]]; then
+ clause=$(cat /code_dark/config/network)
  echo $clause | grep -q dhcp
  if [[ $? -eq 0 ]]; then
   clause=
@@ -33,11 +33,16 @@ nmcli con up 'Wired connection 1'
 # Change Dicom Port if there is a file containing a new port number in it.
 #
 port=
-if [[ -f /var/lib/orthanc/db-v6/config/dicomport ]]; then
- port=$(cat /var/lib/orthanc/db-v6/config/dicomport)
+if [[ -f /code_dark/config/dicomport ]]; then
+ port=$(cat /code_dark/config/dicomport)
 fi
 if [[ -n "$port" ]]; then
  echo changing Dicom port to $port
  sed -i -e "/DicomPort/c\\ \"DicomPort\" : ${port}," /etc/orthanc/orthanc.json
  systemctl restart orthanc
 fi
+
+#
+# Change database directory to code_dark
+#
+sed -i 's,/var/lib/orthanc/db-v6,/code_dark/database,' /etc/orthanc/orthanc.json
