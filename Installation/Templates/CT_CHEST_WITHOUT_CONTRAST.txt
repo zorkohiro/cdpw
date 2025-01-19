@@ -1,3 +1,6 @@
+MRN:
+SESSION:
+
 CT CHEST WITHOUT CONTRAST
 ** HISTORY **:
 Patient age year old, history

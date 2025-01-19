@@ -28,12 +28,13 @@
 #include <fstream>
 #include <dirent.h>
 #include <fcntl.h>
+#include <string.h>
 #include <syslog.h>
 
 #define ORTHANC_PLUGIN_NAME	"report"
-#define DATA_BASEDIR		"/code_dark"
-#define TEMPLATES_DIR		DATA_BASEDIR "/templates"
-#define REPORT_DIR		DATA_BASEDIR "/reports"
+#define DATA_BASEDIR           "/code_dark"
+#define TEMPLATES_DIR          DATA_BASEDIR "/templates"
+#define EDITOR                  "/usr/bin/spawn_editor"
 
 /*#sizeof (emsstatic OrthancPluginContext* context = NULL;*/
 static OrthancPluginContext* context = NULL;
@@ -93,19 +94,24 @@ static void fetch_templates(OrthancPluginRestOutput* output, const char* url, co
   }
 }
 
-static int spawn_editor(OrthancPluginContext* context, char *file, char *emsgbuf) {
+static int spawn_editor(OrthancPluginContext* context, char *tmplt, char *mrn, char *session, char *uuid, char *emsgbuf) {
   pid_t pid = fork();
   if (pid < 0) {
     sprintf(emsgbuf, "fork failed: %s", strerror(errno));
     return -1;
   } else if (pid == 0) {
-    for (int i = 0; i < 100; i++)
+    // close
+    for (int i = 0; i < 100; i++) {
       close(i);
+    }
     setsid();
-    open("/dev/null", O_RDONLY);
-    int fdo = open("/tmp/editor.log", O_RDWR|O_APPEND|O_CREAT, 0644);
-    int fds = dup(fdo);
-    int rslt = execl("/usr/bin/spawn_editor", "spawn_editor", file, (char *) NULL);
+    open("/dev/null", O_RDONLY); // open standard input
+    int fdo = open("/tmp/editor.log", O_RDWR|O_APPEND|O_CREAT, 0644); // standard output
+    int fds = dup(fdo); // standard error
+    const char *hdr = strrchr(EDITOR, '/');
+    if (hdr == NULL)
+      hdr = "spawn_editor";
+    int rslt = execl(EDITOR, hdr, tmplt, mrn, session, uuid, NULL);
     if (rslt < 0) {
       char buffer[1024];
       sprintf(buffer, "exec failed: %s\n", strerror(errno));
@@ -113,9 +119,10 @@ static int spawn_editor(OrthancPluginContext* context, char *file, char *emsgbuf
         buffer[strlen(buffer) - 1] = '\0';
         syslog(LOG_USER|LOG_WARNING, "%s", buffer);
       }
-      if (fds >= 0) // quiesce compiler
+      if (fds >= 0) { // quiesce compiler
         close(fds);
-      exit(0);
+      }
+      _exit(0);
     }
   }
   return 0;
@@ -135,7 +142,7 @@ static void create_report(OrthancPluginRestOutput* output, const char* url, cons
     const char *colon = ":";
     char *mrn = strtok_r(rqb, colon, &sptr);
     char *session = strtok_r(NULL, colon, &sptr);
-    char *txt_template = strtok_r(NULL, colon, &sptr);
+    char *txt_tmplt = strtok_r(NULL, colon, &sptr);
     char *uuid = strtok_r(NULL, colon, &sptr);
     bool failure = false;
     if (mrn == NULL) {
@@ -144,9 +151,9 @@ static void create_report(OrthancPluginRestOutput* output, const char* url, cons
     } else if (session == NULL) {
       failure = true;
       OrthancPluginLogWarning(context, "No discernible session passed");
-    } else if (txt_template == NULL) {
+    } else if (txt_tmplt == NULL) {
       failure = true;
-      OrthancPluginLogWarning(context, "No discernible template type passed");
+      OrthancPluginLogWarning(context, "No discernible template name passed");
     } else if (uuid == NULL) {
       failure = true;
       OrthancPluginLogWarning(context, "No discernible uuid passed");
@@ -155,102 +162,26 @@ static void create_report(OrthancPluginRestOutput* output, const char* url, cons
       OrthancPluginSendHttpStatusCode(context, output, 400);
       return;
     }
-    char wfile[256];
-    size_t snr = snprintf(wfile, sizeof (wfile), "%s/study_%s_%s.txt", REPORT_DIR, mrn, session);
-    char tfile[256];
-    size_t snt =  snprintf(tfile, sizeof (tfile), "%s/%s.txt", TEMPLATES_DIR, txt_template);
 
-    if (snr < 0 || snr >= sizeof (wfile) || snt < 0 || snt >= sizeof (tfile)) {
-      strcpy(buffer, "one of the filenames too long or unparseable");
-      OrthancPluginLogWarning(context, buffer);
-      OrthancPluginSetHttpHeader(context, output, "Content-Type", "text/plain");
-      OrthancPluginSendHttpStatus(context, output, 500, buffer, strlen(buffer));
-      return;
-    }
-    // Convert ' ' in txt_template to '_' which is how it is stored in reality
-    for (char *ptr = tfile; *ptr; ptr++) {
+    // Convert ' ' in txt_tmplt to '_' which is how it is stored in reality
+    char txtfile[128] = { 0 };
+    int i = 0;
+    for (char *ptr = txt_tmplt; *ptr; ptr++, i++) {
       if (*ptr == ' ')
-        *ptr = '_';
+        txtfile[i] = '_';
+      else
+        txtfile[i] = *ptr;
     }
+    // tack on a suffix
+    strcat(txtfile, ".txt");
 
-    int statusCode = 200;
-    if (access(wfile, F_OK) == 0) {
-      // Temporarily disable this block until we can distinguish "signed" reports
-      // We just re-edit the existing file
-      strcpy(buffer, "report file for this study already exists");
-      OrthancPluginLogWarning(context, buffer);
-#if 0
-      OrthancPluginSetHttpHeader(context, output, "Content-Type", "text/plain");
-      OrthancPluginSendHttpStatus(context, output, 500, buffer, strlen(buffer));
-#else
-      if (spawn_editor(context, wfile, buffer) < 0) {
-        OrthancPluginSetHttpHeader(context, output, "Content-Type", "text/plain");
-        OrthancPluginSendHttpStatus(context, output, 500, buffer, strlen(buffer));
-      } else {
-        OrthancPluginSetHttpHeader(context, output, "Content-Type", "text/plain");
-        OrthancPluginSendHttpStatus(context, output, statusCode, NULL, 0);
-      }
-#endif
-      return;
-    }
-
-    if (access(tfile, R_OK) != 0) {
-      snprintf(buffer, sizeof (buffer), "template file %s does not exist in %s", txt_template, TEMPLATES_DIR);
-      OrthancPluginLogWarning(context, buffer);
-      OrthancPluginSetHttpHeader(context, output, "Content-Type", "text/plain");
-      OrthancPluginSendHttpStatus(context, output, 500, buffer, strlen(buffer));
-      return;
-    }
-
-    failure = false;
-    char emsg[1024];
-    sprintf(emsg, "exception in copying from template");
-    try {
-      do {
-        std::ifstream source(tfile, std::ifstream::binary);
-        if (!source) {
-          sprintf(emsg, "failed to open %s", txt_template);
-          failure = true;
-          break;
-        }
-
-        std::ofstream dest(wfile, std::ofstream::binary);
-        if (!dest) {
-          sprintf(emsg, "failed to create study_%s_%s.txt", mrn, session);
-          failure = true;
-          break;
-        }
-
-        sprintf(emsg, "reading source file");
-        dest << source.rdbuf();
-
-        sprintf(emsg, "closing source file");
-        source.close();
-
-        sprintf(emsg, "closing destination file");
-        dest.close();
-
-      } while (false);
-    } catch (...) {
-      failure = true;
-    }
-
-    if (!failure) {
-      if (spawn_editor(context, wfile, buffer) < 0) {
-        OrthancPluginSetHttpHeader(context, output, "Content-Type", "text/plain");
-        OrthancPluginSendHttpStatus(context, output, 500, buffer, strlen(buffer));
-        failure = true;
-      }
-    }
-
-    if (failure) {
-      snprintf(buffer, sizeof (buffer), "%s", emsg);
+    if (spawn_editor(context, txtfile, mrn, session, uuid, buffer) < 0) {
       OrthancPluginLogWarning(context, buffer);
       OrthancPluginSetHttpHeader(context, output, "Content-Type", "text/plain");
       OrthancPluginSendHttpStatus(context, output, 500, buffer, strlen(buffer));
     } else {
       OrthancPluginSetHttpHeader(context, output, "Content-Type", "text/plain");
-      OrthancPluginSendHttpStatus(context, output, statusCode, NULL, 0);
+      OrthancPluginSendHttpStatus(context, output, 200, NULL, 0);
     }
   }
 }

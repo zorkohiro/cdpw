@@ -1,7 +1,7 @@
 MAJORV  ?= 0
 MINORV  ?= 9
 MICROV  ?= 7
-BUILDV  ?= -1
+BUILDV  ?= -3
 RELEASE := $(MAJORV).$(MINORV).$(MICROV)${BUILDV}
 
 BASE    := kp-report

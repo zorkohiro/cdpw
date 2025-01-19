@@ -1,3 +1,6 @@
+MRN:
+SESSION:
+
 CT ABDOMEN PELVIS WITH CONTRAST
 ** HISTORY **:
 Patient age year old, abdominal pain.

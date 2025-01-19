@@ -1,5 +1,34 @@
 #!/bin/bash
 export DISPLAY=:0
 export PATH=/usr/local/bin:/usr/bin:/usr/sbin
-echo calling kate directly for $1 on `date` >> /tmp/spawn_editor.log
-kate $1 >>  /tmp/spawn_editor.log 2>&1
+LOG=/tmp/spawn_editor.log
+CDB=/code_dark
+TPD=${CDB}/templates
+RPT=${CDB}/reports
+
+inp=${TPD}/$1
+mrn=$2
+ssn=$3
+uui=$4
+
+mkdir -p ${RPT} > /dev/null 2>&1
+fnm=${RPT}/study_${mrn}_${ssn}.txt
+
+if [[ ! -f ${fnm} ]]; then
+ if [[ ! -f ${inp} ]]; then
+  echo ${inp} does not exist >> $LOG
+  exit 1
+ fi
+ echo ${fnm} being created from $inp for uuid $uui >> $LOG
+ sed -e "/^MRN:/c\MRN:$mrn" -e "/^SESSION:/c\SESSION: $ssn" $inp > ${fnm} 2>> $LOG
+ if [[ $? -ne 0 ]]; then
+  echo unable to create $fnm from $inp
+  rm -f ${fnm}
+  exit 1
+ fi
+else
+ echo ${fnm} already exists >> $LOG
+fi
+
+echo calling kate directly for $fnm on `date` >> $LOG
+kate $fnm >>  /tmp/spawn_editor.log 2>&1
