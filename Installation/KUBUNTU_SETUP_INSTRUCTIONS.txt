@@ -61,41 +61,27 @@ Do this via right click on desktop to configure it.
 #
 # Fetch latest kp-report package
 #
-Fetch the latest kp-report package via wget https://feralsw.com/cdw/kp-report-latest.deb
 
 
-3. Fetch current stable chrome
+3. Attach and unlock a CODE_DARK labeled data storage device.
+
+4. Fetch current stable chrome and kp-report
+
+open a Kconsole window
 
 cd /tmp
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 sudo apt install ./google-chrome-stable_current_amd64.deb
 Start up chrome, cancel any wallet creation, don't sign in to any account.
 
-4. Attach and unlock a CODE_DARK labeled data storage device. And reboot.
-
-5. After booting up the installed system, do the following:
-
-Open a Kconsole window (look under Favorites under the selection lower left) and enter:
-
-  cd /tmp
-  mv ~/kp-report-latest.deb .
-  sudo apt install -y ./kp-report-latest.deb
+https://feralsw.com/cdw/kp-report-latest.deb
+sudo apt install -y ./kp-report-latest.deb
 
 This should install all of the main Orthanc binaries plus our changes and additions.
 
-#
-# Final reboot
-#
-reboot again
+Enter http://localhost:8042 in chrome and bookmark it
 
-Fire up chrome and enter 'http://localhost:8042' in the address bar.
-
-That should bring up the main Orthanc screen.
-
-After it does this, bookmark this page on the bookmarks toolbar for convenience of startup.
-
-
-6. Link to the desktop some helpers.
+5. Link to the desktop some helpers.
 
 Open the Applications menu (icon to the leftmost on the bottom bar) by left clicking on it.
 Enter SetSystemTime in the search bar at the top. It should bring up SetSystemTime Helper
