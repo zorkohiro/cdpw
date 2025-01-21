@@ -49,25 +49,16 @@ sed 'g/APT::Periodic::Update-Package-Lists/s/1/0/' /etc/apt/apt.conf.d/20auto-up
 sed 'g/APT::Periodic::Unattended-Upgrade/s/1/0/' /etc/apt/apt.conf.d/20auto-upgrades
 
 #
-# Disable automatic networking on boot
-#
-nmcli c modify 'Wired connection 1' connection.autoconnect no
-
-#
 # Set wallpaper to plain color gray-like
 #
 Do this via right click on desktop to configure it.
 
 #
-# Fetch latest kp-report package
+# Make sure we have a data drive
 #
+Attach and unlock a CODE_DARK labeled data storage device.
 
-
-3. Attach and unlock a CODE_DARK labeled data storage device.
-
-4. Fetch current stable chrome and kp-report
-
-open a Kconsole window
+3. Fetch current stable chrome and kp-report
 
 cd /tmp
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
@@ -79,11 +70,23 @@ sudo apt install -y ./kp-report-latest.deb
 
 This should install all of the main Orthanc binaries plus our changes and additions.
 
-Enter http://localhost:8042 in chrome and bookmark it
-
-5. Link to the desktop some helpers.
+4. Link to the desktop some helpers.
 
 Open the Applications menu (icon to the leftmost on the bottom bar) by left clicking on it.
 Enter SetSystemTime in the search bar at the top. It should bring up SetSystemTime Helper
 with a 'key' icon. Do a 'right click' over that brought up item and click the '+'
 to left of "Add to Desktop".
+
+5. Final step
+
+#
+# Disable automatic networking on boot
+#
+nmcli c modify 'Wired connection 1' connection.autoconnect no
+
+#
+# Point google browser to orthanc page
+#
+Enter http://localhost:8042 in chrome and bookmark it
+Leave the browser open so it shows up on reboot
+
