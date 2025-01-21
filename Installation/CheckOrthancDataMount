@@ -13,6 +13,11 @@ while :; do
    'Secure data storage device not seen- still locked?'
   stime=$SHRT_SLEEP
  else
+  nor=$(ps ax | grep -w Orthanc | grep -v grep | wc -l)
+  if [[ $nor -eq 0 ]]; then
+   echo "Restarting orthanc because it is not running"
+   sudo -n /usr/bin/restart_orthanc
+  fi
   echo Data device mounted- sleeping $LONG_SLEEP seconds
   stime=$LONG_SLEEP
  fi

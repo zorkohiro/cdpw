@@ -3,4 +3,6 @@ rm -f /usr/share/orthanc/plugins/libReport.so
 rm -f /usr/share/orthanc/plugins/libOrthancOHIF.so
 rm -f ~orthanc/.local/share/applications/SetSystemTime.desktop
 rm -rf /lib/systemd/system/orthanc.service.d
-sed -i -e '/CODE_DARK/d' /etc/fstab
+if [[ "$1" != "upgrade" ]]; then
+ sed -i -e '/CODE_DARK/d' /etc/fstab
+fi

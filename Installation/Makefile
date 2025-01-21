@@ -1,12 +1,12 @@
 MAJORV  ?= 0
 MINORV  ?= 9
 MICROV  ?= 7
-BUILDV  ?= -3
+BUILDV  ?= -5
 RELEASE := $(MAJORV).$(MINORV).$(MICROV)${BUILDV}
 
 BASE    := kp-report
 PKGNAME := $(BASE)-$(RELEASE)
-BINS    := spawn_editor SetSystemTime CheckOrthancDataMount CDW_Configure
+BINS    := spawn_editor SetSystemTime CheckOrthancDataMount CDW_Configure restart_orthanc
 
 all:    dist
 

@@ -26,9 +26,10 @@ You will have to enter orthanc's password for authentication.
 #
 # Disable systray notifications
 #
-right click over down arrow on bottom bar to the right and configure
+Right click over down arrow on bottom bar to the right and configure
 notifications for system tray to almost everything hidden or disabled
-Leave Networks and Printers enabled.
+
+Leave Networks, Printers and Alerts enabled.
 
 #
 # Clean up blank/black screen on reboot issue- make it verbose
@@ -64,6 +65,7 @@ cd /tmp
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 sudo apt install ./google-chrome-stable_current_amd64.deb
 Start up chrome, cancel any wallet creation, don't sign in to any account.
+Find the extension that opens new links as windows and add it
 
 https://feralsw.com/cdw/kp-report-latest.deb
 sudo apt install -y ./kp-report-latest.deb
@@ -89,4 +91,3 @@ nmcli c modify 'Wired connection 1' connection.autoconnect no
 #
 Enter http://localhost:8042 in chrome and bookmark it
 Leave the browser open so it shows up on reboot
-

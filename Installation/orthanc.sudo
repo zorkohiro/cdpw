@@ -1,1 +1,1 @@
-orthanc ALL=(root) NOPASSWD: /usr/bin/date
+orthanc ALL=(root) NOPASSWD: /usr/bin/date, /usr/bin/restart_orthanc
