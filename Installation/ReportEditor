@@ -1,0 +1,147 @@
+#!/usr/bin/python3
+
+import subprocess
+import tkinter as tk
+
+mrn = "12345678"
+session = "AASASDASDASD10101254141"
+filename = "report.txt"
+readonly = False
+rowvar = 0
+radiologist = "Dr Roberts"
+
+#
+# Constant strings shared between menu and text output
+#
+history = "** HISTORY **"
+technique = "** TECHNIQUE **"
+findings = "** FINDINGS **"
+impression = "** IMPRESSION **"
+
+patient_history = "Patient History"
+age = "Patient Age"
+
+views = "Views"
+
+#
+# Root window creation
+#
+root=tk.Tk()
+root.title("XRAY Chest Study" + " MRN: " + mrn + " SESSION: " + session)
+root.geometry('1024x768')
+
+hisvar = tk.StringVar()
+hisvar.set(history)
+hislab = tk.Label(root, textvariable=hisvar, relief=tk.RAISED)
+hislab.grid(sticky=tk.W, row=rowvar)
+rowvar = rowvar + 1
+
+age_label_text = tk.StringVar()
+age_label_text.set("Patient Age")
+age_label = tk.Label(root, textvariable=age_label_text, anchor=tk.W, width=15, justify="left")
+age_label.grid(sticky=tk.W, row=rowvar, column=0)
+
+age_text = tk.StringVar()
+age_text.set("42Y")
+age_entry = tk.Entry(root, textvariable=age_text, width=4, justify="right")
+age_entry.grid(sticky=tk.W, row=rowvar, column=1)
+rowvar = rowvar + 1
+
+history_label_text = tk.StringVar()
+history_label_text.set(patient_history)
+history_label = tk.Label(root, textvariable=history_label_text, anchor=tk.W, width=20, justify="left")
+history_label.grid(sticky=tk.N+tk.W, row=rowvar, column=0)
+
+history_box = tk.Text(root, height=5, width=80)
+history_box.insert(tk.END, patient_history + ".....")
+history_box.grid(sticky=tk.W, row=rowvar, column=1, pady=(0,10))
+rowvar = rowvar + 5
+
+tekvar = tk.StringVar()
+tekvar.set(technique)
+teklab = tk.Label(root, textvariable=tekvar, relief=tk.RAISED)
+teklab.grid(sticky=tk.W, row=rowvar)
+rowvar = rowvar + 1
+
+views_label_text = tk.StringVar()
+views_label_text.set("Views")
+views_label = tk.Label(root, textvariable=views_label_text, anchor=tk.W, width=20, justify="left")
+views_label.grid(sticky=tk.N+tk.W, row=rowvar, column=0)
+
+views_box = tk.Text(root, height=5, width=80)
+views_box.grid(sticky=tk.W, row=rowvar, column=1)
+views_box.insert(tk.END, "view(s) of the chest acquired")
+rowvar = rowvar + 5
+
+tek_comparison_label_text = tk.StringVar()
+tek_comparison_label_text.set("Comparison")
+tek_comparison = tk.Label(root, textvariable=tek_comparison_label_text, anchor=tk.W, width=15, justify="left")
+tek_comparison.grid(sticky=tk.W, row=rowvar, column=0)
+
+tek_comparison_text = tk.StringVar()
+tek_comparison_text.set("None Available")
+tek_comparison_entry = tk.Entry(root, textvariable=tek_comparison_text, width=20, justify="left")
+tek_comparison_entry.grid(sticky=tk.W, row=rowvar, column=1, pady=(0,10))
+rowvar = rowvar + 1
+
+findvar = tk.StringVar()
+findvar.set(findings)
+findlab = tk.Label(root, textvariable=findvar, relief=tk.RAISED)
+findlab.grid(sticky=tk.N+tk.W, row=rowvar)
+
+findings_box = tk.Text(root, height=5, width=80)
+findings_box.insert(tk.END, "No Focal Consolidation")
+findings_box.grid(sticky=tk.W, row=rowvar, column=1, pady=(0,10))
+rowvar = rowvar + 5
+
+impressvar = tk.StringVar()
+impressvar.set(impression)
+impresslab = tk.Label(root, textvariable=impressvar, relief=tk.RAISED)
+impresslab.grid(sticky=tk.N+tk.W, row=rowvar)
+
+impress_box = tk.Text(root, height=5, width=80)
+impress_box.insert(tk.END, "Normal Chest")
+impress_box.grid(sticky=tk.W, row=rowvar, column=1, pady=(0,10))
+rowvar = rowvar + 5
+
+# defining a function that will save the report
+
+# defining a function that will print the report
+def print_report():
+    """Save Report"""
+    try:
+        result = subprocess.run(["enscript", filename], capture_output=True, text=True)
+        if result.returncode != 0:
+            messagebox.showerror("Subprocess Error", result.stderr)
+    except subprocess.CalledProcessError as e:
+        messagebox.showerror("Process Error", e.output)
+
+# defining a function that will sign the report
+def sign_report():
+    try:
+        """Need to get signing MD's name and append it at bottom of report"""
+        """Save Report"""
+        result = subprocess.run(["chmod", "-w", filename], capture_output=True, text=True)
+        if result.returncode != 0:
+            messagebox.showerror("Subprocess Error", result.stderr)
+    except subprocess.CalledProcessError as e:
+        messagebox.showerror("Process Error", e.output)
+
+# define a function that will exit
+def exit_edit():
+    print("Here is what is in the Patient History box: " + history_box.get("1.0", "end-1c"))
+    print("Here is what is in the age entry: " + age_text.get())
+    """Save Report"""
+    exit()
+
+print_btn = tk.Button(root, text = 'Print Report', command = print_report)
+print_btn.grid(sticky=tk.W, row=rowvar, column=0)
+
+sign_btn = tk.Button(root, text = 'Sign Report', command = sign_report)
+sign_btn.grid(sticky=tk.W, row=rowvar, column=1)
+
+exit_btn = tk.Button(root, text = 'Exit', command = exit_edit)
+exit_btn.grid(sticky=tk.E, row=rowvar, column=2)
+rowvar = rowvar + 1
+
+root.mainloop()
