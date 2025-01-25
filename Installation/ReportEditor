@@ -1,27 +1,118 @@
 #!/usr/bin/python3
+"""
+Program to edit from a JSON template to add more data
+ultimately sign and print a text based report from this
+date
+"""
 
 import subprocess
 import tkinter as tk
+import json
+import textwrap
 
 mrn = "12345678"
 session = "AASASDASDASD10101254141"
-filename = "report.txt"
-readonly = False
+reportfile = "/tmp/report.txt"
+datafile = "/tmp/report.json"
 rowvar = 0
 radiologist = "Dr Roberts"
 
 #
-# Constant strings shared between menu and text output
+# Constants
 #
-history = "** HISTORY **"
-technique = "** TECHNIQUE **"
-findings = "** FINDINGS **"
-impression = "** IMPRESSION **"
+HI = "history"
+PA = "patient_age"
+PH = "patient_history"
 
-patient_history = "Patient History"
-age = "Patient Age"
+TH = "technique"
+VI = "views"
 
-views = "Views"
+FI = "findings"
+
+IM = "impression"
+CM = "comparison"
+
+HISTORY = "** HISTORY **"
+PATIENT_AGE = "Patient Age"
+PATIENT_HISTORY = "Patient History"
+
+TECHNIQUE = "** TECHNIQUE **"
+VIEWS = "Views"
+
+FINDINGS = "** FINDINGS **"
+COMPARISON = "Comparison"
+
+IMPRESSION = "** IMPRESSION **"
+
+"""
+#
+# Create default report dictionary- used only once to create the first template
+#
+
+#
+# Dictionary Structure
+#
+# history {
+#  patient_age : string,
+#  patient_history : string
+# }
+#
+# technique {
+#  views : string,
+#  comparison : string
+# }
+#
+#  
+# report {
+#  version : integer,
+#  mrn : string,
+#  session : string,
+#  signed : boolean,
+#  signer : string, 
+#  history : dict,
+#  technique : dict,
+#  findings : string,
+#  impression : string
+# }
+
+REPORT_VERSION = 0
+
+report = {
+    "report_version" : REPORT_VERSION,
+    "mrn" : "",
+    "session" : "",
+    "signed" : False,
+    "signer" : "",
+    "history" : {
+        "patient_age" : "42Y",
+        "patient_history" : PATIENT_HISTORY + ".....",
+    },
+    "technique" : {
+        "views" : "view(s) of chest acquired",
+        "comparison" : "None Available",
+    },
+    "findings" : "No Focal Consolidation",
+    "impression" : "Normal Chest",
+}
+TEMPLATE_OUT = "/tmp/xray_tmplt.json"
+#
+# Write out initial template file per command line argument with the defaults that we have set.
+#
+with open(TEMPLATE_OUT, "w") as outfile:
+    json.dump(report, outfile)
+"""
+
+#
+# Process command line arguments and load initial json data
+#
+jsonfile = "/tmp/xray.json"
+
+#
+# Read in datafile
+#
+
+with open(jsonfile, "r") as infile:
+    json_data = json.load(infile)
 
 #
 # Root window creation
@@ -30,87 +121,148 @@ root=tk.Tk()
 root.title("XRAY Chest Study" + " MRN: " + mrn + " SESSION: " + session)
 root.geometry('1024x768')
 
+#
+# Display sections with labels and text boxes,
+# using data read in as existing values.
+#
+
+# History Section
 hisvar = tk.StringVar()
-hisvar.set(history)
+hisvar.set(HISTORY)
 hislab = tk.Label(root, textvariable=hisvar, relief=tk.RAISED)
 hislab.grid(sticky=tk.W, row=rowvar)
 rowvar = rowvar + 1
 
 age_label_text = tk.StringVar()
-age_label_text.set("Patient Age")
+age_label_text.set(PATIENT_AGE)
 age_label = tk.Label(root, textvariable=age_label_text, anchor=tk.W, width=15, justify="left")
 age_label.grid(sticky=tk.W, row=rowvar, column=0)
 
 age_text = tk.StringVar()
-age_text.set("42Y")
+age_text.set(json_data[HI][PA])
 age_entry = tk.Entry(root, textvariable=age_text, width=4, justify="right")
 age_entry.grid(sticky=tk.W, row=rowvar, column=1)
 rowvar = rowvar + 1
 
 history_label_text = tk.StringVar()
-history_label_text.set(patient_history)
+history_label_text.set(PATIENT_HISTORY)
 history_label = tk.Label(root, textvariable=history_label_text, anchor=tk.W, width=20, justify="left")
 history_label.grid(sticky=tk.N+tk.W, row=rowvar, column=0)
 
 history_box = tk.Text(root, height=5, width=80)
-history_box.insert(tk.END, patient_history + ".....")
+history_box.insert(tk.END, json_data[HI][PH])
 history_box.grid(sticky=tk.W, row=rowvar, column=1, pady=(0,10))
 rowvar = rowvar + 5
 
+# Technique Section
 tekvar = tk.StringVar()
-tekvar.set(technique)
+tekvar.set(TECHNIQUE)
 teklab = tk.Label(root, textvariable=tekvar, relief=tk.RAISED)
 teklab.grid(sticky=tk.W, row=rowvar)
 rowvar = rowvar + 1
 
 views_label_text = tk.StringVar()
-views_label_text.set("Views")
+views_label_text.set(VIEWS)
 views_label = tk.Label(root, textvariable=views_label_text, anchor=tk.W, width=20, justify="left")
 views_label.grid(sticky=tk.N+tk.W, row=rowvar, column=0)
 
 views_box = tk.Text(root, height=5, width=80)
 views_box.grid(sticky=tk.W, row=rowvar, column=1)
-views_box.insert(tk.END, "view(s) of the chest acquired")
+views_box.insert(tk.END, json_data[TH][VI])
 rowvar = rowvar + 5
 
 tek_comparison_label_text = tk.StringVar()
-tek_comparison_label_text.set("Comparison")
+tek_comparison_label_text.set(COMPARISON)
 tek_comparison = tk.Label(root, textvariable=tek_comparison_label_text, anchor=tk.W, width=15, justify="left")
 tek_comparison.grid(sticky=tk.W, row=rowvar, column=0)
 
 tek_comparison_text = tk.StringVar()
-tek_comparison_text.set("None Available")
+tek_comparison_text.set(json_data[TH][CM])
+
 tek_comparison_entry = tk.Entry(root, textvariable=tek_comparison_text, width=20, justify="left")
 tek_comparison_entry.grid(sticky=tk.W, row=rowvar, column=1, pady=(0,10))
 rowvar = rowvar + 1
 
+# Findings Section
 findvar = tk.StringVar()
-findvar.set(findings)
+findvar.set(FINDINGS)
 findlab = tk.Label(root, textvariable=findvar, relief=tk.RAISED)
 findlab.grid(sticky=tk.N+tk.W, row=rowvar)
 
 findings_box = tk.Text(root, height=5, width=80)
-findings_box.insert(tk.END, "No Focal Consolidation")
+findings_box.insert(tk.END, json_data[FI])
 findings_box.grid(sticky=tk.W, row=rowvar, column=1, pady=(0,10))
 rowvar = rowvar + 5
 
+# Impressions Section
 impressvar = tk.StringVar()
-impressvar.set(impression)
+impressvar.set(IMPRESSION)
 impresslab = tk.Label(root, textvariable=impressvar, relief=tk.RAISED)
 impresslab.grid(sticky=tk.N+tk.W, row=rowvar)
 
 impress_box = tk.Text(root, height=5, width=80)
-impress_box.insert(tk.END, "Normal Chest")
+impress_box.insert(tk.END, json_data[IM])
 impress_box.grid(sticky=tk.W, row=rowvar, column=1, pady=(0,10))
 rowvar = rowvar + 5
 
-# defining a function that will save the report
+# defining a function that will save data to a datafile
+def save_data(jd):
+    """ Update from tkinter box areas """
+    json_data[HI][PA] = age_text.get()
+    json_data[HI][PH] = history_box.get("1.0", "end-1c")
+    json_data[TH][VI] = views_box.get("1.0", "end-1c")
+    json_data[TH][CM] = tek_comparison_text.get()
+    json_data[FI] = findings_box.get("1.0", "end-1c")
+    json_data[IM] = impress_box.get("1.0", "end-1c")
+    with open(jsonfile, "w") as ofile:
+        json.dump(jd, ofile)
 
+# defining a function that will save existing data to a printable report
+def create_report(rptfile):
+    save_data(json_data)
+    with open(rptfile, "w") as ofile:
+        wrapper = textwrap.TextWrapper(width=50)
+        print("MRN: " + mrn, file=ofile)
+        print("Session: " + session, file=ofile)
+        print("", file=ofile)
+        print("", file=ofile)
+        print(HISTORY, file=ofile)
+        print("", file=ofile)
+        print(PATIENT_AGE + ":  " + json_data[HI][PA])
+        print(PATIENT_HISTORY + ":")
+        word_list = wrapper.wrap(text=json_data[HI][PH]) 
+        for element in word_list: 
+            print(element) 
+        print("", file=ofile)
+        print("", file=ofile)
+        print(TECHNIQUE)
+        print(VIEWS)
+        word_list = wrapper.wrap(text=json_data[TH][VI]) 
+        for element in word_list: 
+            print(element) 
+        print("", file=ofile)
+        print(COMPARISON + ": " + jsoN_data[TH][CM])
+        print("", file=ofile)
+        print(FINDINGS)
+        word_list = wrapper.wrap(text=json_data[FI]) 
+        for element in word_list: 
+            print(element) 
+        print("", file=ofile)
+        print("", file=ofile)
+        print(IMPRESSION)
+        word_list = wrapper.wrap(text=json_data[IM]) 
+        for element in word_list: 
+            print(element) 
+        print("", file=ofile)
+        print("", file=ofile)
+        """ PRINT SIGNING RADIOLIGIST NAME """
+        
 # defining a function that will print the report
-def print_report():
-    """Save Report"""
+def print_report(jd):
+    print("print_report called")
+    save_data(json_data)
     try:
-        result = subprocess.run(["enscript", filename], capture_output=True, text=True)
+        result = subprocess.run(["enscript", reportfile ], capture_output=True, text=True)
         if result.returncode != 0:
             messagebox.showerror("Subprocess Error", result.stderr)
     except subprocess.CalledProcessError as e:
@@ -118,30 +270,40 @@ def print_report():
 
 # defining a function that will sign the report
 def sign_report():
+    json_data["signed"] = True
+    json_data["signer"] = radiologist
+    save_data(json_data)
     try:
         """Need to get signing MD's name and append it at bottom of report"""
         """Save Report"""
-        result = subprocess.run(["chmod", "-w", filename], capture_output=True, text=True)
+        result = subprocess.run(["chmod", "-w", datafile ], capture_output=True, text=True)
         if result.returncode != 0:
             messagebox.showerror("Subprocess Error", result.stderr)
+            exit()
     except subprocess.CalledProcessError as e:
         messagebox.showerror("Process Error", e.output)
+        exit()
+    rpt.signed = True
 
 # define a function that will exit
 def exit_edit():
-    print("Here is what is in the Patient History box: " + history_box.get("1.0", "end-1c"))
-    print("Here is what is in the age entry: " + age_text.get())
-    """Save Report"""
+    save_data(json_data)
     exit()
 
-print_btn = tk.Button(root, text = 'Print Report', command = print_report)
-print_btn.grid(sticky=tk.W, row=rowvar, column=0)
-
+#
+# Add action buttons to the end
+#
 sign_btn = tk.Button(root, text = 'Sign Report', command = sign_report)
-sign_btn.grid(sticky=tk.W, row=rowvar, column=1)
+sign_btn.grid(sticky=tk.W)
+
+print_btn = tk.Button(root, text = 'Print Report', command = print_report)
+print_btn.grid(sticky=tk.W)
 
 exit_btn = tk.Button(root, text = 'Exit', command = exit_edit)
-exit_btn.grid(sticky=tk.E, row=rowvar, column=2)
-rowvar = rowvar + 1
+exit_btn.grid(sticky=tk.W)
 
+
+#
+# Enter edit tkinter loop
+#
 root.mainloop()
