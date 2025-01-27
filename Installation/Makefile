@@ -1,7 +1,7 @@
 MAJORV  ?= 0
 MINORV  ?= 9
-MICROV  ?= 7
-BUILDV  ?= -5
+MICROV  ?= 8
+BUILDV  ?= -1
 RELEASE := $(MAJORV).$(MINORV).$(MICROV)${BUILDV}
 
 BASE    := kp-report
@@ -24,9 +24,8 @@ dist:
 	install -D -m 555 SetSystemTime.desktop ${PKGNAME}/usr/lib/kp-report/SetSystemTime.desktop
 	mkdir -p -m 755 $(PKGNAME)/DEBIAN
 	sed -e "s,%VERSION%,$(RELEASE)," control > $(PKGNAME)/DEBIAN/control
-	cp preinst postinst postrm ${PKGNAME}/DEBIAN
+	cp copyright preinst postinst postrm ${PKGNAME}/DEBIAN
 	dpkg-deb --build $(PKGNAME)
 
 clean:
 	@rm -rf $(BASE)-*
-

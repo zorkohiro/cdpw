@@ -1,36 +1,61 @@
 #!/usr/bin/python3
 """
-Program to edit from a JSON template to add more data
-ultimately sign and print a text based report from this
-date
+Program to edit from JSON file input to add more or
+edit existing data and to ultimately sign and print
+a text based report from this date.
 """
 
+#################################################################################################
+#
+#  Copyright (C) 2024 Kaiser Permanente
+#
+#  This program is free software: you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License as
+#  published by the Free Software Foundation, either version 3 of the
+#  License, or (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful, but
+#  WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+#  General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+
+
+#################################################################################################
+#
+# Imports
+#
 import subprocess
 import tkinter as tk
 import json
 import textwrap
+import argparse
 
-mrn = "12345678"
-session = "AASASDASDASD10101254141"
-reportfile = "/tmp/report.txt"
-datafile = "/tmp/report.json"
-rowvar = 0
+#################################################################################################
+#
+# Variables
+#
 radiologist = "Dr Roberts"
+rowvar = 0
 
+#################################################################################################
 #
-# Constants
+# Constants and shorthands
 #
+REPORT_DIR = "/code_dark/reports"
+
+
 HI = "history"
 PA = "patient_age"
 PH = "patient_history"
-
 TH = "technique"
 VI = "views"
-
 FI = "findings"
-
-IM = "impression"
 CM = "comparison"
+IM = "impression"
 
 HISTORY = "** HISTORY **"
 PATIENT_AGE = "Patient Age"
@@ -45,6 +70,7 @@ COMPARISON = "Comparison"
 IMPRESSION = "** IMPRESSION **"
 
 """
+#################################################################################################
 #
 # Create default report dictionary- used only once to create the first template
 #
@@ -62,13 +88,13 @@ IMPRESSION = "** IMPRESSION **"
 #  comparison : string
 # }
 #
-#  
+#
 # report {
 #  version : integer,
 #  mrn : string,
 #  session : string,
 #  signed : boolean,
-#  signer : string, 
+#  signer : string,
 #  history : dict,
 #  technique : dict,
 #  findings : string,
@@ -105,14 +131,33 @@ with open(TEMPLATE_OUT, "w") as outfile:
 #
 # Process command line arguments and load initial json data
 #
-jsonfile = "/tmp/xray.json"
+parser = argparse.ArgumentParser(description="Report on Study Entry Package for CHEST XRAY")
+parser.add_argument("-m", "--mrn", help="MRN for Study", required=True)
+parser.add_argument("-s", "--session", help="Session for Study", required=True)
+parser.add_argument("-R", "--report_dir", help="Where we fetch/save reports", default="/code_dark/reports")
+
+args=vars(parser.parse_args())
+mrn = args['mrn']
+session = args['session']
+report_dir = REPORT_DIR
+if args['report_dir']:
+    report_dir = args['report_dir']
+
+reportnm = "study_" + mrn + "_" + session
+jsonfile = report_dir + "/" + reportnm + ".json"
+reportfl = report_dir + "/" + reportnm + ".txt"
+
 
 #
-# Read in datafile
+# Read in JSON input
 #
-
 with open(jsonfile, "r") as infile:
     json_data = json.load(infile)
+
+#################################################################################################
+#
+# Window and Frame Management Code
+#
 
 #
 # Root window creation
@@ -134,7 +179,7 @@ hislab.grid(sticky=tk.W, row=rowvar)
 rowvar = rowvar + 1
 
 age_label_text = tk.StringVar()
-age_label_text.set(PATIENT_AGE)
+age_label_text.set(PATIENT_AGE + " (years)")
 age_label = tk.Label(root, textvariable=age_label_text, anchor=tk.W, width=15, justify="left")
 age_label.grid(sticky=tk.W, row=rowvar, column=0)
 
@@ -142,6 +187,7 @@ age_text = tk.StringVar()
 age_text.set(json_data[HI][PA])
 age_entry = tk.Entry(root, textvariable=age_text, width=4, justify="right")
 age_entry.grid(sticky=tk.W, row=rowvar, column=1)
+
 rowvar = rowvar + 1
 
 history_label_text = tk.StringVar()
@@ -205,7 +251,15 @@ impress_box.insert(tk.END, json_data[IM])
 impress_box.grid(sticky=tk.W, row=rowvar, column=1, pady=(0,10))
 rowvar = rowvar + 5
 
-# defining a function that will save data to a datafile
+#################################################################################################
+#
+# Data interactions with tkinter frame/boxes plus action functions
+#
+
+#
+# Define a function that will save data to a datafile.
+# As a side effect, it updates existing data from labels and text boxes
+#
 def save_data(jd):
     """ Update from tkinter box areas """
     json_data[HI][PA] = age_text.get()
@@ -217,66 +271,62 @@ def save_data(jd):
     with open(jsonfile, "w") as ofile:
         json.dump(jd, ofile)
 
-# defining a function that will save existing data to a printable report
-def create_report(rptfile):
+# Define a function that will save existing data to a printable report text file
+def create_report(rpt):
     save_data(json_data)
-    with open(rptfile, "w") as ofile:
-        wrapper = textwrap.TextWrapper(width=50)
+    with open(rpt, "w") as ofile:
+        wrapper = textwrap.TextWrapper(width=60, replace_whitespace=False)
+        print("XRAY Chest Study", file=ofile)
+        print("", file=ofile)
         print("MRN: " + mrn, file=ofile)
         print("Session: " + session, file=ofile)
         print("", file=ofile)
         print("", file=ofile)
         print(HISTORY, file=ofile)
         print("", file=ofile)
-        print(PATIENT_AGE + ":  " + json_data[HI][PA])
-        print(PATIENT_HISTORY + ":")
-        word_list = wrapper.wrap(text=json_data[HI][PH]) 
-        for element in word_list: 
-            print(element) 
+        print(PATIENT_AGE + " (years):  " + json_data[HI][PA], file=ofile)
+        print(PATIENT_HISTORY + ":", file=ofile)
+        for line in json_data[HI][PH].split('\n'):
+            print(wrapper.fill(text=line), file=ofile)
         print("", file=ofile)
         print("", file=ofile)
-        print(TECHNIQUE)
-        print(VIEWS)
-        word_list = wrapper.wrap(text=json_data[TH][VI]) 
-        for element in word_list: 
-            print(element) 
+        print(TECHNIQUE, file=ofile)
+        print(VIEWS + ":", file=ofile)
+        for line in json_data[TH][VI].split('\n'):
+            print(wrapper.fill(text=line), file=ofile)
         print("", file=ofile)
-        print(COMPARISON + ": " + jsoN_data[TH][CM])
+        print(COMPARISON + ": " + json_data[TH][CM], file=ofile)
         print("", file=ofile)
-        print(FINDINGS)
-        word_list = wrapper.wrap(text=json_data[FI]) 
-        for element in word_list: 
-            print(element) 
+        print(FINDINGS, file=ofile)
+        for line in json_data[FI].split('\n'):
+            print(wrapper.fill(text=line), file=ofile)
         print("", file=ofile)
         print("", file=ofile)
-        print(IMPRESSION)
-        word_list = wrapper.wrap(text=json_data[IM]) 
-        for element in word_list: 
-            print(element) 
+        print(IMPRESSION, file=ofile)
+        for line in json_data[IM].split('\n'):
+            print(wrapper.fill(text=line), file=ofile)
         print("", file=ofile)
         print("", file=ofile)
         """ PRINT SIGNING RADIOLIGIST NAME """
-        
-# defining a function that will print the report
-def print_report(jd):
-    print("print_report called")
+
+# Define a function that will print the report after saving text output to a file
+def print_report():
     save_data(json_data)
+    create_report(reportfl)
     try:
-        result = subprocess.run(["enscript", reportfile ], capture_output=True, text=True)
+        result = subprocess.run(["enscript", "-B", reportfl ], capture_output=True, text=True)
         if result.returncode != 0:
             messagebox.showerror("Subprocess Error", result.stderr)
     except subprocess.CalledProcessError as e:
         messagebox.showerror("Process Error", e.output)
 
-# defining a function that will sign the report
+# Define a function that will sign the report
 def sign_report():
     json_data["signed"] = True
     json_data["signer"] = radiologist
     save_data(json_data)
     try:
-        """Need to get signing MD's name and append it at bottom of report"""
-        """Save Report"""
-        result = subprocess.run(["chmod", "-w", datafile ], capture_output=True, text=True)
+        result = subprocess.run(["chmod", "-w", jsonfile ], capture_output=True, text=True)
         if result.returncode != 0:
             messagebox.showerror("Subprocess Error", result.stderr)
             exit()
@@ -285,9 +335,10 @@ def sign_report():
         exit()
     rpt.signed = True
 
-# define a function that will exit
+# define a function that will exit, saving data and creating on-disk report as it does so.
 def exit_edit():
     save_data(json_data)
+    create_report(reportfl)
     exit()
 
 #
