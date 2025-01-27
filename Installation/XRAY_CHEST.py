@@ -147,9 +147,8 @@ reportnm = "study_" + mrn + "_" + session
 jsonfile = report_dir + "/" + reportnm + ".json"
 reportfl = report_dir + "/" + reportnm + ".txt"
 
-
 #
-# Read in JSON input
+# Read in JSON saved data
 #
 with open(jsonfile, "r") as infile:
     json_data = json.load(infile)
@@ -171,85 +170,60 @@ root.geometry('1024x768')
 # using data read in as existing values.
 #
 
+#
+# Shorthand functions
+#
+def add_fixed_label(str, rv):
+    tvar = tk.StringVar()
+    tvar.set(str)
+    tlab = tk.Label(root, textvariable=tvar, relief=tk.RAISED)
+    tlab.grid(sticky=tk.N+tk.W, row=rv, column=0)
+    return rv + 1
+
+def add_label(str, slen, rowval):
+    tvar = tk.StringVar()
+    tvar.set(str)
+    tlab = tk.Label(root, textvariable=tvar, anchor=tk.W, width=slen, justify="left")
+    tlab.grid(sticky=tk.N+tk.W, row=rowval, column=0)
+
+def add_entry(ival, w, j, rv):
+    tt_text = tk.StringVar()
+    tt_text.set(ival)
+    tt_entry = tk.Entry(root, textvariable=tt_text, width=w, justify=j)
+    tt_entry.grid(sticky=tk.W, row=rv, column=1)
+    return tt_text, rv + 1
+
+def add_box(insert, rownum):
+    box = tk.Text(root, height=5, width=80)
+    box.insert(tk.END, insert)
+    box.grid(sticky=tk.W, row=rownum, column=1, pady=(0,10))
+    return box, rownum+5
+
 # History Section
-hisvar = tk.StringVar()
-hisvar.set(HISTORY)
-hislab = tk.Label(root, textvariable=hisvar, relief=tk.RAISED)
-hislab.grid(sticky=tk.W, row=rowvar)
-rowvar = rowvar + 1
+rowvar = add_fixed_label(HISTORY, rowvar)
 
-age_label_text = tk.StringVar()
-age_label_text.set(PATIENT_AGE + " (years)")
-age_label = tk.Label(root, textvariable=age_label_text, anchor=tk.W, width=15, justify="left")
-age_label.grid(sticky=tk.W, row=rowvar, column=0)
+add_label(PATIENT_AGE + " (years)", 15, rowvar)
+age_entry, rowvar = add_entry(json_data[HI][PA], 4, "right", rowvar)
 
-age_text = tk.StringVar()
-age_text.set(json_data[HI][PA])
-age_entry = tk.Entry(root, textvariable=age_text, width=4, justify="right")
-age_entry.grid(sticky=tk.W, row=rowvar, column=1)
-
-rowvar = rowvar + 1
-
-history_label_text = tk.StringVar()
-history_label_text.set(PATIENT_HISTORY)
-history_label = tk.Label(root, textvariable=history_label_text, anchor=tk.W, width=20, justify="left")
-history_label.grid(sticky=tk.N+tk.W, row=rowvar, column=0)
-
-history_box = tk.Text(root, height=5, width=80)
-history_box.insert(tk.END, json_data[HI][PH])
-history_box.grid(sticky=tk.W, row=rowvar, column=1, pady=(0,10))
-rowvar = rowvar + 5
+add_label(PATIENT_HISTORY, 20, rowvar)
+history_box, rowvar = add_box(json_data[HI][PH], rowvar)
 
 # Technique Section
-tekvar = tk.StringVar()
-tekvar.set(TECHNIQUE)
-teklab = tk.Label(root, textvariable=tekvar, relief=tk.RAISED)
-teklab.grid(sticky=tk.W, row=rowvar)
-rowvar = rowvar + 1
+rowvar = add_fixed_label(TECHNIQUE, rowvar)
 
-views_label_text = tk.StringVar()
-views_label_text.set(VIEWS)
-views_label = tk.Label(root, textvariable=views_label_text, anchor=tk.W, width=20, justify="left")
-views_label.grid(sticky=tk.N+tk.W, row=rowvar, column=0)
+add_label(VIEWS, 20, rowvar)
+views_box, rowvar = add_box(json_data[TH][VI], rowvar)
 
-views_box = tk.Text(root, height=5, width=80)
-views_box.grid(sticky=tk.W, row=rowvar, column=1)
-views_box.insert(tk.END, json_data[TH][VI])
-rowvar = rowvar + 5
-
-tek_comparison_label_text = tk.StringVar()
-tek_comparison_label_text.set(COMPARISON)
-tek_comparison = tk.Label(root, textvariable=tek_comparison_label_text, anchor=tk.W, width=15, justify="left")
-tek_comparison.grid(sticky=tk.W, row=rowvar, column=0)
-
-tek_comparison_text = tk.StringVar()
-tek_comparison_text.set(json_data[TH][CM])
-
-tek_comparison_entry = tk.Entry(root, textvariable=tek_comparison_text, width=20, justify="left")
-tek_comparison_entry.grid(sticky=tk.W, row=rowvar, column=1, pady=(0,10))
-rowvar = rowvar + 1
+add_label(COMPARISON, 15, rowvar)
+comparison_entry, rowvar = add_entry(json_data[TH][CM], 20, "left", rowvar)
 
 # Findings Section
-findvar = tk.StringVar()
-findvar.set(FINDINGS)
-findlab = tk.Label(root, textvariable=findvar, relief=tk.RAISED)
-findlab.grid(sticky=tk.N+tk.W, row=rowvar)
-
-findings_box = tk.Text(root, height=5, width=80)
-findings_box.insert(tk.END, json_data[FI])
-findings_box.grid(sticky=tk.W, row=rowvar, column=1, pady=(0,10))
-rowvar = rowvar + 5
+add_fixed_label(FINDINGS, rowvar)
+findings_box, rowvar = add_box(json_data[FI], rowvar)
 
 # Impressions Section
-impressvar = tk.StringVar()
-impressvar.set(IMPRESSION)
-impresslab = tk.Label(root, textvariable=impressvar, relief=tk.RAISED)
-impresslab.grid(sticky=tk.N+tk.W, row=rowvar)
-
-impress_box = tk.Text(root, height=5, width=80)
-impress_box.insert(tk.END, json_data[IM])
-impress_box.grid(sticky=tk.W, row=rowvar, column=1, pady=(0,10))
-rowvar = rowvar + 5
+add_fixed_label(IMPRESSION, rowvar)
+impress_box, rowvar = add_box(json_data[IM], rowvar)
 
 #################################################################################################
 #
@@ -262,12 +236,12 @@ rowvar = rowvar + 5
 #
 def save_data(jd):
     """ Update from tkinter box areas """
-    json_data[HI][PA] = age_text.get()
-    json_data[HI][PH] = history_box.get("1.0", "end-1c")
-    json_data[TH][VI] = views_box.get("1.0", "end-1c")
-    json_data[TH][CM] = tek_comparison_text.get()
-    json_data[FI] = findings_box.get("1.0", "end-1c")
-    json_data[IM] = impress_box.get("1.0", "end-1c")
+    jd[HI][PA] = age_entry.get()
+    jd[HI][PH] = history_box.get("1.0", "end-1c")
+    jd[TH][VI] = views_box.get("1.0", "end-1c")
+    jd[TH][CM] = comparison_entry.get()
+    jd[FI] = findings_box.get("1.0", "end-1c")
+    jd[IM] = impress_box.get("1.0", "end-1c")
     with open(jsonfile, "w") as ofile:
         json.dump(jd, ofile)
 
