@@ -7,6 +7,7 @@ a text based report from this date.
 
 #################################################################################################
 #
+#  WITHOUT ANY WARRANTY; without even the implied warranty of
 #  Copyright (C) 2024 Kaiser Permanente
 #
 #  This program is free software: you can redistribute it and/or
@@ -52,17 +53,17 @@ HI = "history"
 PA = "patient_age"
 PH = "patient_history"
 TH = "technique"
-VI = "views"
+DC = "description"
 FI = "findings"
 CM = "comparison"
 IM = "impression"
+BD = "bile ducts"
 
 HISTORY = "** HISTORY **"
 PATIENT_AGE = "Patient Age"
 PATIENT_HISTORY = "Patient History"
 
 TECHNIQUE = "** TECHNIQUE **"
-VIEWS = "Views"
 
 FINDINGS = "** FINDINGS **"
 COMPARISON = "Comparison"
@@ -103,13 +104,12 @@ with open(jsonfile, "r") as infile:
 # Root window creation
 #
 root=tk.Tk()
-root.title("XRAY Chest Study" + " MRN: " + mrn + " SESSION: " + session)
-root.geometry('1024x768')
-
+root.title("Ultrasound Right Upper Quadrant Abdomen" + " MRN: " + mrn + " SESSION: " + session)
+root.geometry('768x1250')
 #
 # Need this to make sure Entry fields abut labels,
 # because otherwise boxes willf orce then Entry field
-# to the middle of a 80 wide box.
+# to the middle of a wide box.
 #
 root.grid_columnconfigure(1, weight=1)
 
@@ -135,14 +135,15 @@ def add_entry(initial, w, j, row, col):
     tt_text = tk.StringVar()
     tt_text.set(initial)
     tt_entry = tk.Entry(root, textvariable=tt_text, width=w, justify=j)
-    tt_entry.grid(sticky=tk.W, row=row, column=0)
+    tt_entry.grid(sticky=tk.W, row=row, column=col)
     return tt_text, row + 1
 
 def add_box(insert, row):
-    box = tk.Text(root, height=5, width=80)
+    box = tk.Text(root, height=4, width=90)
     box.insert(tk.END, insert)
     box.grid(sticky=tk.W, row=row, column=0, columnspan=3, pady=(0,10))
-    return box, row + 5
+    return box, row + 4
+
 
 # History Section
 rowvar = add_fixed_label(HISTORY, rowvar)
@@ -150,21 +151,47 @@ rowvar = add_fixed_label(HISTORY, rowvar)
 add_label(PATIENT_AGE + " (years) ", rowvar, 0)
 age_entry, rowvar = add_entry(json_data[HI][PA], 4, "right", rowvar, 1)
 
-rowvar = add_label(PATIENT_HISTORY + ":", rowvar, 0)
+rowvar = add_label(PATIENT_HISTORY, rowvar, 0)
 history_box, rowvar = add_box(json_data[HI][PH], rowvar)
 
 # Technique Section
 rowvar = add_fixed_label(TECHNIQUE, rowvar)
 
-rowvar = add_label(VIEWS + ":", rowvar, 0)
-views_box, rowvar = add_box(json_data[TH][VI], rowvar)
+tek_box, rowvar = add_box(json_data[TH][DC], rowvar)
 
-add_label(COMPARISON + ":", rowvar, 0)
+add_label(COMPARISON, rowvar, 0)
 comparison_entry, rowvar = add_entry(json_data[TH][CM], 20, "left", rowvar, 1)
 
 # Findings Section
 rowvar = add_fixed_label(FINDINGS, rowvar)
-findings_box, rowvar = add_box(json_data[FI], rowvar)
+
+rowvar = add_label("PANCREAS:", rowvar, 0)
+pancreas_box, rowvar = add_box(json_data[FI]["pancreas"], rowvar)
+
+rowvar = add_label("LIVER:", rowvar, 0)
+liver_box, rowvar = add_box(json_data[FI]["liver"], rowvar)
+
+rowvar = add_label("GALLBLADDER:", rowvar, 0)
+gallbladder_box, rowvar = add_box(json_data[FI]["gallbladder"], rowvar)
+
+rowvar = add_label("BILE DUCTS:", rowvar, 0)
+add_label("Common duct measures (in mm): ", rowvar, 0)
+bileduct_size, rowvar = add_entry(json_data[FI][BD]["size"], 10, "right", rowvar, 1)
+
+add_label("which is", rowvar, 0)
+bileduct_quality, rowvar = add_entry(json_data[FI][BD]["quality"], 10, "left", rowvar, 1)
+
+bileduct_dilation, rowvar = add_box(json_data[FI][BD]["dilation"], rowvar)
+
+rowvar =  add_label("RIGHT KIDNEY:", rowvar, 0)
+
+add_label("Measures (in cm): ", rowvar, 0)
+kidney_size, rowvar = add_entry(json_data[FI]["right kidney"]["size"], 5, "right", rowvar, 1)
+
+kidney_box, rowvar = add_box(json_data[FI]["right kidney"]["notes"], rowvar)
+
+rowvar = add_label("Other:", rowvar, 0)
+other_box, rowvar = add_box(json_data[FI]["other"], rowvar)
 
 # Impressions Section
 rowvar = add_fixed_label(IMPRESSION, rowvar)
@@ -183,10 +210,23 @@ def save_data(jd):
     """ Update from tkinter box areas """
     jd[HI][PA] = age_entry.get()
     jd[HI][PH] = history_box.get("1.0", "end-1c")
-    jd[TH][VI] = views_box.get("1.0", "end-1c")
+
+    jd[TH][DC] = tek_box.get("1.0", "end-1c")
     jd[TH][CM] = comparison_entry.get()
-    jd[FI] = findings_box.get("1.0", "end-1c")
+
+    jd[FI]["pancreas"] = pancreas_box.get("1.0", "end-1c")
+    jd[FI]["liver"] = liver_box.get("1.0", "end-1c")
+    jd[FI]["gallbladder"] = gallbladder_box.get("1.0", "end-1c")
+    jd[FI][BD]["size"] = bileduct_size.get()
+    jd[FI][BD]["quality"] = bileduct_quality.get()
+    jd[FI][BD]["dilation"] = bileduct_dilation.get("1.0", "end-1c")
+
+    jd[FI]["right kidney"]["size"] = kidney_size.get()
+    jd[FI]["right kidney"]["notes"] = kidney_box.get("1.0", "end-1c")
+
+    jd[FI]["other"] = other_box.get("1.0", "end-1c")
     jd[IM] = impress_box.get("1.0", "end-1c")
+
     with open(jsonfile, "w") as ofile:
         json.dump(jd, ofile)
 
@@ -195,7 +235,7 @@ def create_report(rpt):
     save_data(json_data)
     with open(rpt, "w") as ofile:
         wrapper = textwrap.TextWrapper(width=60, replace_whitespace=False)
-        print("XRAY Chest Study", file=ofile)
+        print("Ultrasound Upper Right Quadrant Abdomen Study", file=ofile)
         print("", file=ofile)
         print("MRN: " + mrn, file=ofile)
         print("Session: " + session, file=ofile)
@@ -210,17 +250,48 @@ def create_report(rpt):
         print("", file=ofile)
         print("", file=ofile)
         print(TECHNIQUE, file=ofile)
-        print(VIEWS + ":", file=ofile)
-        for line in json_data[TH][VI].split('\n'):
+        for line in json_data[TH][DC].split('\n'):
             print(wrapper.fill(text=line), file=ofile)
         print("", file=ofile)
         print(COMPARISON + ": " + json_data[TH][CM], file=ofile)
         print("", file=ofile)
         print(FINDINGS, file=ofile)
-        for line in json_data[FI].split('\n'):
+
+        print("PANCREAS:", file=ofile)
+        for line in json_data[FI]["pancreas"].split('\n'):
+            print(wrapper.fill(text=line), file=ofile)
+        print("", file=ofile)
+
+        print("LIVER:", file=ofile)
+        for line in json_data[FI]["liver"].split('\n'):
+            print(wrapper.fill(text=line), file=ofile)
+        print("", file=ofile)
+
+        print("GALLBLADDER:", file=ofile)
+        for line in json_data[FI]["gallbladder"].split('\n'):
+            print(wrapper.fill(text=line), file=ofile)
+        print("", file=ofile)
+
+        print("BILE DUCTS:", file=ofile)
+        print("Common duct measures (in mm): " + json_data[FI][BD]["size"], file=ofile)
+        print("which is " + json_data[FI][BD]["quality"], file=ofile)
+        for line in json_data[FI][BD]["dilation"].split('\n'):
+            print(wrapper.fill(text=line), file=ofile)
+        print("", file=ofile)
+
+        print("RIGHT KIDNEY:", file=ofile)
+        print("Measures (in cm): " + json_data[FI]["right kidney"]["size"], file=ofile)
+        print("Notes:", file=ofile)
+        for line in json_data[FI]["right kidney"]["notes"].split('\n'):
+            print(wrapper.fill(text=line), file=ofile)
+        print("", file=ofile)
+
+        print("Other:", file=ofile)
+        for line in json_data[FI]["other"].split('\n'):
             print(wrapper.fill(text=line), file=ofile)
         print("", file=ofile)
         print("", file=ofile)
+
         print(IMPRESSION, file=ofile)
         for line in json_data[IM].split('\n'):
             print(wrapper.fill(text=line), file=ofile)

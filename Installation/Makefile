@@ -8,6 +8,8 @@ BASE    := kp-report
 PKGNAME := $(BASE)-$(RELEASE)
 BINS    := spawn_editor SetSystemTime CheckOrthancDataMount CDW_Configure restart_orthanc
 
+KPLIB	:= ${PKGNAME}/usr/lib/kp-report
+
 all:    dist
 
 .PHONY: dist
@@ -19,9 +21,10 @@ dist:
 	install -D -m 640 dbmount.conf ${PKGNAME}/lib/systemd/system/orthanc.service.d/dbmount.conf
 	install -D -m 640 configure.conf ${PKGNAME}/lib/systemd/system/orthanc.service.d/configure.conf
 	install -D -m 440 orthanc.sudo ${PKGNAME}/etc/sudoers.d/orthanc
-	install -D -m 644 ../ReportPlugin/Build/libReport.so.1.0 ${PKGNAME}/usr/lib/kp-report/libReport.so.1.0
-	install -D -m 644 ../OHIFPlugin/Build/libOrthancOHIF.so.1.4 ${PKGNAME}/usr/lib/kp-report/libOrthancOHIF.so.1.4
-	install -D -m 555 SetSystemTime.desktop ${PKGNAME}/usr/lib/kp-report/SetSystemTime.desktop
+	install -D -m 644 ../ReportPlugin/Build/libReport.so.1.0 ${KPLIB}/libReport.so.1.0
+	install -D -m 644 ../OHIFPlugin/Build/libOrthancOHIF.so.1.4 ${KPLIB}/libOrthancOHIF.so.1.4
+	install -D -m 555 SetSystemTime.desktop ${KPLIB}/SetSystemTime.desktop
+	for i in Templates/*.json; do install -d -m 555 $$i ${KPLIB}/templates/$$i; done
 	mkdir -p -m 755 $(PKGNAME)/DEBIAN
 	sed -e "s,%VERSION%,$(RELEASE)," control > $(PKGNAME)/DEBIAN/control
 	cp copyright preinst postinst postrm ${PKGNAME}/DEBIAN

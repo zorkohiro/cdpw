@@ -1,0 +1,31 @@
+{
+  "report_version": 0,
+  "mrn": "",
+  "session": "",
+  "signed": false,
+  "signer": "",
+  "history": {
+    "patient_age": "",
+    "patient_history": "right upper quadrant abdominal pain"
+  },
+  "technique": {
+    "description": "Ultrasound images of the right upper quadrant acquired. Color and spectral Doppler images of the main portal vein also acquired",
+    "comparison": "None Available"
+  },
+  "findings": {
+    "pancreas": "Normal visualized portions",
+    "liver": "Normal echogenicity. Normal hepatopetal flow in the main portal vein",
+    "gallbladder": "Normal",
+    "bile ducts": {
+      "size": "",
+      "quality": "normal",
+      "dilation": "No intrahepatic biliary ductal dilation"
+    },
+    "right kidney": {
+      "size": "",
+      "notes": "Normal cortical echogenicity. No stones or hyrdronephrosis"
+    },
+    "other": "None"
+  },
+  "impression": "Normal right upper quadrant ultrasound"
+}
