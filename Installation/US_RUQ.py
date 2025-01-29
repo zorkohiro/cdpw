@@ -73,7 +73,7 @@ IMPRESSION = "** IMPRESSION **"
 #
 # Process command line arguments and load initial json data
 #
-parser = argparse.ArgumentParser(description="Report on Study Entry Package for CHEST XRAY")
+parser = argparse.ArgumentParser(description="Report on Study Entry Package for Upper Right Quadrant Ultrasound")
 parser.add_argument("-m", "--mrn", help="MRN for Study", required=True)
 parser.add_argument("-s", "--session", help="Session for Study", required=True)
 parser.add_argument("-R", "--report_dir", help="Where we fetch/save reports", default="/code_dark/reports")

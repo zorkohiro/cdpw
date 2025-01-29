@@ -1,0 +1,35 @@
+{
+  "report_version" : 0,
+  "mrn" : "",
+  "session" : "",
+  "signed" : false,
+  "signer" : "",
+  "history" : {
+    "patient_age" : "",
+    "patient_history" : "abdominal pain"
+  },
+  "technique" : {
+    "description" : "CT images of the abdomen and pelvis acquired with 100 mL Omnipaque 300IV contrast",
+    "ctdi" : "XX mGy",
+    "dlp"  : "XX mGy-cm",
+    "comparison" : "None Available"
+  },
+  "findings" : {
+    "lung" : "Heart size is normal",
+    "liver" : "No significant abnormality",
+    "gbd" : "No calcified gallstones. No significant biliary dilation",
+    "spleen" : "Normal",
+    "pancreas" : "Normal",
+    "adrenal" : "No significant abnormality",
+    "kidneys" : "Normal",
+    "bowel"  : "No significant abnormality",
+    "meslymph" : "No suspiscious lymph nodes",
+    "peritoneum" : "No significant free fluid. No free air",
+    "aorta" : "Normal abdominal aortica diameter (<3cm)",
+    "bladder" : "No significant abnormlity",
+    "pelvic" : "No significant abnormality",
+    "soft tissues" : "No significant abnormality",
+    "bones" : "No significant abnormality"
+  },
+  "impression" : "Normal CT abdomen pelvis"
+}
