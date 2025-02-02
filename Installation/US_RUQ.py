@@ -41,6 +41,8 @@ import argparse
 #
 radiologist = "Dr Roberts"
 rowvar = 0
+fontsize = 10
+fontstring = 'Times 10'
 
 #################################################################################################
 #
@@ -77,6 +79,7 @@ parser = argparse.ArgumentParser(description="Report on Study Entry Package for 
 parser.add_argument("-m", "--mrn", help="MRN for Study", required=True)
 parser.add_argument("-s", "--session", help="Session for Study", required=True)
 parser.add_argument("-R", "--report_dir", help="Where we fetch/save reports", default="/code_dark/reports")
+parser.add_argument("-f", "--fontsize", help="Font Size (default 8)")
 
 args=vars(parser.parse_args())
 mrn = args['mrn']
@@ -84,6 +87,9 @@ session = args['session']
 report_dir = REPORT_DIR
 if args['report_dir']:
     report_dir = args['report_dir']
+if args['fontsize']:
+    fontsize = int(args['fontsize'])
+    fontstring = 'Time ' + args['fontsize']
 
 reportnm = "study" + "_" + mrn + "_" + session
 jsonfile = report_dir + "/" + reportnm + ".json"
@@ -127,23 +133,22 @@ def add_fixed_label(str, row):
     return row + 1
 
 def add_label(str, rowvalue, col):
-    tlab = tk.Label(root, text=str, anchor=tk.W, justify="left") 
+    tlab = tk.Label(root, text=str, anchor=tk.W, justify="left", font=('Time', fontsize))
     tlab.grid(sticky=tk.N+tk.W, row=rowvalue, column=col)
     return rowvalue + 1
 
 def add_entry(initial, w, j, row, col):
     tt_text = tk.StringVar()
     tt_text.set(initial)
-    tt_entry = tk.Entry(root, textvariable=tt_text, width=w, justify=j)
+    tt_entry = tk.Entry(root, textvariable=tt_text, width=w, justify=j, font=fontstring)
     tt_entry.grid(sticky=tk.W, row=row, column=col)
     return tt_text, row + 1
 
 def add_box(insert, row):
-    box = tk.Text(root, height=4, width=90)
+    box = tk.Text(root, height=4, width=90, font=fontstring)
     box.insert(tk.END, insert)
     box.grid(sticky=tk.W, row=row, column=0, columnspan=3, pady=(0,10))
     return box, row + 4
-
 
 # History Section
 rowvar = add_fixed_label(HISTORY, rowvar)
@@ -323,7 +328,6 @@ def sign_report():
     except subprocess.CalledProcessError as e:
         messagebox.showerror("Process Error", e.output)
         exit()
-    rpt.signed = True
 
 # define a function that will exit, saving data and creating on-disk report as it does so.
 def exit_edit():

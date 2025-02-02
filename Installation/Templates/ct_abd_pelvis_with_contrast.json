@@ -15,7 +15,7 @@
     "comparison" : "None Available"
   },
   "findings" : {
-    "lung" : "Heart size is normal",
+    "heart" : "Heart size is normal",
     "liver" : "No significant abnormality",
     "gbd" : "No calcified gallstones. No significant biliary dilation",
     "spleen" : "Normal",
