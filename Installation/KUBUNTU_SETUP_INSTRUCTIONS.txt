@@ -79,12 +79,7 @@ Enter SetSystemTime in the search bar at the top. It should bring up SetSystemTi
 with a 'key' icon. Do a 'right click' over that brought up item and click the '+'
 to left of "Add to Desktop".
 
-5. Final step
-
-#
-# Disable automatic networking on boot
-#
-nmcli c modify 'Wired connection 1' connection.autoconnect no
+5. Final steps
 
 #
 # Point google browser to orthanc page

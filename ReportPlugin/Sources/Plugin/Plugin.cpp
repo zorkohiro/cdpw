@@ -31,10 +31,9 @@
 #include <string.h>
 #include <syslog.h>
 
-#define ORTHANC_PLUGIN_NAME	"report"
-#define DATA_BASEDIR           "/code_dark"
-#define TEMPLATES_DIR          DATA_BASEDIR "/templates"
-#define EDITOR                  "/usr/bin/spawn_editor"
+#define ORTHANC_PLUGIN_NAME "report"
+#define TEMPLATES_DIR       "/usr/lib/kp-report/Templates"
+#define EDITOR              "/usr/bin/spawn_editor"
 
 /*#sizeof (emsstatic OrthancPluginContext* context = NULL;*/
 static OrthancPluginContext* context = NULL;
@@ -55,14 +54,14 @@ static void fetch_templates(OrthancPluginRestOutput* output, const char* url, co
       OrthancPluginLogWarning(context, prtbuf);
       struct dirent *ent;
       while ((ent = readdir(dir)) != NULL) {
-        char *suffix = strstr(ent->d_name, ".txt");
-        if (suffix && strlen(suffix) == 4) {
+        char *suffix = strstr(ent->d_name, ".json");
+        if (suffix && strlen(suffix) == 5) {
           snprintf(prtbuf, sizeof (prtbuf) - 1, "Appending %s", ent->d_name);
           OrthancPluginLogWarning(context, prtbuf);
           char jname[128];
           strcpy(jname, ent->d_name);
           char *ptr = jname + (suffix - ent->d_name);
-          *ptr = '\0';
+          *ptr = '\0'; // eliminate suffix
           // Convert all '_' to ' ' for pretty print in a menu
           for (ptr = jname; *ptr; ptr++) {
             if (*ptr == '_')
@@ -108,7 +107,7 @@ static int spawn_editor(OrthancPluginContext* context, char *tmplt, char *mrn, c
     open("/dev/null", O_RDONLY); // open standard input
     int fdo = open("/tmp/editor.log", O_RDWR|O_APPEND|O_CREAT, 0644); // standard output
     int fds = dup(fdo); // standard error
-    const char *hdr = strrchr(EDITOR, '/');
+    const char *hdr = strrchr(EDITOR, '/'); // Get last component in path for argv[0] setting
     if (hdr == NULL)
       hdr = "spawn_editor";
     int rslt = execl(EDITOR, hdr, tmplt, mrn, session, uuid, NULL);
@@ -142,7 +141,7 @@ static void create_report(OrthancPluginRestOutput* output, const char* url, cons
     const char *colon = ":";
     char *mrn = strtok_r(rqb, colon, &sptr);
     char *session = strtok_r(NULL, colon, &sptr);
-    char *txt_tmplt = strtok_r(NULL, colon, &sptr);
+    char *json_tmplt = strtok_r(NULL, colon, &sptr);
     char *uuid = strtok_r(NULL, colon, &sptr);
     bool failure = false;
     if (mrn == NULL) {
@@ -151,7 +150,7 @@ static void create_report(OrthancPluginRestOutput* output, const char* url, cons
     } else if (session == NULL) {
       failure = true;
       OrthancPluginLogWarning(context, "No discernible session passed");
-    } else if (txt_tmplt == NULL) {
+    } else if (json_tmplt == NULL) {
       failure = true;
       OrthancPluginLogWarning(context, "No discernible template name passed");
     } else if (uuid == NULL) {
@@ -163,19 +162,18 @@ static void create_report(OrthancPluginRestOutput* output, const char* url, cons
       return;
     }
 
-    // Convert ' ' in txt_tmplt to '_' which is how it is stored in reality
-    char txtfile[128] = { 0 };
+    // Convert ' ' in json_tmplt to '_' which is how it is stored in reality
+    char jsonfile[128] = { 0 };
     int i = 0;
-    for (char *ptr = txt_tmplt; *ptr; ptr++, i++) {
+    for (char *ptr = json_tmplt; *ptr; ptr++, i++) {
       if (*ptr == ' ')
-        txtfile[i] = '_';
+        jsonfile[i] = '_';
       else
-        txtfile[i] = *ptr;
+        jsonfile[i] = *ptr;
     }
-    // tack on a suffix
-    strcat(txtfile, ".txt");
-
-    if (spawn_editor(context, txtfile, mrn, session, uuid, buffer) < 0) {
+    // spawn_editor is responsible for tacking on any suffix to the template
+    // that will identify which entry program to use
+    if (spawn_editor(context, jsonfile, mrn, session, uuid, buffer) < 0) {
       OrthancPluginLogWarning(context, buffer);
       OrthancPluginSetHttpHeader(context, output, "Content-Type", "text/plain");
       OrthancPluginSendHttpStatus(context, output, 500, buffer, strlen(buffer));

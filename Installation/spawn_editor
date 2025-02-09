@@ -2,33 +2,41 @@
 export DISPLAY=:0
 export PATH=/usr/local/bin:/usr/bin:/usr/sbin
 LOG=/tmp/spawn_editor.log
+TPD=/usr/lib/kp-report/Templates
 CDB=/code_dark
-TPD=${CDB}/templates
 RPT=${CDB}/reports
 
-inp=${TPD}/$1
+echo called with $* on `date` >> $LOG
+
+tpt=$1
 mrn=$2
 ssn=$3
+# For use in the future
 uui=$4
 
 mkdir -p ${RPT} > /dev/null 2>&1
-fnm=${RPT}/study_${mrn}_${ssn}.txt
+inp=${TPD}/${tpt}.json
+fnm=${RPT}/study_${mrn}_${ssn}.json
+prg=${tpt}.py
 
 if [[ ! -f ${fnm} ]]; then
  if [[ ! -f ${inp} ]]; then
   echo ${inp} does not exist >> $LOG
   exit 1
  fi
- echo ${fnm} being created from $inp for uuid $uui >> $LOG
- sed -e "/^MRN:/c\MRN:$mrn" -e "/^SESSION:/c\SESSION: $ssn" $inp > ${fnm} 2>> $LOG
+ cp $inp $fnm
  if [[ $? -ne 0 ]]; then
-  echo unable to create $fnm from $inp
+  echo unable to create $fnm from $inp >> $LOG
   rm -f ${fnm}
   exit 1
  fi
 else
- echo ${fnm} already exists >> $LOG
+ st=$(stat -c%A ${fnm})
+ echo ${fnm} already exists with mode $st >> $LOG
 fi
 
-echo calling kate directly for $fnm on `date` >> $LOG
-kate $fnm >>  /tmp/spawn_editor.log 2>&1
+echo calling $prg on `date` >> $LOG
+${prg} -m $mrn -s $ssn >> $LOG 2>&1
+if [[ $? -ne 0 ]]; then
+ echo $prg exited witn non-zero status >> $LOG
+fi

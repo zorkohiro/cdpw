@@ -1,12 +1,12 @@
 MAJORV  ?= 0
 MINORV  ?= 9
 MICROV  ?= 8
-BUILDV  ?= -1
+BUILDV  ?= -5
 RELEASE := $(MAJORV).$(MINORV).$(MICROV)${BUILDV}
 
 BASE    := kp-report
 PKGNAME := $(BASE)-$(RELEASE)
-BINS    := spawn_editor SetSystemTime CheckOrthancDataMount CDW_Configure restart_orthanc
+BINS    := spawn_editor CheckOrthancDataMount CDW_Configure restart_orthanc
 
 KPLIB	:= ${PKGNAME}/usr/lib/kp-report
 
@@ -23,8 +23,9 @@ dist:
 	install -D -m 440 orthanc.sudo ${PKGNAME}/etc/sudoers.d/orthanc
 	install -D -m 644 ../ReportPlugin/Build/libReport.so.1.0 ${KPLIB}/libReport.so.1.0
 	install -D -m 644 ../OHIFPlugin/Build/libOrthancOHIF.so.1.4 ${KPLIB}/libOrthancOHIF.so.1.4
-	install -D -m 555 SetSystemTime.desktop ${KPLIB}/SetSystemTime.desktop
-	for i in Templates/*.json; do install -d -m 555 $$i ${KPLIB}/templates/$$i; done
+	for i in Templates/*.json; do install -D -m 555 $$i ${KPLIB}/$$i; done
+	mkdir -p ${PKGNAME}/usr/bin
+	cp Programs/*.py ${PKGNAME}/usr/bin/$$i
 	mkdir -p -m 755 $(PKGNAME)/DEBIAN
 	sed -e "s,%VERSION%,$(RELEASE)," control > $(PKGNAME)/DEBIAN/control
 	cp copyright preinst postinst postrm ${PKGNAME}/DEBIAN
