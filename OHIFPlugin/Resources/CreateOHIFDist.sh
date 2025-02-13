@@ -59,7 +59,7 @@ mkdir -p ${ROOT_DIR}/OHIF/dist/
 ( cd ${ROOT_DIR}/Resources/CreateOHIFDist && \
       docker build --no-cache -t ${IMAGE} . )
 
-docker run -t ${DOCKER_FLAGS} --rm \
+docker run ${DOCKER_FLAGS} --rm \
        --user $(id -u):$(id -g) \
        -v ${ROOT_DIR}/Resources/CreateOHIFDist/build.sh:/source/build.sh:ro \
        -v ${ROOT_DIR}/OHIF/${PACKAGE}.tar.gz:/source/${PACKAGE}.tar.gz:ro \
