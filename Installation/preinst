@@ -1,6 +1,14 @@
 #!/bin/bash
 
 #
+# We already have a database in the root filesystem
+# (debug development)
+#
+if [[ -d /code_dark/database ]]; then
+ exit 0
+fi
+
+#
 # Get orthanc's UID (needed for ntfs-3g mounts)
 #
 OUID=$(grep orthanc /etc/passwd 2> /dev/null|awk -F: '{print $3}')

@@ -4,7 +4,7 @@
 ifeq ($(INSTALL_ROOT),)
 $(error INSTALL_ROOT not set)
 endif
-CMAKE_ARGS= .. -DCMAKE_INSTALL_PREFIX=$(INSTALL_ROOT) -DSTATIC_BUILD=ON -DCMAKE_BUILD_TYPE=Release
+CMAKE_ARGS= .. -DCMAKE_INSTALL_PREFIX=$(INSTALL_ROOT)/usr -DSTATIC_BUILD=ON -DCMAKE_BUILD_TYPE=Release
 NTHREAD := $(shell getconf _NPROCESSORS_ONLN)
 
 all:	.built_ohif .cmake_setup .built_binary

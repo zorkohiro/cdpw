@@ -1,0 +1,28 @@
+DATA KEY CREATION, version 2
+
+These are the initial instructions for creating the data storage
+device for the CDW workstation. It is intended for the Apricorn
+secure storage device, but can be, for prototype purposes, applied
+to any USB storage device.
+
+1. Requirements
+
+A 2GB or better USB device- USB 3.1 or newer.
+A PC running Windows - 10 or 11 is fine.
+
+2. Format
+
+Insert the device (unlock it if it's an Apricorn) into the PC.
+Format it via the Explorer:
+
+ + Select NTFS type
+ + Add CODE_DARK as the filesystem/volume label.
+
+3. Create subdirectories
+
+After formatting, create the following empty directories at the top
+level of the newly formatted volume:
+
+  reports
+  config
+  database

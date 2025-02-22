@@ -1,5 +1,7 @@
 #
 # Check for the Orthanc secure data volume being mounted
+# or otherwise the database and reports directories
+# are available.
 #
 [Unit]
 Description=CDW configuration agent

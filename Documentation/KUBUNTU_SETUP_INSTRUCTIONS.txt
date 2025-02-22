@@ -1,24 +1,41 @@
-1/8/2025
+February 16, 2025
 
-1. Install kubuntu 24.04.1 from the iso (on USB or DVD) from
+NOTE: This is not for a HIPAA compliant publicly releasable version of
+CODE DARK. This embeds the mountable filesystem for data storage as just
+another partition on the USB key. This is being done because alpha testers
+are having difficulty with the concept of setting up a separate USB (e.g.,
+the Acorn) for running with so testing is not being adequately done yet-
+so we'll make it easy for the moment.
+
+0. Required Hardware
+
+Get a 16 GB USB flash drive to install the kubuntu install image on.
+Get a 16 or 32GB USB Key to become the target of the install. 
+
+1. Copy kubuntu 24.04.1 from the iso image:
 
  https://cdimage.ubuntu.com/kubuntu/releases/24.04.1/release/kubuntu-24.04.1-desktop-amd64.iso
 
+*NOTE: Current image is a 24.04 prior to 24.04.1 and is no longer actually findable*
+
+Create an install USB key from this. Boot it.
+
 Select 'orthanc' as the user, 'orthanc' as the password.
-Select the minimal (not full) installation option.
+Select the full installation option. Erase the whole disk.
 
-Everything else should be the 'default' and you should have
-it erase whatever target installation media you are using.
+Reboot when done.
 
-Check the box that says automatically log in after boot.
+2. Upgrade kernel
 
-2. System Control panel changes
+Upgrade the kernel packages to get the amdgpu driver fixes for multiple monitors.
+
+3. System Control panel changes
 
 Go to Power Management and uncheck the Suspend Session and Screen Energy Saving buttons.
+Enable shutdown on power button press.
 
 Go to Workspace Behaviour and then go to Screen Locking.
 Uncheck the Lockscreen Automatically button.
-Enable shutdown on power button press.
 
 Go to system settings for KDE Wallet and uncheck enable KDE Wallet box.
 You will have to enter orthanc's password for authentication.
@@ -29,7 +46,7 @@ You will have to enter orthanc's password for authentication.
 Right click over down arrow on bottom bar to the right and configure
 notifications for system tray to almost everything hidden or disabled
 
-Leave Networks, Printers and Alerts enabled.
+Leave Display Configuration, Networks, Printers and Alerts enabled.
 
 #
 # Clean up blank/black screen on reboot issue- make it verbose
@@ -42,7 +59,6 @@ then do update-grub.
 #
 systemctl mask systemd-timesyncd.service
 
-
 #
 # Disable automatic updates && upgrades
 #
@@ -52,34 +68,48 @@ sed 'g/APT::Periodic::Unattended-Upgrade/s/1/0/' /etc/apt/apt.conf.d/20auto-upgr
 #
 # Set wallpaper to plain color gray-like
 #
-Do this via right click on desktop to configure it.
+Do this via right click on desktop to configure it. (*- needs fixing as this only does one screen at a time)
 
-#
 # Make sure we have a data drive
-#
 Attach and unlock a CODE_DARK labeled data storage device.
 
-3. Fetch current stable chrome and kp-report
+   *or*
 
-cd /tmp
-wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-sudo apt install ./google-chrome-stable_current_amd64.deb
-Start up chrome, cancel any wallet creation, don't sign in to any account.
-Find the extension that opens new links as windows and add it
+# Use local insecure data storage for development testing
+Issue the following commands:
+
+   mkdir -p /code_dark/{reports,database,config}
+   chown -R orthanc:orthanc /code_dark
+
+4. Configure the installed firefox
+
+Remove crap buttons from bookmark bar
+Settings/General
+ Check open previous windows and tabs
+ Unclick "Open links in new tabs instead of new windows"
+Settings/Home
+ Set both Homepage and new tabs as blank page
+ Uncheck Shortcuts Recommended Stories 
+
+Enter “about:config” in the address search bar
+Type “full” in the search bar, and toggle “full-screen-api.enabled” to “false”:
+
+
+5. Fetch latest kp-report package
 
 https://feralsw.com/cdw/kp-report-latest.deb
 sudo apt install -y ./kp-report-latest.deb
 
 This should install all of the main Orthanc binaries plus our changes and additions.
 
-4. Link to the desktop some helpers.
+6. Link to the desktop some helpers.
 
 Open the Applications menu (icon to the leftmost on the bottom bar) by left clicking on it.
 Enter SetSystemTime in the search bar at the top. It should bring up SetSystemTime Helper
 with a 'key' icon. Do a 'right click' over that brought up item and click the '+'
 to left of "Add to Desktop".
 
-5. Final steps
+7. Final steps
 
 #
 # Point google browser to orthanc page

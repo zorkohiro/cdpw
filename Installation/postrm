@@ -1,6 +1,4 @@
 #!/bin/bash
-rm -f /usr/share/orthanc/plugins/libReport.so
-rm -f /usr/share/orthanc/plugins/libOrthancOHIF.so
 rm -f ~orthanc/.local/share/applications/SetSystemTime.desktop
 rm -rf /lib/systemd/system/orthanc.service.d
 if [[ "$1" != "upgrade" ]]; then
