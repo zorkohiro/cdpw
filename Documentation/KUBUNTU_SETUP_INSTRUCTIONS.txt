@@ -104,10 +104,10 @@ This should install all of the main Orthanc binaries plus our changes and additi
 
 6. Link to the desktop some helpers.
 
-Open the Applications menu (icon to the leftmost on the bottom bar) by left clicking on it.
-Enter SetSystemTime in the search bar at the top. It should bring up SetSystemTime Helper
-with a 'key' icon. Do a 'right click' over that brought up item and click the '+'
-to left of "Add to Desktop".
+Do a right click on the dekstop. Go into the Create New submenu and
+select link to location (URL).
+
+Say "Set System Time" for 'name for new link' and /usr/bin/SetSystemTime.py for the URL location.
 
 7. Final steps
 
