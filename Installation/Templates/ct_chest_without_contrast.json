@@ -4,6 +4,7 @@
   "session" : "",
   "signed" : false,
   "signer" : "",
+  "template" : "ct_chest_without_contrast",
   "history" : {
     "patient_age" : "",
     "patient_history" : ""

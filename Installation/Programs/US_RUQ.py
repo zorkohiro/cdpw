@@ -41,8 +41,10 @@ import argparse
 #
 radiologist = "Dr Roberts"
 rowvar = 0
-fontsize = 10
-fontstring = 'Times 10'
+fontfamily = 'Times'
+fontsize = 12
+fontstring = fontfamily + ' ' + str(fontsize)
+boxsize = 3
 
 #################################################################################################
 #
@@ -79,7 +81,7 @@ parser = argparse.ArgumentParser(description="Report on Study Entry Package for 
 parser.add_argument("-m", "--mrn", help="MRN for Study", required=True)
 parser.add_argument("-s", "--session", help="Session for Study", required=True)
 parser.add_argument("-R", "--report_dir", help="Where we fetch/save reports", default="/code_dark/reports")
-parser.add_argument("-f", "--fontsize", help="Font Size (default 8)")
+parser.add_argument("-f", "--fontsize", help="Font Size (default 12)")
 
 args=vars(parser.parse_args())
 mrn = args['mrn']
@@ -111,7 +113,7 @@ with open(jsonfile, "r") as infile:
 #
 root=tk.Tk()
 root.title("Ultrasound Right Upper Quadrant Abdomen" + " MRN: " + mrn + " SESSION: " + session)
-root.geometry('768x1250')
+
 #
 # Need this to make sure Entry fields abut labels,
 # because otherwise boxes willf orce then Entry field
@@ -128,27 +130,39 @@ root.grid_columnconfigure(1, weight=1)
 # Shorthand functions
 #
 def add_fixed_label(str, row):
-    tlab = tk.Label(root, text=str, relief=tk.RAISED)
-    tlab.grid(sticky=tk.N+tk.W, row=row)
+    tlab = tk.Label(root, text=str, relief=tk.RAISED, font=(fontfamily, fontsize + 1))
+    tlab.grid(sticky=tk.N+tk.W, row=row, pady=(1,0))
     return row + 1
 
-def add_label(str, rowvalue, col):
-    tlab = tk.Label(root, text=str, anchor=tk.W, justify="left", font=('Time', fontsize))
-    tlab.grid(sticky=tk.N+tk.W, row=rowvalue, column=col)
-    return rowvalue + 1
+def add_label(str, row, col):
+    tlab = tk.Label(root, text=str, anchor=tk.W, justify="left", font=(fontfamily, fontsize - 1))
+    tlab.grid(sticky=tk.N+tk.W, row=row, column=col)
+    return row + 1
 
 def add_entry(initial, w, j, row, col):
     tt_text = tk.StringVar()
     tt_text.set(initial)
-    tt_entry = tk.Entry(root, textvariable=tt_text, width=w, justify=j, font=fontstring)
-    tt_entry.grid(sticky=tk.W, row=row, column=col)
+    if w < 0:
+            tt_entry = tk.Entry(root, textvariable=tt_text, justify=j, font=fontstring)
+            tt_entry.grid(sticky=tk.EW, row=row, column=col)
+    else:
+            tt_entry = tk.Entry(root, textvariable=tt_text, width=w, justify=j, font=fontstring)
+            tt_entry.grid(sticky=tk.W, row=row, column=col)
     return tt_text, row + 1
 
 def add_box(insert, row):
-    box = tk.Text(root, height=4, width=90, font=fontstring)
+    box = tk.Text(root, height=boxsize, width=90, font=fontstring)
     box.insert(tk.END, insert)
-    box.grid(sticky=tk.W, row=row, column=0, columnspan=3, pady=(0,10))
-    return box, row + 4
+    box.grid(sticky=tk.EW, row=row, column=0, columnspan=3, pady=(0,10), padx=(0,9))
+    return box, row + boxsize
+
+def add_label_box(str, insert, row):
+    tlab = tk.Label(root, text=str, anchor=tk.W, justify="left", font=(fontfamily, fontsize - 1))
+    tlab.grid(sticky=tk.N+tk.W, row=row, column=0)
+    box = tk.Text(root, height=boxsize, width=90, font=fontstring)
+    box.insert(tk.END, insert)
+    box.grid(sticky=tk.W, row=row, column=1, columnspan=2, pady=(0,10), padx=(0,10))
+    return box, row + boxsize
 
 # History Section
 rowvar = add_fixed_label(HISTORY, rowvar)
@@ -156,28 +170,23 @@ rowvar = add_fixed_label(HISTORY, rowvar)
 add_label(PATIENT_AGE + " (years) ", rowvar, 0)
 age_entry, rowvar = add_entry(json_data[HI][PA], 4, "right", rowvar, 1)
 
-rowvar = add_label(PATIENT_HISTORY, rowvar, 0)
-history_box, rowvar = add_box(json_data[HI][PH], rowvar)
+history_box, rowvar = add_label_box(PATIENT_HISTORY, json_data[HI][PH], rowvar)
 
 # Technique Section
 rowvar = add_fixed_label(TECHNIQUE, rowvar)
 
 tek_box, rowvar = add_box(json_data[TH][DC], rowvar)
 
-add_label(COMPARISON, rowvar, 0)
-comparison_entry, rowvar = add_entry(json_data[TH][CM], 20, "left", rowvar, 1)
+comparison_box, rowvar = add_label_box(COMPARISON, json_data[TH][CM], rowvar)
 
 # Findings Section
 rowvar = add_fixed_label(FINDINGS, rowvar)
 
-rowvar = add_label("PANCREAS:", rowvar, 0)
-pancreas_box, rowvar = add_box(json_data[FI]["pancreas"], rowvar)
+pancreas_box, rowvar = add_label_box("PANCREAS", json_data[FI]["pancreas"], rowvar)
 
-rowvar = add_label("LIVER:", rowvar, 0)
-liver_box, rowvar = add_box(json_data[FI]["liver"], rowvar)
+liver_box, rowvar = add_label_box("LIVER", json_data[FI]["liver"], rowvar)
 
-rowvar = add_label("GALLBLADDER:", rowvar, 0)
-gallbladder_box, rowvar = add_box(json_data[FI]["gallbladder"], rowvar)
+gallbladder_box, rowvar = add_label_box("GALLBLADDER", json_data[FI]["gallbladder"], rowvar)
 
 rowvar = add_label("BILE DUCTS:", rowvar, 0)
 add_label("Common duct measures (in mm): ", rowvar, 0)
@@ -195,8 +204,7 @@ kidney_size, rowvar = add_entry(json_data[FI]["right kidney"]["size"], 5, "right
 
 kidney_box, rowvar = add_box(json_data[FI]["right kidney"]["notes"], rowvar)
 
-rowvar = add_label("Other:", rowvar, 0)
-other_box, rowvar = add_box(json_data[FI]["other"], rowvar)
+other_box, rowvar = add_label_box("OTHER", json_data[FI]["other"], rowvar)
 
 # Impressions Section
 rowvar = add_fixed_label(IMPRESSION, rowvar)
@@ -217,7 +225,7 @@ def save_data(jd):
     jd[HI][PH] = history_box.get("1.0", "end-1c")
 
     jd[TH][DC] = tek_box.get("1.0", "end-1c")
-    jd[TH][CM] = comparison_entry.get()
+    jd[TH][CM] = comparison_box.get("1.0", "end-1c")
 
     jd[FI]["pancreas"] = pancreas_box.get("1.0", "end-1c")
     jd[FI]["liver"] = liver_box.get("1.0", "end-1c")
@@ -338,14 +346,15 @@ def exit_edit():
 #
 # Add action buttons to the end
 #
+rowvar = rowvar + 1
 sign_btn = tk.Button(root, text = 'Sign Report', command = sign_report)
-sign_btn.grid(sticky=tk.W)
+sign_btn.grid(sticky=tk.W, column=0, row=rowvar)
 
 print_btn = tk.Button(root, text = 'Print Report', command = print_report)
-print_btn.grid(sticky=tk.W)
+print_btn.grid(sticky=tk.W, column=1, row=rowvar)
 
 exit_btn = tk.Button(root, text = 'Exit', command = exit_edit)
-exit_btn.grid(sticky=tk.W)
+exit_btn.grid(sticky=tk.W, column=2, row=rowvar)
 
 
 #

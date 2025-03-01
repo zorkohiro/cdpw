@@ -4,6 +4,7 @@
   "session" : "",
   "signed" : false,
   "signer" : "",
+  "template" : "ct_abd_pelvis_with_contrast",
   "history" : {
     "patient_age" : "",
     "patient_history" : "abdominal pain"

@@ -41,8 +41,10 @@ import argparse
 #
 radiologist = "Dr Roberts"
 rowvar = 0
-fontsize = 10
-fontstring = 'Times 10'
+fontfamily = 'Times'
+fontsize = 12
+fontstring = fontfamily + ' ' + str(fontsize)
+boxsize = 3
 
 #################################################################################################
 #
@@ -78,7 +80,7 @@ parser = argparse.ArgumentParser(description="Report on Study Entry Package for 
 parser.add_argument("-m", "--mrn", help="MRN for Study", required=True)
 parser.add_argument("-s", "--session", help="Session for Study", required=True)
 parser.add_argument("-R", "--report_dir", help="Where we fetch/save reports", default="/code_dark/reports")
-parser.add_argument("-f", "--fontsize", help="Font Size (default 8)")
+parser.add_argument("-f", "--fontsize", help="Font Size (default 12)")
 
 args=vars(parser.parse_args())
 mrn = args['mrn']
@@ -110,7 +112,7 @@ with open(jsonfile, "r") as infile:
 #
 root=tk.Tk()
 root.title("CT Chest Without Contrast" + " MRN: " + mrn + " SESSION: " + session)
-root.geometry('768x960')
+
 #
 # Need this to make sure Entry fields abut labels,
 # because otherwise boxes willf orce then Entry field
@@ -127,27 +129,39 @@ root.grid_columnconfigure(1, weight=1)
 # Shorthand functions
 #
 def add_fixed_label(str, row):
-    tlab = tk.Label(root, text=str, relief=tk.RAISED)
-    tlab.grid(sticky=tk.N+tk.W, row=row)
+    tlab = tk.Label(root, text=str, relief=tk.RAISED, font=(fontfamily, fontsize + 1))
+    tlab.grid(sticky=tk.N+tk.W, row=row, pady=(1,0))
     return row + 1
 
-def add_label(str, rowvalue, col):
-    tlab = tk.Label(root, text=str, anchor=tk.W, justify="left", font=('Time', fontsize))
-    tlab.grid(sticky=tk.N+tk.W, row=rowvalue, column=col)
-    return rowvalue + 1
+def add_label(str, row, col):
+    tlab = tk.Label(root, text=str, anchor=tk.W, justify="left", font=(fontfamily, fontsize - 1))
+    tlab.grid(sticky=tk.N+tk.W, row=row, column=col)
+    return row + 1
 
 def add_entry(initial, w, j, row, col):
     tt_text = tk.StringVar()
     tt_text.set(initial)
-    tt_entry = tk.Entry(root, textvariable=tt_text, width=w, justify=j, font=fontstring)
-    tt_entry.grid(sticky=tk.W, row=row, column=col)
+    if w < 0:
+            tt_entry = tk.Entry(root, textvariable=tt_text, justify=j, font=fontstring)
+            tt_entry.grid(sticky=tk.EW, row=row, column=col)
+    else:
+            tt_entry = tk.Entry(root, textvariable=tt_text, width=w, justify=j, font=fontstring)
+            tt_entry.grid(sticky=tk.W, row=row, column=col)
     return tt_text, row + 1
 
 def add_box(insert, row):
-    box = tk.Text(root, height=4, width=90, font=fontstring)
+    box = tk.Text(root, height=boxsize, width=90, font=fontstring)
     box.insert(tk.END, insert)
-    box.grid(sticky=tk.W, row=row, column=0, columnspan=3, pady=(0,10))
-    return box, row + 4
+    box.grid(sticky=tk.EW, row=row, column=0, columnspan=3, pady=(0,10), padx=(0,9))
+    return box, row + boxsize
+
+def add_label_box(str, insert, row):
+    tlab = tk.Label(root, text=str, anchor=tk.W, justify="left", font=(fontfamily, fontsize - 1))
+    tlab.grid(sticky=tk.N+tk.W, row=row, column=0)
+    box = tk.Text(root, height=boxsize, width=90, font=fontstring)
+    box.insert(tk.END, insert)
+    box.grid(sticky=tk.W, row=row, column=1, columnspan=2, pady=(0,10), padx=(0,10))
+    return box, row + boxsize
 
 
 # History Section
@@ -156,12 +170,10 @@ rowvar = add_fixed_label(HISTORY, rowvar)
 add_label(PATIENT_AGE + " (years) ", rowvar, 0)
 age_entry, rowvar = add_entry(json_data[HI][PA], 4, "right", rowvar, 1)
 
-rowvar = add_label(PATIENT_HISTORY, rowvar, 0)
-history_box, rowvar = add_box(json_data[HI][PH], rowvar)
+history_box, rowvar = add_label_box(PATIENT_HISTORY, json_data[HI][PH], rowvar)
 
 # Technique Section
 rowvar = add_fixed_label(TECHNIQUE, rowvar)
-
 tek_box, rowvar = add_box(json_data[TH][DC], rowvar)
 
 add_label("CTDI: ", rowvar, 0)
@@ -170,38 +182,37 @@ ctdi_entry, rowvar = add_entry(json_data[TH]["ctdi"], 20, "left", rowvar, 1)
 add_label("DLP: ", rowvar, 0)
 dlp_entry, rowvar = add_entry(json_data[TH]["dlp"], 20, "left", rowvar, 1)
 
-add_label(COMPARISON, rowvar, 0)
-comparison_entry, rowvar = add_entry(json_data[TH][CM], 20, "left", rowvar, 1)
+comparison_box, rowvar = add_label_box(COMPARISON, json_data[TH][CM], rowvar)
 
 # Findings Section
 rowvar = add_fixed_label(FINDINGS, rowvar)
 
-add_label("HEART:", rowvar, 0)
-heart_entry, rowvar = add_entry(json_data[FI]["heart"], 50, "left", rowvar, 1)
+add_label("HEART", rowvar, 0)
+heart_entry, rowvar = add_entry(json_data[FI]["heart"], -1, "left", rowvar, 1)
 
-add_label("VESSELS:", rowvar, 0)
-vessels_entry, rowvar = add_entry(json_data[FI]["vessels"], 50, "left", rowvar, 1)
+add_label("VESSELS", rowvar, 0)
+vessels_entry, rowvar = add_entry(json_data[FI]["vessels"], -1, "left", rowvar, 1)
 
-add_label("LYMPH NODES:", rowvar, 0)
-lymph_nodes_entry, rowvar = add_entry(json_data[FI]["lymph nodes"], 50, "left", rowvar, 1)
+add_label("LYMPH NODES", rowvar, 0)
+lymph_nodes_entry, rowvar = add_entry(json_data[FI]["lymph nodes"], -1, "left", rowvar, 1)
 
-add_label("OTHER MEDIASTINUM:", rowvar, 0)
-other_mediastinum_entry, rowvar = add_entry(json_data[FI]["other mediastinum"], 50, "left", rowvar, 1)
+add_label("OTHER MEDIASTINUM", rowvar, 0)
+other_mediastinum_entry, rowvar = add_entry(json_data[FI]["other mediastinum"], -1, "left", rowvar, 1)
 
-add_label("LUNGS:", rowvar, 0)
-lungs_entry, rowvar = add_entry(json_data[FI]["lungs"], 50, "left", rowvar, 1)
+add_label("LUNGS", rowvar, 0)
+lungs_entry, rowvar = add_entry(json_data[FI]["lungs"], -1, "left", rowvar, 1)
 
-add_label("PLEURAL SPACE:", rowvar, 0)
-pleural_space_entry, rowvar = add_entry(json_data[FI]["pleural space"], 50, "left", rowvar, 1)
+add_label("PLEURAL SPACE", rowvar, 0)
+pleural_space_entry, rowvar = add_entry(json_data[FI]["pleural space"], -1, "left", rowvar, 1)
 
-add_label("UPPER ABDOMEN:", rowvar, 0)
-upper_abdomen_entry, rowvar = add_entry(json_data[FI]["upper abdomen"], 50, "left", rowvar, 1)
+add_label("UPPER ABDOMEN", rowvar, 0)
+upper_abdomen_entry, rowvar = add_entry(json_data[FI]["upper abdomen"], -1, "left", rowvar, 1)
 
-add_label("SOFT TISSUES:", rowvar, 0)
-soft_entry, rowvar = add_entry(json_data[FI]["soft tissues"], 50, "left", rowvar, 1)
+add_label("SOFT TISSUES", rowvar, 0)
+soft_entry, rowvar = add_entry(json_data[FI]["soft tissues"], -1, "left", rowvar, 1)
 
-add_label("BONES:", rowvar, 0)
-bones_entry, rowvar = add_entry(json_data[FI]["bones"], 50, "left", rowvar, 1)
+add_label("BONES", rowvar, 0)
+bones_entry, rowvar = add_entry(json_data[FI]["bones"], -1, "left", rowvar, 1)
 
 # Impressions Section
 rowvar = add_fixed_label(IMPRESSION, rowvar)
@@ -224,7 +235,7 @@ def save_data(jd):
     jd[TH][DC] = tek_box.get("1.0", "end-1c")
     jd[TH]["ctdi"] = ctdi_entry.get()
     jd[TH]["dlp"] = dlp_entry.get()
-    jd[TH][CM] = comparison_entry.get()
+    jd[TH][CM] = comparison_box.get("1.0", "end-1c")
 
     jd[FI]["heart"] = heart_entry.get()
     jd[FI]["vessels"] = vessels_entry.get()
@@ -264,19 +275,21 @@ def create_report(rpt):
         for line in json_data[TH][DC].split('\n'):
             print(wrapper.fill(text=line), file=ofile)
         print("", file=ofile)
+        print("CTDI: ".ljust(6) + json_data[TH]["ctdi"], file=ofile)
+        print("DLP: ".ljust(6) + json_data[TH]["dlp"], file=ofile)
         print(COMPARISON + ": " + json_data[TH][CM], file=ofile)
         print("", file=ofile)
         print(FINDINGS, file=ofile)
 
-        print("HEART:" + json_data[FI]["heart"], file=ofile)
-        print("VESSELS:" + json_data[FI]["vessels"], file=ofile)
-        print("LYMPH NODES:" + json_data[FI]["lymph nodes"], file=ofile)
-        print("OTHER MEDIASTINUM:" + json_data[FI]["other mediastinum"], file=ofile)
-        print("LUNGS:" + json_data[FI]["lungs"], file=ofile)
-        print("PLEURAL SPACE:" + json_data[FI]["pleural space"], file=ofile)
-        print("UPPER ABDOMEN:" + json_data[FI]["upper abdomen"], file=ofile)
-        print("SOFT TISSUES:" + json_data[FI]["soft tissues"], file=ofile)
-        print("BONES:" + json_data[FI]["bones"], file=ofile)
+        print("HEART:".ljust(22) + json_data[FI]["heart"], file=ofile)
+        print("VESSELS:".ljust(22) + json_data[FI]["vessels"], file=ofile)
+        print("LYMPH NODES:".ljust(22) + json_data[FI]["lymph nodes"], file=ofile)
+        print("OTHER MEDIASTINUM:".ljust(22) + json_data[FI]["other mediastinum"], file=ofile)
+        print("LUNGS:".ljust(22) + json_data[FI]["lungs"], file=ofile)
+        print("PLEURAL SPACE:".ljust(22) + json_data[FI]["pleural space"], file=ofile)
+        print("UPPER ABDOMEN:".ljust(22) + json_data[FI]["upper abdomen"], file=ofile)
+        print("SOFT TISSUES:".ljust(22) + json_data[FI]["soft tissues"], file=ofile)
+        print("BONES:".ljust(22) + json_data[FI]["bones"], file=ofile)
 
         print(IMPRESSION, file=ofile)
         for line in json_data[IM].split('\n'):
@@ -319,14 +332,15 @@ def exit_edit():
 #
 # Add action buttons to the end
 #
+rowvar = rowvar + 1
 sign_btn = tk.Button(root, text = 'Sign Report', command = sign_report)
-sign_btn.grid(sticky=tk.W)
+sign_btn.grid(sticky=tk.W, column=0, row=rowvar)
 
 print_btn = tk.Button(root, text = 'Print Report', command = print_report)
-print_btn.grid(sticky=tk.W)
+print_btn.grid(sticky=tk.W, column=1, row=rowvar)
 
 exit_btn = tk.Button(root, text = 'Exit', command = exit_edit)
-exit_btn.grid(sticky=tk.W)
+exit_btn.grid(sticky=tk.W, column=2, row=rowvar)
 
 
 #

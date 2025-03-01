@@ -4,6 +4,7 @@
   "session": "",
   "signed": false,
   "signer": "",
+  "template" : "US_RUQ",
   "history": {
     "patient_age": "",
     "patient_history": "right upper quadrant abdominal pain"
