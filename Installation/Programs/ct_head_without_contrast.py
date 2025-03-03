@@ -61,7 +61,6 @@ DC = "description"
 FI = "findings"
 CM = "comparison"
 IM = "impression"
-BD = "bile ducts"
 
 HISTORY = "** HISTORY **"
 PATIENT_AGE = "Patient Age"
@@ -77,7 +76,7 @@ IMPRESSION = "** IMPRESSION **"
 #
 # Process command line arguments and load initial json data
 #
-parser = argparse.ArgumentParser(description="Report on Study Entry Package for Upper Right Quadrant Ultrasound")
+parser = argparse.ArgumentParser(description="Report on Study Entry Package for CT Chest Without Contrast")
 parser.add_argument("-m", "--mrn", help="MRN for Study", required=True)
 parser.add_argument("-s", "--session", help="Session for Study", required=True)
 parser.add_argument("-R", "--report_dir", help="Where we fetch/save reports", default="/code_dark/reports")
@@ -112,7 +111,7 @@ with open(jsonfile, "r") as infile:
 # Root window creation
 #
 root=tk.Tk()
-root.title("Ultrasound Right Upper Quadrant Abdomen" + " MRN: " + mrn + " SESSION: " + session)
+root.title("CT Chest Without Contrast" + " MRN: " + mrn + " SESSION: " + session)
 
 #
 # Need this to make sure Entry fields abut labels,
@@ -164,6 +163,7 @@ def add_label_box(str, insert, row):
     box.grid(sticky=tk.W, row=row, column=1, columnspan=2, pady=(0,10), padx=(0,10))
     return box, row + boxsize
 
+
 # History Section
 rowvar = add_fixed_label(HISTORY, rowvar)
 
@@ -174,37 +174,22 @@ history_box, rowvar = add_label_box(PATIENT_HISTORY, json_data[HI][PH], rowvar)
 
 # Technique Section
 rowvar = add_fixed_label(TECHNIQUE, rowvar)
-
 tek_box, rowvar = add_box(json_data[TH][DC], rowvar)
+
+add_label("CTDI: ", rowvar, 0)
+ctdi_entry, rowvar = add_entry(json_data[TH]["ctdi"], 20, "left", rowvar, 1)
+
+add_label("DLP: ", rowvar, 0)
+dlp_entry, rowvar = add_entry(json_data[TH]["dlp"], 20, "left", rowvar, 1)
 
 comparison_box, rowvar = add_label_box(COMPARISON, json_data[TH][CM], rowvar)
 
 # Findings Section
 rowvar = add_fixed_label(FINDINGS, rowvar)
 
-pancreas_box, rowvar = add_label_box("PANCREAS", json_data[FI]["pancreas"], rowvar)
-
-liver_box, rowvar = add_label_box("LIVER", json_data[FI]["liver"], rowvar)
-
-gallbladder_box, rowvar = add_label_box("GALLBLADDER", json_data[FI]["gallbladder"], rowvar)
-
-rowvar = add_label("BILE DUCTS", rowvar, 0)
-add_label("Common duct measures (in mm): ", rowvar, 0)
-bileduct_size, rowvar = add_entry(json_data[FI][BD]["size"], 10, "right", rowvar, 1)
-
-add_label("which is", rowvar, 0)
-bileduct_quality, rowvar = add_entry(json_data[FI][BD]["quality"], 10, "left", rowvar, 1)
-
-bileduct_dilation, rowvar = add_box(json_data[FI][BD]["dilation"], rowvar)
-
-rowvar =  add_label("RIGHT KIDNEY", rowvar, 0)
-
-add_label("Measures (in cm): ", rowvar, 0)
-kidney_size, rowvar = add_entry(json_data[FI]["right kidney"]["size"], 5, "right", rowvar, 1)
-
-kidney_box, rowvar = add_box(json_data[FI]["right kidney"]["notes"], rowvar)
-
-other_box, rowvar = add_label_box("OTHER", json_data[FI]["other"], rowvar)
+brain_box, rowvar = add_label_box("BRAIN PARENCHYMA", json_data[FI]["brain"], rowvar)
+ventricles_box, rowvar = add_label_box("VENTRICLES/EXTRA-AXIAL SPACES", json_data[FI]["ventricles"], rowvar)
+extracranial_box, rowvar = add_label_box("EXTRACRANIAL STRUCTURES", json_data[FI]["extracranial"], rowvar)
 
 # Impressions Section
 rowvar = add_fixed_label(IMPRESSION, rowvar)
@@ -225,19 +210,14 @@ def save_data(jd):
     jd[HI][PH] = history_box.get("1.0", "end-1c")
 
     jd[TH][DC] = tek_box.get("1.0", "end-1c")
+    jd[TH]["ctdi"] = ctdi_entry.get()
+    jd[TH]["dlp"] = dlp_entry.get()
     jd[TH][CM] = comparison_box.get("1.0", "end-1c")
 
-    jd[FI]["pancreas"] = pancreas_box.get("1.0", "end-1c")
-    jd[FI]["liver"] = liver_box.get("1.0", "end-1c")
-    jd[FI]["gallbladder"] = gallbladder_box.get("1.0", "end-1c")
-    jd[FI][BD]["size"] = bileduct_size.get()
-    jd[FI][BD]["quality"] = bileduct_quality.get()
-    jd[FI][BD]["dilation"] = bileduct_dilation.get("1.0", "end-1c")
+    jd[FI]["brain"] = brain_box.get("1.0", "end-1c")
+    jd[FI]["ventricles"] = ventricles_box.get("1.0", "end-1c")
+    jd[FI]["extracranial"] = extracranial_box.get("1.0", "end-1c")
 
-    jd[FI]["right kidney"]["size"] = kidney_size.get()
-    jd[FI]["right kidney"]["notes"] = kidney_box.get("1.0", "end-1c")
-
-    jd[FI]["other"] = other_box.get("1.0", "end-1c")
     jd[IM] = impress_box.get("1.0", "end-1c")
 
     with open(jsonfile, "w") as ofile:
@@ -248,7 +228,7 @@ def create_report(rpt):
     save_data(json_data)
     with open(rpt, "w") as ofile:
         wrapper = textwrap.TextWrapper(width=60, replace_whitespace=False)
-        print("Ultrasound Upper Right Quadrant Abdomen Study", file=ofile)
+        print("CT Chest Without Contrast Study", file=ofile)
         print("", file=ofile)
         print("MRN: " + mrn, file=ofile)
         print("Session: " + session, file=ofile)
@@ -266,44 +246,15 @@ def create_report(rpt):
         for line in json_data[TH][DC].split('\n'):
             print(wrapper.fill(text=line), file=ofile)
         print("", file=ofile)
+        print("CTDI: ".ljust(6) + json_data[TH]["ctdi"], file=ofile)
+        print("DLP: ".ljust(6) + json_data[TH]["dlp"], file=ofile)
         print(COMPARISON + ": " + json_data[TH][CM], file=ofile)
         print("", file=ofile)
         print(FINDINGS, file=ofile)
 
-        print("PANCREAS:", file=ofile)
-        for line in json_data[FI]["pancreas"].split('\n'):
-            print(wrapper.fill(text=line), file=ofile)
-        print("", file=ofile)
-
-        print("LIVER:", file=ofile)
-        for line in json_data[FI]["liver"].split('\n'):
-            print(wrapper.fill(text=line), file=ofile)
-        print("", file=ofile)
-
-        print("GALLBLADDER:", file=ofile)
-        for line in json_data[FI]["gallbladder"].split('\n'):
-            print(wrapper.fill(text=line), file=ofile)
-        print("", file=ofile)
-
-        print("BILE DUCTS:", file=ofile)
-        print("Common duct measures (in mm): " + json_data[FI][BD]["size"], file=ofile)
-        print("which is " + json_data[FI][BD]["quality"], file=ofile)
-        for line in json_data[FI][BD]["dilation"].split('\n'):
-            print(wrapper.fill(text=line), file=ofile)
-        print("", file=ofile)
-
-        print("RIGHT KIDNEY:", file=ofile)
-        print("Measures (in cm): " + json_data[FI]["right kidney"]["size"], file=ofile)
-        print("Notes:", file=ofile)
-        for line in json_data[FI]["right kidney"]["notes"].split('\n'):
-            print(wrapper.fill(text=line), file=ofile)
-        print("", file=ofile)
-
-        print("Other:", file=ofile)
-        for line in json_data[FI]["other"].split('\n'):
-            print(wrapper.fill(text=line), file=ofile)
-        print("", file=ofile)
-        print("", file=ofile)
+        print("BRAIN PARENCHYMA:".ljust(30) + json_data[FI]["brain"], file=ofile)
+        print("VENTRICLES/EXTRA-AXIAL SPACES:".ljust(30) + json_data[FI]["ventricles"], file=ofile)
+        print("EXTRCRANIAL STRUCTURES:".ljust(30) + json_data[FI]["extracranial"], file=ofile)
 
         print(IMPRESSION, file=ofile)
         for line in json_data[IM].split('\n'):

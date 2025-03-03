@@ -1,0 +1,25 @@
+{
+  "report_version" : 0,
+  "mrn" : "",
+  "session" : "",
+  "signed" : false,
+  "signer" : "",
+  "template" : "mri_brain_without_contrast",
+  "history" : {
+    "patient_age" : "",
+    "patient_history" : ""
+  },
+  "technique" : {
+    "description" : "MRI brain without contrast",
+    "ctdi" : "XX mGy",
+    "dlp"  : "XX mGy-cm",
+    "comparison" : "None Available"
+  },
+  "findings" : {
+    "brain" : "No acute infarct or hemorrhage. No mass effect or herniation. Signal intensities are within normal limits for age.",
+    "ventricles" : "No hydrocephalus or extra-axial fluid collections.",
+    "flow" : "Intact.",
+    "extracranial" : "Visualized structures are normal."
+  },
+  "impression" : "Normal MRI brain."
+}
