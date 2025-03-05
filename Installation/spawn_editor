@@ -30,6 +30,7 @@ if [[ ! -f ${fnm} ]]; then
   rm -f ${fnm}
   exit 1
  fi
+ chmod +w $fnm
 else
  st=$(stat -c%A ${fnm})
  echo ${fnm} already exists with mode $st >> $LOG
