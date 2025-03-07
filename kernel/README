@@ -1,10 +1,11 @@
+This is a change to the amdgpu driver to add some Barco adapter support.
 
-This is a change to the amdgpu driver to add Barco adapter support.
 You need to build separate kernel packages, per this URL:
 
 https://canonical-kteam-docs.readthedocs-hosted.com/en/public/how-to/build-kernel.html
 
-and use them to upgrade the CODE_DARK image we build. This cannot be easily
-automated at this time.
+and use them to upgrade the CODE_DARK image we build. This cannot be
+easily automated at this time.
 
-The amdgpu.c gets inserted into the tree just before the build binary step.
+The amdgpu.c gets inserted or the patch applied into the tree just before
+the build binary step.
