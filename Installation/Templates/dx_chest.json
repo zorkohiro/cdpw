@@ -10,9 +10,9 @@
 		"patient_history": "Patient History....."
 	},
 	"technique": {
-		"views": "view(s) of chest acquired",
+		"views": "View(s) of chest acquired",
 		"comparison": "None Available"
 	},
 	"findings": "No focal consolidation or pleural effusion. Heart size is normal",
-	"impression": "Normal Chest"
+	"impression": "Normal Chest."
 }

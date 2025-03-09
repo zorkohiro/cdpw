@@ -1,0 +1,23 @@
+Template File Name Architecture
+
+1. General modality type
+
+We now have settled on making template names that start
+with the DICOM modality, lower case, followed by an underscore,
+followed by the specific template name.
+
+Each modality will have a 'Generic' version that is specific
+for what we'd like to see in a modality's report.
+
+2. Rest of filename
+
+The non-generic versions will have a lower case underscore joined
+(instead of spaces) contracted name of the report. This will
+be somewhat freeform but attempt to be consistent.
+
+3. Possible future changes to reduce the separate number of
+template files.
+
+Have predictable variant versions for right/left for studies
+which have obvious right/left (e.g., wrist, mammogram), or
+with contrast / without contrast CT variants.
