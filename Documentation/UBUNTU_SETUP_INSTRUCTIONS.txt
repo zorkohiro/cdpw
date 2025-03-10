@@ -30,6 +30,16 @@ Go to Screen Lock and uncheck everything
 Go to Ubuntu Desktop and shrink the taskbar icons and place the taskbar
 on the bottom of the screen. Disable Home Folder on desktop.
 
+Search for Date & Time and disable automatic date and time.
+
+Unpin 'A' window and help icons from taskbar on botton.
+
+#
+# Set background to plain gray
+#
+gsettings set org.gnome.desktop.background picture-uri none
+gsettings set org.gnome.desktop.background primary-color gray
+
 #
 # Disable automatic updates && upgrades
 #

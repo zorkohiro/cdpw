@@ -1,0 +1,67 @@
+Sun Mar  9 05:29:14 PM PDT 2025
+Version 0.3
+
+This a quick checklist to check a Code Dark release for sanity.
+Expect this to change and expand relatively quickly.
+
+The base release is no Ubuntu 24.04.2- no longer Kubuntu.
+
+1. Booting
+
+Does it boot correctly when you have the USB key inserted?
+
+If it boots the hard disk, you may have to retry and hit ESC to get
+into the ROM and boot the key that way.
+
+Note: We may need a "prep" checklist for making workstations ready for Code Dark.
+This should include setting up the BIOS to boot the USB key first. However- I have
+notices what seems to be the Z840 ws randomly reverting to boot the primary hard
+disk drive on occassion.
+
+Booting correctly means booting and being presented automatically with a
+screen where you can fire up a browser or a Konsole terminal session.
+No crashes.
+
+2. Setting System Time
+
+Since the system is planned for being air-gapped it will not be able to use NTP
+or other time synchronization protocols to set system time. Setting system time
+is important for official reporting purposes.
+
+You should be able to navigate to system settings (little circle lower
+right on botton command bar on screen) and go to the settings icon- in
+the search bar on the upper left search for 'clock' and you should see
+a Dat & Time for change date & time. You should be able to set time
+here.
+
+3. Network
+
+Do you get a network address assigned automatically? Hovering over
+the little rj45 icon should be able to tell you whether networking
+has been enabled and an IP address assigned.
+
+4. Basic Orthanc Server Access
+
+Firing up the browser and pointing it toward  http://localhost:8042 should get you
+the Orthanc main screeen with no privacy complaints etc.
+
+6. Multiple extended monitors and monitor resolution
+
+Attaching more than one monitor (preferably before booting) should yield
+multiple separately accessible screens. The monitors should be displaying
+at the expected pixex density.
+
+You should be able to right click the mouse on the desktop to be able
+configure the display about what the Wayland server thinks about monitor
+placement (e.g. right to left) and monitor orientation (for monitors
+that flip).
+
+Please report any artifacts like the monitor(s) freezing when moving
+windows around across edge boundarie, or any freezing of obviously
+incoreect video artifacts.
+
+6. Importing Studies
+
+Given that you know the IP address of the Code Dark workstation,
+you can take that plus the default Orthanc Dicom Port of 4242
+and attempt to load studies into the Orthanc database.
