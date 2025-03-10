@@ -1,4 +1,4 @@
-Mar 4 2025
+Mar 9 2025
 
 0. Required Hardware
 
@@ -80,4 +80,3 @@ This should install all of the main Orthanc binaries plus our changes and additi
 # Point google browser to orthanc page
 #
 Enter http://localhost:8042 in chrome and bookmark it
-Leave the browser open so it shows up on reboot

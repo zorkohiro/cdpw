@@ -1,7 +1,0 @@
-[Desktop Entry]
-Name=Set System Time Helper
-Comment=Helper for Orthanc to Set System Time with
-Exec=/usr/bin/SetSystemTime.py
-Icon=/usr/share/icons/Humanity/apps/16/seahorse.png
-Terminal=false
-Type=Application

@@ -1,12 +1,4 @@
 #!/bin/bash
-#
-# If the database directory is already present,
-# then we don't have to wait for it to be mounted
-# (development debug version)
-#
-if [[ -d /code_dark/database ]]; then
- exit 0
-fi
 export XDG_RUNTIME_DIR=/run/user/$UID
 export DISPLAY=:0
 LONG_SLEEP=600

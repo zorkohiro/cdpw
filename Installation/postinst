@@ -20,14 +20,6 @@ chown -R $OUID ~orthanc/.local
 setcap 'cap_net_bind_service=+ep' /sbin/Orthanc
 
 #
-# Install symlink to python tkinter time and date changer
-#
-mkdir -p ~orthanc/.local/share/applications
-rm -f ~orthanc/.local/share/applications/SetSystemTime.desktop
-cd  ~orthanc/.local/share/applications && ln -s /usr/lib/kp-report/SetSystemTime.desktop
-cd -
-
-#
 # Enable cdw_configure service
 #
 systemctl enable cdw_configure.service
