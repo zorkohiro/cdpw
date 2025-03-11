@@ -6,11 +6,11 @@
   	"template" : "dx_chest",
 	"history": {
 		"patient_age": "",
-		"patient_history": "Patient History....."
+		"patient_history": ""
 	},
 	"technique": {
 		"views": "View(s) of chest acquired.",
-		"comparison": "None Available"
+		"comparison": ""
 	},
 	"findings": "No focal consolidation or pleural effusion. Heart size is normal.",
 	"impression": "Normal Chest."

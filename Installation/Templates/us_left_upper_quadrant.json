@@ -3,13 +3,13 @@
   "session": "",
   "signed": false,
   "signer": "",
-  "template" : "us_right_upper_quadrant",
+  "template" : "us_left_upper_quadrant",
   "history": {
     "patient_age": "",
     "patient_history": ""
   },
   "technique": {
-    "description": "Ultrasound images of the right upper quadrant acquired. Color and spectral Doppler images of the main portal vein also acquired.",
+    "description": "Ultrasound images of the left upper quadrant acquired. Color and spectral Doppler images of the main portal vein also acquired.",
     "comparison": "None Available"
   },
   "findings": {
@@ -21,11 +21,11 @@
       "quality": "Normal.",
       "dilation": "No intrahepatic biliary ductal dilation."
     },
-    "right kidney": {
+    "left kidney": {
       "size": "",
       "notes": "Normal cortical echogenicity. No stones or hyrdronephrosis."
     },
     "other": ""
   },
-  "impression": "Normal right upper quadrant ultrasound."
+  "impression": "Normal left upper quadrant ultrasound."
 }

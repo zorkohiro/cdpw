@@ -6,13 +6,13 @@
   "template" : "ct_abd_pelvis_wc",
   "history" : {
     "patient_age" : "",
-    "patient_history" : "abdominal pain"
+    "patient_history" : "Abdominal pain."
   },
   "technique" : {
     "description" : "CT images of the abdomen and pelvis acquired with 100 mL Omnipaque 300IV contrast",
     "ctdi" : "XX mGy",
     "dlp"  : "XX mGy-cm",
-    "comparison" : "None Available"
+    "comparison" : ""
   },
   "findings" : {
     "lung" : "Clear.",

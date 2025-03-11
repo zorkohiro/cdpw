@@ -9,7 +9,7 @@
     "patient_history" : ""
   },
   "technique" : {
-    "description" : "CT images of the chest acquired without contrast",
+    "description" : "CT images of the chest acquired without contrast.",
     "ctdi" : "XX mGy",
     "dlp"  : "XX mGy-cm",
     "comparison" : ""

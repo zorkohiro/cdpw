@@ -3,7 +3,7 @@
   "session" : "",
   "signed" : false,
   "signer" : "",
-  "template" : "ct_cervical_spine_wc_woc",
+  "template" : "ct_cervical_spine_woc",
   "history" : {
     "patient_age" : "",
     "patient_history" : ""

@@ -3,7 +3,7 @@
   "session" : "",
   "signed" : false,
   "signer" : "",
-  "template" : "ct_pulm_angio",
+  "template" : "ct_pulm_angio_wc",
   "history" : {
     "patient_age" : "",
     "patient_history" : ""
