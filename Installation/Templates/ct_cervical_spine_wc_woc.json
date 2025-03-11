@@ -1,22 +1,25 @@
 {
-  "report_version" : 0,
   "mrn" : "",
   "session" : "",
   "signed" : false,
   "signer" : "",
-  "template" : "ct_generic_wc",
+  "template" : "ct_cervical_spine_wc_woc",
   "history" : {
     "patient_age" : "",
     "patient_history" : ""
   },
   "technique" : {
-    "description" : "CT images of the cervical spine acquired without intravenous contrast.",
-    "ctdi" : "XXX mGy",
-    "dlp"  : "XXX mGy-cm",
+    "description" : "CT images of the cervical spine read without intravenous contrast.",
+    "ctdi" : "XX mGy",
+    "dlp"  : "XX mGy-cm",
     "comparison" : ""
   },
   "findings" : {
-    "generic" : ""
+    "bones": "Normal vertebral alignment. Normal vertebral body height. No acute fracture. Densis intact, C1 and C2 are normally aligned, and the atlantodental interval is normal.",
+    "discs": "Disc space heights are normal.",
+    "spinal": "No osseous narrowing of the spinal canal",
+    "soft": "No prevertebral soft tissue swelling. Visualized neck soft tissues are normal.",
+    "other": "Visualized lung apices are clear."
   },
-  "impression" : ""
+  "impression" : "Normal CT cervical spine."
 }

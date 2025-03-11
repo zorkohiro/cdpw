@@ -1,22 +1,28 @@
 {
-  "report_version" : 0,
   "mrn" : "",
   "session" : "",
   "signed" : false,
   "signer" : "",
-  "template" : "ct_generic_wc",
+  "template" : "ct_neck_wc",
   "history" : {
     "patient_age" : "",
     "patient_history" : ""
   },
   "technique" : {
-    "description" : "CT images of XXX acquired with XXX mL XXX contrast",
-    "ctdi" : "XXX mGy",
-    "dlp"  : "XXX mGy-cm",
+    "description" : "CT images of the neck acquired with XX mL XX intravenous contrast",
+    "ctdi" : "XX mGy",
+    "dlp"  : "XX mGy-cm",
     "comparison" : ""
   },
   "findings" : {
-    "generic" : ""
+    "pharyngeal": "Normal nasopharynx, oropharynx and hypopharynx.",
+    "oral": "Normal including tongue and floor of mouth.",
+    "larynx": "Normal supraglottic, glottic and suglottic larynx.",
+    "salivary": "Normal parotid, submandibular and sublingual glands.",
+    "thyroid": "Normal.",
+    "vessels": "Normal.",
+    "bones": "No significant abnormality.",
+    "other" : "Visualized lung apices are clear."
   },
-  "impression" : ""
+  "impression" : "Normal CT neck."
 }

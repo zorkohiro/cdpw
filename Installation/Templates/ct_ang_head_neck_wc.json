@@ -1,10 +1,9 @@
 {
-  "report_version" : 0,
   "mrn" : "",
   "session" : "",
   "signed" : false,
   "signer" : "",
-  "template" : "ct_angiogram_head_and_neck_with_contrast",
+  "template" : "ct_ang_head_neck_wc",
   "history" : {
     "patient_age" : "",
     "patient_history" : ""
@@ -18,8 +17,8 @@
   "findings" : {
     "head" : "No occlusion or hemodynamically significant stenosis. No aneurysm.",
     "vessels" : "Visualized segments are patent.",
-    "right_ica" : "No stenosis or significant plaque. No dissection.",
-    "left_ica" : "No stenosis or significant plaque. No dissection.",
+    "r_ica" : "No stenosis or significant plaque. No dissection.",
+    "l_ica" : "No stenosis or significant plaque. No dissection.",
     "vertebral" : "Patent extracranial segments. No dissection.",
     "other" : "Visualized lung apices are clear. No neck mass or suspicious lymp nodes. Bones demonstrate no significant abnormality."
   },

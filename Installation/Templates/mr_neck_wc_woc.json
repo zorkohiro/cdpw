@@ -1,20 +1,26 @@
 {
-  "report_version" : 0,
   "mrn" : "",
   "session" : "",
   "signed" : false,
   "signer" : "",
-  "template" : "",
+  "template" : "mr_neck_wc_woc",
   "history" : {
     "patient_age" : "",
     "patient_history" : ""
   },
   "technique" : {
-    "description" : "MRI XXXX without contrast",
+    "description" : "MRI images of the neck acquired with and with XX ml XX intravenous contrast.",
     "comparison" : ""
   },
   "findings" : {
-    "other" : ""
+	"pharyngeal": "Normal nasopharynx, oropharynx and hypopharynx.",
+	"oral": "Normal including tongue and floor of mount.",
+	"larynx": "Normal supraglottic, glottic and subglottic larynx.",
+	"salivary": "Normal parotid, submandibular and sublingual glands.",
+	"thyroid": "Normal.",
+	"flow": "Normal.",
+	"bones": "No significant abnormality.",
+	"other" : "None."
   },
-  "impression" : ""
+  "impression" : "Normal MRI neck."
 }

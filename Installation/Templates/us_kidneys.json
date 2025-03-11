@@ -1,20 +1,22 @@
 {
-  "report_version": 0,
   "mrn": "",
   "session": "",
   "signed": false,
   "signer": "",
-  "template" : "US_RUQ",
+  "template" : "us_kidneys",
   "history": {
     "patient_age": "",
     "patient_history": ""
   },
   "technique": {
-    "description": "Ultrasound images...",
+    "description": "Ultrasound images of the kidneys and bladder acquired. Color Doppler indicated.",
     "comparison": ""
   },
   "findings": {
-    "other": "None"
+	"r_kidney": "Measures XX cm. Normal cortical echogenicity. No stones or hydronephrosis. No suspicious renal mass.",
+	"l_kidney": "Measures XX cm. Normal cortical echogenicity. No stones or hydronephrosis. No suspicious renal mass.",
+	"bladder": "No significant abnormality",
+	"other": "None."
   },
-  "impression": ""
+  "impression": "Normal kidneys and bladder."
 }

@@ -1,18 +1,17 @@
 {
-	"report_version": 0,
 	"mrn": "",
 	"session": "",
 	"signed": false,
 	"signer": "",
-  	"template" : "generic",
+  	"template" : "dx_cervical_spine",
 	"history": {
 		"patient_age": "",
 		"patient_history": ""
 	},
 	"technique": {
-		"used": "",
+		"used": "2 view(s) of the cervical spine acquired, including AP and lateral.",
 		"comparison": ""
 	},
-	"findings": "",
-	"impression": ""
+	"findings": "Normal alignment. Normal vertebral body heght. No acute fracture. Disc spaces are normal. Prevertebral soft tissues are normal.",
+	"impression": "Normal cervical spine."
 }

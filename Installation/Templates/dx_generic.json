@@ -1,20 +1,18 @@
 {
-  "report_version" : 0,
   "mrn" : "",
   "session" : "",
   "signed" : false,
   "signer" : "",
-  "template" : "",
+  "template" : "dx_generic",
   "history" : {
     "patient_age" : "",
     "patient_history" : ""
   },
+  "title": "[]",
   "technique" : {
-    "description" : "MRI XXXX without contrast",
+    "description" : "XX views of the XX acquired.",
     "comparison" : ""
   },
-  "findings" : {
-    "other" : ""
-  },
+  "findings" : "",
   "impression" : ""
 }

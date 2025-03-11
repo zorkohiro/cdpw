@@ -1,0 +1,24 @@
+{
+  "mrn": "",
+  "session": "",
+  "signed": false,
+  "signer": "",
+  "template" : "us_pelvis",
+  "history": {
+    "patient_age": "",
+    "patient_history": ""
+  },
+  "technique": {
+    "description": "Ultrasound images of the pelvis acquired with endovaginal and transabdominal approach.",
+    "comparison": ""
+  },
+  "findings": {
+	"uterus": "Measures XX cm. No fibroids or other masses seen.",
+	"endometrium": "Measures XX mm.",
+	"r_adnexa": "The right ovary is normal measuring XX cm.",
+	"l_adnexa": "The left ovary is normal measuring XX cm.",
+	"fluid": "None.",
+	"other": "None"
+  },
+  "impression": "Normal pelvic ultrasound. (#amNA)"
+}

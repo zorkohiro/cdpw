@@ -1,20 +1,23 @@
 {
-  "report_version": 0,
   "mrn": "",
   "session": "",
   "signed": false,
   "signer": "",
-  "template" : "US_RUQ",
+  "template" : "us_1st_trimester_ob.json",
   "history": {
     "patient_age": "",
-    "patient_history": ""
+    "patient_history": "Evaluate for ectopic pregnancy.\nLMP: XX\nBhCG: XX"
   },
   "technique": {
-    "description": "Ultrasound images...",
+    "description": "Ultrasound images of the pelvis acquired with endovaginal and transabdominal approach.",
     "comparison": ""
   },
   "findings": {
-    "other": "None"
+	"uterus": "No intrauterine gestationsal sac.",
+	"r_adnexa": "The right ovary is normal, measuring XX cm.",
+	"l_adnexa": "The left ovary is normal, measuring XX cm.",
+	"fluid": "None.",
+	"other": "None."
   },
   "impression": ""
 }

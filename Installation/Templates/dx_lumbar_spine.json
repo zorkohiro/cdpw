@@ -1,18 +1,17 @@
 {
-	"report_version": 0,
 	"mrn": "",
 	"session": "",
 	"signed": false,
 	"signer": "",
-  	"template" : "generic",
+  	"template" : "dx_lumbar_spine",
 	"history": {
 		"patient_age": "",
 		"patient_history": ""
 	},
 	"technique": {
-		"used": "",
+		"used": "2 views of the lumbar spine acquired.",
 		"comparison": ""
 	},
-	"findings": "",
-	"impression": ""
+	"findings": "Normal alignment. Normal vertebral body height. No acute fracture. Disc spaces are normal.",
+	"impression": "Normal lumbar spine."
 }

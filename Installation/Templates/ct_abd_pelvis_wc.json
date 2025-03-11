@@ -1,10 +1,9 @@
 {
-  "report_version" : 0,
   "mrn" : "",
   "session" : "",
   "signed" : false,
   "signer" : "",
-  "template" : "ct_abd_pelvis_with_contrast",
+  "template" : "ct_abd_pelvis_wc",
   "history" : {
     "patient_age" : "",
     "patient_history" : "abdominal pain"
@@ -16,21 +15,21 @@
     "comparison" : "None Available"
   },
   "findings" : {
-    "lung" : "Clear",
-    "liver" : "No significant abnormality",
-    "gbd" : "No calcified gallstones. No significant biliary dilation",
-    "spleen" : "Normal",
-    "pancreas" : "Normal",
-    "adrenal" : "No significant abnormality",
-    "kidneys" : "Normal",
-    "bowel"  : "No significant abnormality",
-    "meslymph" : "No suspiscious lymph nodes",
-    "peritoneum" : "No significant free fluid. No free air",
-    "aorta" : "Normal abdominal aortica diameter (<3cm)",
-    "bladder" : "No significant abnormlity",
-    "pelvic" : "No significant abnormality",
-    "soft tissues" : "No significant abnormality",
-    "bones" : "No significant abnormality"
+    "lung" : "Clear.",
+    "liver" : "No significant abnormality.",
+    "gbd" : "No calcified gallstones. No significant biliary dilation.",
+    "spleen" : "Normal.",
+    "pancreas" : "Normal.",
+    "adrenal" : "No significant abnormality.",
+    "kidneys" : "Normal.",
+    "bowel"  : "No significant abnormality.",
+    "meslymph" : "No suspiscious lymph nodes.",
+    "peritoneum" : "No significant free fluid. No free air.",
+    "aorta" : "Normal abdominal aortica diameter (<3cm).",
+    "bladder" : "No significant abnormlity.",
+    "pelvic" : "No significant abnormality.",
+    "soft tissues" : "No significant abnormality.",
+    "bones" : "No significant abnormality."
   },
-  "impression" : "Normal CT abdomen pelvis"
+  "impression" : "Normal CT abdomen pelvis."
 }

@@ -1,20 +1,29 @@
 {
-  "report_version" : 0,
   "mrn" : "",
   "session" : "",
   "signed" : false,
   "signer" : "",
-  "template" : "",
+  "template" : "mr_cervical_spine_woc",
   "history" : {
     "patient_age" : "",
     "patient_history" : ""
   },
   "technique" : {
-    "description" : "MRI XXXX without contrast",
+    "description" : "MRI cervical Spine without contrast.",
     "comparison" : ""
   },
   "findings" : {
-    "other" : ""
+        "spinal": "Normal.",
+        "discs": "Normal.",
+        "bones": "Normal vertebral alignment. Normal vertebral body height. Marrow signal is normal.",
+        "soft": "Normal.",
+	"c2-c3": "No canal or foraminal stenosis.",
+	"c3-c4": "No canal or foraminal stenosis.",
+	"c4-c5": "No canal or foraminal stenosis.",
+	"c5-c6": "No canal or foraminal stenosis.",
+	"c6-c7": "No canal or foraminal stenosis.",
+	"c7-t1": "No canal or foraminal stenosis.",
+	"other" : "Visualized posterior fossa is normal."
   },
-  "impression" : ""
+  "impression" : "Normal MRI cervical spine."
 }

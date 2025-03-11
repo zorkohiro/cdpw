@@ -1,18 +1,17 @@
 {
-	"report_version": 0,
 	"mrn": "",
 	"session": "",
 	"signed": false,
 	"signer": "",
-  	"template" : "XRAY_CHEST",
+  	"template" : "dx_chest",
 	"history": {
 		"patient_age": "",
 		"patient_history": "Patient History....."
 	},
 	"technique": {
-		"views": "View(s) of chest acquired",
+		"views": "View(s) of chest acquired.",
 		"comparison": "None Available"
 	},
-	"findings": "No focal consolidation or pleural effusion. Heart size is normal",
+	"findings": "No focal consolidation or pleural effusion. Heart size is normal.",
 	"impression": "Normal Chest."
 }

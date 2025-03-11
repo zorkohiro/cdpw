@@ -1,20 +1,22 @@
 {
-  "report_version" : 0,
   "mrn" : "",
   "session" : "",
   "signed" : false,
   "signer" : "",
-  "template" : "",
+  "template" : "mr_angio_neck_woc",
   "history" : {
     "patient_age" : "",
     "patient_history" : ""
   },
   "technique" : {
-    "description" : "MRI XXXX without contrast",
+    "description" : "MR angiogram images of the neck acquired without intravenous contrast.",
     "comparison" : ""
   },
   "findings" : {
-    "other" : ""
+	"great": "Visualized segments are patent.",
+	"r_ica": "No stenosis by NASCET criteria at the carotid bifurcation.",
+	"l_ica": "No stenosis by NASCET criteria at the carotid bifurcation.",
+	"vertebral": "Patent extracranial segments."
   },
-  "impression" : ""
+  "impression" : "Normal MRA neck."
 }

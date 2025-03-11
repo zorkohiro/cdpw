@@ -1,0 +1,28 @@
+{
+  "mrn": "",
+  "session": "",
+  "signed": false,
+  "signer": "",
+  "template" : "us_scrotum",
+  "history": {
+    "patient_age": "",
+    "patient_history": ""
+  },
+  "technique": {
+    "description": "Ultrasound images of the scrotum acquired. Color and spectral Doppler images acquired as indicated.",
+    "comparison": ""
+  },
+  "findings": {
+	"RIGHT": "HEADER",
+	"r_testicle": "Measures XX cm. Normal echogenicity, no masses.",
+	"r_epididymis": "Normal.",
+	"r_doppler": "Normal vasuclarity.",
+	"r_other": "No significant variocelke or hydrocele.",
+	"LEFT": "HEADER",
+	"l_testicle": "Measures XX cm. Normal echogenicity, no masses.",
+	"l_epididymis": "Normal.",
+	"l_doppler": "Normal vasuclarity.",
+	"l_other": "No significant variocelke or hydrocele."
+  },
+  "impression": "Normal."
+}

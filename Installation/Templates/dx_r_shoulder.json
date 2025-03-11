@@ -1,18 +1,17 @@
 {
-	"report_version": 0,
 	"mrn": "",
 	"session": "",
 	"signed": false,
 	"signer": "",
-  	"template" : "generic",
+  	"template" : "dx_r_shoulder",
 	"history": {
 		"patient_age": "",
 		"patient_history": ""
 	},
 	"technique": {
-		"used": "",
+		"used": "4 views(s) of the right shoulder acquired.",
 		"comparison": ""
 	},
-	"findings": "",
-	"impression": ""
+	"findings": "No acute fracture. Normal alignment. No significant glenohumeral arthritis. No significant acromioclavicular arthritis.",
+	"impression": "Normal right shoulder."
 }

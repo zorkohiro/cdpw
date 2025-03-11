@@ -1,10 +1,9 @@
 {
-  "report_version" : 0,
   "mrn" : "",
   "session" : "",
   "signed" : false,
   "signer" : "",
-  "template" : "ct_chest_without_contrast",
+  "template" : "ct_chest_woc",
   "history" : {
     "patient_age" : "",
     "patient_history" : ""
@@ -13,18 +12,18 @@
     "description" : "CT images of the chest acquired without contrast",
     "ctdi" : "XX mGy",
     "dlp"  : "XX mGy-cm",
-    "comparison" : "None Available"
+    "comparison" : ""
   },
   "findings" : {
-    "heart" : "Heart size is normal",
-    "vessels" : "No significant abnormality",
-    "lymph nodes" : "No suspiscious lymph nodes",
-    "other mediastinum"  : "No significant abnormality",
-    "lungs" : "Normal",
-    "pleural space" : "Normal",
-    "upper abdomen" : "No significant abnormlity",
-    "soft tissues" : "No significant abnormality",
-    "bones" : "No significant abnormality"
+    "heart" : "Heart size is normal.",
+    "vessels" : "No significant abnormality.",
+    "lymph nodes" : "No suspicious lymph nodes.",
+    "other mediastinum"  : "No significant abnormality.",
+    "lungs" : "Normal.",
+    "pleural space" : "Normal.",
+    "upper abdomen" : "No significant abnormlity.",
+    "soft tissues" : "No significant abnormality.",
+    "bones" : "No significant abnormality."
   },
-  "impression" : "Normal CT chest"
+  "impression" : "Normal CT chest."
 }

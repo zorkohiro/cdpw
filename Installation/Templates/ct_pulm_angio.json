@@ -1,22 +1,30 @@
 {
-  "report_version" : 0,
   "mrn" : "",
   "session" : "",
   "signed" : false,
   "signer" : "",
-  "template" : "ct_generic_wc",
+  "template" : "ct_pulm_angio",
   "history" : {
     "patient_age" : "",
     "patient_history" : ""
   },
   "technique" : {
-    "description" : "CT images of XXX acquired with XXX mL XXX contrast",
-    "ctdi" : "XXX mGy",
-    "dlp"  : "XXX mGy-cm",
+    "description" : "CT angiogram images of the chest acquired with XX mL XX contrast. Multiplanar reformations performed. Maximum intensity projection (MIP) vessel images were obtained.",
+    "ctdi" : "XX mGy",
+    "dlp"  : "XX mGy-cm",
     "comparison" : ""
   },
   "findings" : {
-    "generic" : ""
+    "pulmonary": "No pulmonary embolism.",
+    "vessels": "No signigicant abnormality.",
+    "heart": "Heart size normal.",
+    "lymph": "No suspicious lymph nodes.",
+    "mediastinum": "Normal.",
+    "lungs": "Normal.",
+    "pleural": "No signigicant abnormality.",
+    "abdomen": "No signigicant abnormality.",
+    "soft": "No signigicant abnormality.",
+    "bones": "No signigicant abnormality."
   },
-  "impression" : ""
+  "impression" : "Negative for pulmonary embolism (#pe0)."
 }

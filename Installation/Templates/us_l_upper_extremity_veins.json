@@ -1,20 +1,21 @@
 {
-  "report_version": 0,
   "mrn": "",
   "session": "",
   "signed": false,
   "signer": "",
-  "template" : "US_RUQ",
+  "template" : "us_l_upper_extremity_veins",
   "history": {
     "patient_age": "",
     "patient_history": ""
   },
   "technique": {
-    "description": "Ultrasound images...",
+    "description": "Ultrasound images of the left upper extremity veins acquired. Color and spectral Doppler images also acquired.",
     "comparison": ""
   },
   "findings": {
-    "other": "None"
+	"deep": "No thrombus in the left internal jugular, subclavian, axillary, and brachial veins.",
+	"superficial": "Left basilic and cephalic veins are compressible.",
+	"soft": "Visualized soft tissues are normal."
   },
-  "impression": ""
+  "impression": "No deep venous thrombis in the left upper extremity."
 }

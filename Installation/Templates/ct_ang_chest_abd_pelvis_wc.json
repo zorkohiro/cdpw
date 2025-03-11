@@ -1,22 +1,45 @@
 {
-  "report_version" : 0,
   "mrn" : "",
   "session" : "",
   "signed" : false,
   "signer" : "",
-  "template" : "ct_generic_wc",
+  "template" : "ct_ang_chest_abd_pelvis_wc",
   "history" : {
     "patient_age" : "",
     "patient_history" : ""
   },
   "technique" : {
-    "description" : "CT images of XXX acquired with XXX mL XXX contrast",
-    "ctdi" : "XXX mGy",
-    "dlp"  : "XXX mGy-cm",
+    "description" : "CT angiogram images of the chest, abdomen and pelvis with XX ml XX intravenous contrast.",
+    "ctdi" : "XX mGy",
+    "dlp"  : "XX mGy-cm",
     "comparison" : ""
   },
   "findings" : {
-    "generic" : ""
+    "aorta" : "No thoracic aortic aneurysm, dissection, or intramural hematoma. Normal abdominal aortic diameter (<3cm).",
+    "major": "Patent.",
+    "CHEST": "HEADER",
+    "heart": "Heart size normal.",
+    "lymph": "No suspicious lymph nodes.",
+    "mediastinum": "No significant abnormality.",
+    "lungs": "Normal.",
+    "pleural": "Normal.",
+    "soft": "No significant abnormality.",
+    "bones": "No significant abnormality.",
+    "ABDOMEN/PELVIS": "HEADER BOX",
+    "abdomen": "Evaluation of the abdominal organs is limited due to arterial phase of contrast enhancement.",
+    "liver": "Normal.",
+    "gallbladder": "No calcified gallstones. No significant biliary dilation.",
+    "spleen": "Normal.",
+    "pancreas": "Normal.",
+    "adrenals": "Normal.",
+    "kidneys": "Normal.",
+    "gi": "No significant abnormality.",
+    "mesentery": "No suspicious lymph nodes.",
+    "peritoneum": "No significant free fluid. No free air.",
+    "bladder": "No significant abnormality.",
+    "pelvic": "No significant abnormality.",
+    "soft": "No significant abnormality.",
+    "bones": "No significant abnormality."
   },
-  "impression" : ""
+  "impression" : "Normal CTA chest, abdomen and pelvis."
 }
