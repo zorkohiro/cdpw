@@ -119,11 +119,13 @@ if version < 1:
 # at initial creation time.
 #
 mrn = json_data["mrn"]
-if mrn is None:
+if not mrn:
     mrn = "bogus"
+    json_data["mrn"] = mrn
 
 session = json_data["session"]
-if session is None:
+if not session:
+    json_data["session"] = mrn
     session = "bogus"
 
 #
@@ -336,8 +338,8 @@ def save_data(jd):
 
     jd[IM] = impress_box.get("1.0", "end-1c")
 
-    with open(jsonfile + ".new", "w") as ofile:
-        json.dump(jd, ofile)
+    with open(jsonfile, "w") as ofile:
+        json.dump(jd, ofile, indent=4)
 
 # Define a function that will save existing data to a printable report text file
 def create_report(rpt):
@@ -350,10 +352,10 @@ def create_report(rpt):
         print("Session: " + session, file=ofile)
         print("", file=ofile)
         print("", file=ofile)
-        print(HISTORY, file=ofile)
+        print(HISTORY + ":", file=ofile)
         print("", file=ofile)
         print(PATIENT_AGE + " (years):  " + json_data[HI][PA], file=ofile)
-        print(PATIENT_HISTORY + "", file=ofile)
+        print(PATIENT_HISTORY + ":", file=ofile)
         for line in json_data[HI][PH].split('\n'):
             print(wrapper.fill(text=line), file=ofile)
         print("", file=ofile)
@@ -366,7 +368,9 @@ def create_report(rpt):
             print("CTDI: ".ljust(6) + json_data[TH]["ctdi"], file=ofile)
             print("DLP: ".ljust(6) + json_data[TH]["dlp"], file=ofile)
             print("", file=ofile)
-        print(COMPARISON + ": " + json_data[TH][CM], file=ofile)
+        print(COMPARISON + ":", file=ofile)
+        for line in json_data[TH][CM].split('\n'):
+            print(wrapper.fill(text=line), file=ofile)
         print("", file=ofile)
         print(FINDINGS, file=ofile)
 
@@ -384,7 +388,7 @@ def create_report(rpt):
                     front = lbl + ":"
                     print(front.ljust(25) + json_data[FI][key], file=ofile)
                 elif typ == "BOX" or typ == "BOXLABEL":
-                    print(lbl, file=ofile)
+                    print(lbl + ":", file=ofile)
                     for line in json_data[FI][key].split('\n'):
                         print(wrapper.fill(text=line), file=ofile)
 
@@ -392,7 +396,6 @@ def create_report(rpt):
         print(IMPRESSION, file=ofile)
         for line in json_data[IM].split('\n'):
             print(wrapper.fill(text=line), file=ofile)
-        print("", file=ofile)
         print("", file=ofile)
         """ PRINT SIGNING RADIOLIGIST NAME """
 
