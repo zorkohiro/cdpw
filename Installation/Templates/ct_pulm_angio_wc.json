@@ -1,4 +1,5 @@
 {
+  "version" : 0,
   "mrn" : "",
   "session" : "",
   "signed" : false,
@@ -14,6 +15,7 @@
     "dlp"  : "XX mGy-cm",
     "comparison" : ""
   },
+  "title" : "CT PULMONARY ANGIOGRAM",
   "findings" : {
     "pulmonary": "No pulmonary embolism.",
     "vessels": "No signigicant abnormality.",

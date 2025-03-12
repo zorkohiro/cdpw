@@ -1,4 +1,5 @@
 {
+	"version" : 0,
 	"mrn": "",
 	"session": "",
 	"signed": false,
@@ -12,6 +13,7 @@
 		"used": "4 view(s) of the right wrist acquired.",
 		"comparison": ""
 	},
+	"title" : "XRAY RIGHT WRIST",
 	"findings": "No acute fracture or dislocation.\nNo significant arthritis.",
 	"impression": "Normal right wrist."
 }

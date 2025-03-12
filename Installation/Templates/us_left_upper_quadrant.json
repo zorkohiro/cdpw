@@ -1,4 +1,5 @@
 {
+  "version" : 0,
   "mrn": "",
   "session": "",
   "signed": false,
@@ -8,6 +9,7 @@
     "patient_age": "",
     "patient_history": ""
   },
+  "title" : "ULTRASOUND LEFT UPPER QUADRANT",
   "technique": {
     "description": "Ultrasound images of the left upper quadrant acquired. Color and spectral Doppler images of the main portal vein also acquired.",
     "comparison": "None Available"

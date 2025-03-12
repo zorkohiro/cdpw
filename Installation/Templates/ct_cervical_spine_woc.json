@@ -1,4 +1,5 @@
 {
+  "version" : 0,
   "mrn" : "",
   "session" : "",
   "signed" : false,
@@ -8,6 +9,7 @@
     "patient_age" : "",
     "patient_history" : ""
   },
+  "title" : "CTA CHEST ABDOMEN PELVIS WITH CONTRAST",
   "technique" : {
     "description" : "CT images of the cervical spine read without intravenous contrast.",
     "ctdi" : "XX mGy",

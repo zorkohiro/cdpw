@@ -1,4 +1,5 @@
 {
+  "version" : 0,
   "mrn" : "",
   "session" : "",
   "signed" : false,
@@ -8,7 +9,7 @@
     "patient_age" : "",
     "patient_history" : ""
   },
-  "title": "[]",
+  "title": "XRAY Generic",
   "technique" : {
     "description" : "XX views of the XX acquired.",
     "comparison" : ""

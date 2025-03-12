@@ -1,4 +1,5 @@
 {
+  "version" : 0,
   "mrn" : "",
   "session" : "",
   "signed" : false,
@@ -14,6 +15,7 @@
     "dlp"  : "XX mGy-cm",
     "comparison" : ""
   },
+  "title" : "MRI BRAIN WITHOUT CONTRAST",
   "findings" : {
     "brain" : "No acute infarct or hemorrhage. No mass effect or herniation. Signal intensities are within normal limits for age.",
     "ventricles" : "No hydrocephalus or extra-axial fluid collections.",

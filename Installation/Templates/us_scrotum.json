@@ -1,4 +1,5 @@
 {
+  "version" : 1,
   "mrn": "",
   "session": "",
   "signed": false,
@@ -8,21 +9,27 @@
     "patient_age": "",
     "patient_history": ""
   },
+  "title" : "ULTRASOUND SCROTUM",
   "technique": {
     "description": "Ultrasound images of the scrotum acquired. Color and spectral Doppler images acquired as indicated.",
     "comparison": ""
   },
+  "fseq" :
+	[
+		"label:RIGHT",
+		"r_testicle:TESTICLE:ENTRY", "r_epididymis:EPIDIDYMIS:ENTRY", "r_doppler:DOPPLER:ENTRY", "r_other:OTHER:ENTRY",
+		"label:LEFT",
+		"l_testicle:TESTICLE:ENTRY", "l_epididymis:EPIDIDYMIS:ENTRY", "l_doppler:DOPPLER:ENTRY", "l_other:OTHER:ENTRY"
+	],
   "findings": {
-	"RIGHT": "HEADER",
-	"r_testicle": "Measures XX cm. Normal echogenicity, no masses.",
-	"r_epididymis": "Normal.",
-	"r_doppler": "Normal vasuclarity.",
-	"r_other": "No significant variocelke or hydrocele.",
-	"LEFT": "HEADER",
-	"l_testicle": "Measures XX cm. Normal echogenicity, no masses.",
-	"l_epididymis": "Normal.",
-	"l_doppler": "Normal vasuclarity.",
-	"l_other": "No significant variocelke or hydrocele."
+	"r_testicle"	: "Measures XX cm. Normal echogenicity, no masses.",
+	"r_epididymis"	: "Normal.",
+	"r_doppler"	: "Normal vascularity.",
+	"r_other"	: "No significant variocele or hydrocele.",
+	"l_testicle"	: "Measures XX cm. Normal echogenicity, no masses.",
+	"l_epididymis"	: "Normal.",
+	"l_doppler"	: "Normal vascularity.",
+	"l_other"	: "No significant variocele or hydrocele."
   },
   "impression": "Normal."
 }

@@ -1,4 +1,5 @@
 {
+  "version" : 0,
   "mrn" : "",
   "session" : "",
   "signed" : false,
@@ -12,6 +13,7 @@
     "description" : "MR images of the right hip acquired without contrast.",
     "comparison" : ""
   },
+  "title" : "MRI RIGHT HIP WITHOUT CONTRAST",
   "findings" : {
 	"labrum": "No labral tear identified. Capsular ligaments are intact.",
 	"tendons": "Visualized portions of the gluteal, iliopsoas, rectus femoris, hamsting, and adductor tendons are intact. Visualize muscles demonstrate normal signal and morphology.",

@@ -1,4 +1,5 @@
 {
+  "version" : 0,
   "mrn": "",
   "session": "",
   "signed": false,
@@ -8,6 +9,7 @@
     "patient_age": "",
     "patient_history": ""
   },
+  "title" : "ULTRASOUND RIGHT LOWER EXTREMITY VEINS",
   "technique": {
     "description": "Ultrasound images of the right lower extremity deep veins including the common femoral vein, junction to the common femoral vein with the great saphenous vein, proximal deep femoral vein, femoral vein, and popliteal vein acquired. Color and spectral Doppler ultrasound images also acquired. The fullest visualized extent of the aforementioned veins was interrogated.",
     "comparison": ""

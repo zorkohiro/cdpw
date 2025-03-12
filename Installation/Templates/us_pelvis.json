@@ -1,4 +1,5 @@
 {
+  "version" : 0,
   "mrn": "",
   "session": "",
   "signed": false,
@@ -8,6 +9,7 @@
     "patient_age": "",
     "patient_history": ""
   },
+  "title" : "ULTRASOUND PELVIS",
   "technique": {
     "description": "Ultrasound images of the pelvis acquired with endovaginal and transabdominal approach.",
     "comparison": ""

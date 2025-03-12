@@ -1,4 +1,5 @@
 {
+  "version" : 0,
   "mrn": "",
   "session": "",
   "signed": false,
@@ -8,6 +9,7 @@
     "patient_age": "",
     "patient_history": ""
   },
+  "title" : "ULTRASOUND RIGHT UPPER EXTREMITY VEINS",
   "technique": {
     "description": "Ultrasound images of the right upper extremity veins acquired. Color and spectral Doppler images also acquired.",
     "comparison": ""

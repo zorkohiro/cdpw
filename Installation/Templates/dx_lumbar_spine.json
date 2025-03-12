@@ -1,4 +1,5 @@
 {
+	"version" : 0,
 	"mrn": "",
 	"session": "",
 	"signed": false,
@@ -8,6 +9,7 @@
 		"patient_age": "",
 		"patient_history": ""
 	},
+	"title" : "XRAY LUMBAR SPINE",
 	"technique": {
 		"used": "2 views of the lumbar spine acquired.",
 		"comparison": ""

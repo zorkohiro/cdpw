@@ -1,4 +1,5 @@
 {
+	"version" : 0,
 	"mrn": "",
 	"session": "",
 	"signed": false,
@@ -8,6 +9,7 @@
 		"patient_age": "",
 		"patient_history": ""
 	},
+	"title" : "XRAY CERVICAL SPINE",
 	"technique": {
 		"used": "2 view(s) of the cervical spine acquired, including AP and lateral.",
 		"comparison": ""

@@ -1,4 +1,5 @@
 {
+  "version" : 0,
   "mrn" : "",
   "session" : "",
   "signed" : false,
@@ -8,6 +9,7 @@
     "patient_age" : "",
     "patient_history" : "Abdominal pain."
   },
+  "title" : "CT ABDOMEN AND PELVIS WITH CONTRAST",
   "technique" : {
     "description" : "CT images of the abdomen and pelvis acquired with 100 mL Omnipaque 300IV contrast",
     "ctdi" : "XX mGy",

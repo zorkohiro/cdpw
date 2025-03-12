@@ -1,4 +1,5 @@
 {
+	"version" : 0,
 	"mrn": "",
 	"session": "",
 	"signed": false,
@@ -8,6 +9,7 @@
 		"patient_age": "",
 		"patient_history": ""
 	},
+	"title" : "XRAY LEFT ANKLE",
 	"technique": {
 		"used": "3 view(s) of the left ankle acquired.",
 		"comparison": ""

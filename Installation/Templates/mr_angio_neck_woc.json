@@ -1,4 +1,5 @@
 {
+  "version" : 0,
   "mrn" : "",
   "session" : "",
   "signed" : false,
@@ -8,6 +9,7 @@
     "patient_age" : "",
     "patient_history" : ""
   },
+  "title" : "MRA NECK WITHOUT CONTRAST",
   "technique" : {
     "description" : "MR angiogram images of the neck acquired without intravenous contrast.",
     "comparison" : ""

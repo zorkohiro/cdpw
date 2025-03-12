@@ -1,4 +1,5 @@
 {
+  "version" : 0,
   "mrn": "",
   "session": "",
   "signed": false,
@@ -8,6 +9,7 @@
     "patient_age": "",
     "patient_history": ""
   },
+  "title" : "ULTRASOUND KIDNEYS",
   "technique": {
     "description": "Ultrasound images of the kidneys and bladder acquired. Color Doppler indicated.",
     "comparison": ""

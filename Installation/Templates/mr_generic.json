@@ -1,4 +1,5 @@
 {
+  "version" : 0,
   "mrn" : "",
   "session" : "",
   "signed" : false,
@@ -8,7 +9,7 @@
     "patient_age" : "",
     "patient_history" : ""
   },
-  "title": "[]",
+  "title": "MRI Generic",
   "technique" : {
     "description" : "MR images of the XX acquired [without|with XX mL XX] contrast.",
     "comparison" : ""
