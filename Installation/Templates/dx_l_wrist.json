@@ -1,5 +1,5 @@
 {
-	"version" : 0,
+	"version" : 1,
 	"mrn": "",
 	"session": "",
 	"signed": false,
@@ -11,9 +11,10 @@
 	},
 	"title" : "XRAY LEFT WRIST",
 	"technique": {
-		"used": "4 view(s) of the left wrist acquired.",
+		"description": "4 view(s) of the left wrist acquired.",
 		"comparison": ""
 	},
-	"findings": "No acute fracture or dislocation.\nNo significant arthritis.",
+	"fseq" : [ "findings:FINDINGS:BOX" ],
+	"findings": { "findings" : "No acute fracture or dislocation.\nNo significant arthritis."},
 	"impression": "Normal left wrist."
 }

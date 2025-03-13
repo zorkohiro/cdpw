@@ -1,5 +1,5 @@
 {
-	"version" : 0,
+	"version" : 1,
 	"mrn": "",
 	"session": "",
 	"signed": false,
@@ -11,9 +11,15 @@
 	},
 	"title" : "XRAY CERVICAL SPINE",
 	"technique": {
-		"used": "2 view(s) of the cervical spine acquired, including AP and lateral.",
+		"description": "2 view(s) of the cervical spine acquired, including AP and lateral.",
 		"comparison": ""
 	},
-	"findings": "Normal alignment. Normal vertebral body heght. No acute fracture. Disc spaces are normal. Prevertebral soft tissues are normal.",
+"fseq" : [
+"findings:FINDINGS:BOX",
+"space"
+],
+	"findings": {
+		"findings" : "Normal alignment. Normal vertebral body heght. No acute fracture. Disc spaces are normal. Prevertebral soft tissues are normal."
+	},
 	"impression": "Normal cervical spine."
 }

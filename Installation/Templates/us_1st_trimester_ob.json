@@ -1,19 +1,26 @@
 {
-  "version" : 0,
+  "version" : 1,
   "mrn": "",
   "session": "",
   "signed": false,
   "signer": "",
-  "template" : "us_1st_trimester_ob.json",
+  "template" : "us_1st_trimester_ob",
   "history": {
     "patient_age": "",
     "patient_history": "Evaluate for ectopic pregnancy.\nLMP: XX\nBhCG: XX"
   },
+  "title" : "US FIRST TRIMERSTER OB",
   "technique": {
     "description": "Ultrasound images of the pelvis acquired with endovaginal and transabdominal approach.",
     "comparison": ""
   },
-  "title" : "US FIRST TRIMERSTER OB",
+  "fseq": [
+	"uterus:UTERUS:BOXENTRY",
+	"r_adnexa:RIGHT ADNEXA:BOXENTRY",
+	"l_adnexa:LEFT ADNEXA:BOXENTRY",
+	"fluid:FLUID:BOXENTRY",
+	"other:OTHER:BOXENTRY"
+  ],
   "findings": {
 	"uterus": "No intrauterine gestationsal sac.",
 	"r_adnexa": "The right ovary is normal, measuring XX cm.",

@@ -1,5 +1,5 @@
 {
-  "version" : 0,
+  "version" : 1,
   "mrn" : "",
   "session" : "",
   "signed" : false,
@@ -16,6 +16,16 @@
     "dlp"  : "XX mGy-cm",
     "comparison" : ""
   },
+"fseq" : [
+"head:CTA HEAD:BOXLABEL",
+"space",
+"label:CTA NECK",
+"vessels:GREAT VESSELS:BOXLABEL",
+"r_ica:RIGHT ICA:BOXLABEL",
+"l_ica:LEFT ICA:BOXLABEL",
+"vertebral:VERTEBRAL ARTERIES:BOXLABEL",
+"other:OTHER:BOXLABEL"
+],
   "findings" : {
     "head" : "No occlusion or hemodynamically significant stenosis. No aneurysm.",
     "vessels" : "Visualized segments are patent.",

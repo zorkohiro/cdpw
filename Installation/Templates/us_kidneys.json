@@ -1,5 +1,5 @@
 {
-  "version" : 0,
+  "version" : 1,
   "mrn": "",
   "session": "",
   "signed": false,
@@ -14,6 +14,12 @@
     "description": "Ultrasound images of the kidneys and bladder acquired. Color Doppler indicated.",
     "comparison": ""
   },
+  "fseq": [
+	"r_kidney:RIGHT KIDNEY:BOXENTRY",
+	"l_kidney:LEFT KIDNEY:BOXENTRY",
+	"bladder:BLADDER:BOXENTRY",
+	"other:OTHER:BOXENTRY"
+  ],
   "findings": {
 	"r_kidney": "Measures XX cm. Normal cortical echogenicity. No stones or hydronephrosis. No suspicious renal mass.",
 	"l_kidney": "Measures XX cm. Normal cortical echogenicity. No stones or hydronephrosis. No suspicious renal mass.",

@@ -1,5 +1,5 @@
 {
-  "version" : 0,
+  "version" : 1,
   "mrn" : "",
   "session" : "",
   "signed" : false,
@@ -9,17 +9,33 @@
     "patient_age" : "",
     "patient_history" : ""
   },
+  "title" : "MRCP WITHOUT CONTRAST",
   "technique" : {
     "description" : "MR images of the abdomen acquired without contrast. Multiplanar reformations performed.",
     "comparison" : ""
   },
-  "title" : "MRCP WITHOUT CONTRAST",
+  "fseq" : [
+	"findings:FINDINGS:BOX",
+	"bile:BILE DUCTS:BOXLABEL",
+	"gallbladder:GALLBLADDER:BOXLABEL",
+	"pancreas:PANCREAS:BOXLABEL",
+	"space",
+	"lung:LUNG BASES:BOXLABEL",
+	"spleen:SPLEEN:BOXLABEL",
+	"adrenals:ADRENALS:BOXLABEL",
+	"kidneys:KIDNEYS:BOXLABEL",
+	"gi:GI TRACT:BOXLABEL",
+	"mesentery:MESENTERY/LYMPH NODES:BOXLABEL",
+	"peritoneum:PERITONEUM:BOXLABEL",
+	"aorta:AORTA/VESSELS:BOXLABEL",
+	"soft:SOFT TISSUES:BOXLABEL",
+	"bones:BONES:BOXLABEL"
+  ],
   "findings" : {
 	"findings" : "Evaluation of the solid abdominal organs limited without intravenous contrast.",
 	"bile": "No filling defects or biliary dilation.",
-	"callbladder": "No filling defects.",
+	"gallbladder": "No filling defects.",
 	"pancreas": "Normal.",
-	"SPACER" : "SPACER",
 	"lung": "No consolidation.",
 	"spleen": "Normal.",
 	"adrenals": "Normal.",
@@ -29,6 +45,7 @@
 	"peritoneum": "No free fluid.",
 	"aorta": "Normal abdominal aortic diameter (<3cm).",
 	"soft": "No significant abnormality."
+	"bones": "No significant abnormality."
   },
   "impression" : "Normal MRCP."
 }

@@ -1,5 +1,5 @@
 {
-  "version" : 0,
+  "version" : 1,
   "mrn": "",
   "session": "",
   "signed": false,
@@ -14,9 +14,13 @@
     "description": "Ultrasound images of the right lower extremity deep veins including the common femoral vein, junction to the common femoral vein with the great saphenous vein, proximal deep femoral vein, femoral vein, and popliteal vein acquired. Color and spectral Doppler ultrasound images also acquired. The fullest visualized extent of the aforementioned veins was interrogated.",
     "comparison": ""
   },
+  "fseq": [
+	"vein:RIGHT LOWER EXTREMITY DEEP VEINS:BOXENTRY",
+	"soft:SOFT TISSUES:BOXENTRY"
+  ],
   "findings": {
-	"vein": "No thrombosis seen.",
+	"vein": "No thrombus seen.",
 	"soft": "Visualized soft tissues are normal."
   },
-  "impression": "No deep venous thrombis in the right lower extremity."
+  "impression": "No deep venous thrombosis in the right lower extremity."
 }

@@ -1,21 +1,27 @@
 {
-  "version" : 0,
+  "version" : 1,
   "mrn" : "",
   "session" : "",
   "signed" : false,
   "signer" : "",
-  "template" : "mri_brain_woc",
+  "template" : "mr_brain_woc",
   "history" : {
     "patient_age" : "",
     "patient_history" : ""
   },
+  "title" : "MRI BRAIN WITHOUT CONTRAST",
   "technique" : {
     "description" : "MRI brain without contrast.",
     "ctdi" : "XX mGy",
     "dlp"  : "XX mGy-cm",
     "comparison" : ""
   },
-  "title" : "MRI BRAIN WITHOUT CONTRAST",
+"fseq": [
+    "brain:BRAIN PARENCHYMA:BOXLABEL",
+    "ventricles:VENTRICLES/EXTRA-AXIAL SPACE:BOXLABEL",
+    "flow:FLOW VOIDS:BOXLABEL",
+    "extracranial:EXTRACRANIAL STRUCTURES:BOXLABEL"
+],
   "findings" : {
     "brain" : "No acute infarct or hemorrhage. No mass effect or herniation. Signal intensities are within normal limits for age.",
     "ventricles" : "No hydrocephalus or extra-axial fluid collections.",

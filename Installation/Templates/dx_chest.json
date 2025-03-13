@@ -1,5 +1,5 @@
 {
-	"version" : 0,
+	"version" : 1,
 	"mrn": "",
 	"session": "",
 	"signed": false,
@@ -11,9 +11,14 @@
 	},
 	"title" : "XRAY CHEST",
 	"technique": {
-		"views": "View(s) of chest acquired.",
+		"description": "XX views of the chest acquired.",
 		"comparison": ""
 	},
-	"findings": "No focal consolidation or pleural effusion. Heart size is normal.",
+"fseq" : [
+"findings:FINDINGS:BOX"
+],
+	"findings": {
+		"findings" : "No focal consolidation or pleural effusion. Heart size is normal."
+	},
 	"impression": "Normal Chest."
 }

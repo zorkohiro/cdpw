@@ -1,5 +1,5 @@
 {
-	"version" : 0,
+	"version" : 1,
 	"mrn": "",
 	"session": "",
 	"signed": false,
@@ -10,10 +10,18 @@
 		"patient_history": ""
 	},
 	"technique": {
-		"used": "2 views each of the left and right ribs acquired.",
+		"description": "2 views each of the left and right ribs acquired.",
 		"comparison": ""
 	},
 	"title" : "XRAY BILATERAL RIBS",
+"fseq" : [
+	"lungs:LUNGS:BOXLABEL",
+"space",
+	"mediastinum:MEDIASTINUM/OTHER:BOXLABEL",
+"space",
+	"bones:BONES:BOXLABEL",
+"space"
+],
 	"findings": {
 		"lungs": "Visualized lungs demonstrate no significant abnormality.",
 		"mediastinum": "Visualized mediastinum demonstrates no significant abnormality",

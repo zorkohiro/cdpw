@@ -1,5 +1,5 @@
 {
-  "version" : 0,
+  "version" : 1,
   "mrn" : "",
   "session" : "",
   "signed" : false,
@@ -14,6 +14,7 @@
     "description" : "MR images of the XX acquired [without|with XX mL XX] contrast.",
     "comparison" : ""
   },
-  "findings" : "",
+  "fseq" : [ "findings:FINDINGS:BOX" ],
+  "findings" : { "findings" : "" },
   "impression" : ""
 }

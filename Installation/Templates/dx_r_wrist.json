@@ -1,5 +1,5 @@
 {
-	"version" : 0,
+	"version" : 1,
 	"mrn": "",
 	"session": "",
 	"signed": false,
@@ -9,11 +9,12 @@
 		"patient_age": "",
 		"patient_history": ""
 	},
+	"title" : "XRAY RIGHT WRIST",
 	"technique": {
-		"used": "4 view(s) of the right wrist acquired.",
+		"description": "4 view(s) of the right wrist acquired.",
 		"comparison": ""
 	},
-	"title" : "XRAY RIGHT WRIST",
-	"findings": "No acute fracture or dislocation.\nNo significant arthritis.",
+	"fseq" : [ "findings:FINDINGS:BOX" ],
+	"findings": { "findings" : "No acute fracture or dislocation.\nNo significant arthritis."},
 	"impression": "Normal right wrist."
 }

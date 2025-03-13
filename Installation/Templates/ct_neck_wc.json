@@ -1,5 +1,5 @@
 {
-  "version" : 0,
+  "version" : 1,
   "mrn" : "",
   "session" : "",
   "signed" : false,
@@ -15,6 +15,16 @@
     "dlp"  : "XX mGy-cm",
     "comparison" : ""
   },
+"fseq" : [
+    "pharyngeal:PHARYNGEAL MUCOSA:BOXLABEL",
+    "oral:ORAL CAVITY:BOXLABEL",
+    "larynx:LARYNX:BOXLABEL",
+    "salivary:SALIVARY GLANDS:BOXLABEL",
+    "thyroid:THYROID:BOXLABEL",
+    "vessels:VESSELS AND CAROTID SPACE:BOXLABEL",
+    "bones:BONES:BOXLABEL",
+    "other:OTHER:BOXLABEL"
+],
   "title" : "CT NECK WITH CONTRAST",
   "findings" : {
     "pharyngeal": "Normal nasopharynx, oropharynx and hypopharynx.",
@@ -24,7 +34,7 @@
     "thyroid": "Normal.",
     "vessels": "Normal.",
     "bones": "No significant abnormality.",
-    "other" : "Visualized lung apices are clear."
+    "other": "Visualized lung apices are clear."
   },
   "impression" : "Normal CT neck."
 }

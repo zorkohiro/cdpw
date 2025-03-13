@@ -1,5 +1,5 @@
 {
-  "version" : 0,
+  "version" : 1,
   "mrn" : "",
   "session" : "",
   "signed" : false,
@@ -15,11 +15,24 @@
     "dlp"  : "XX mGy-cm",
     "comparison" : ""
   },
+"fseq" : [
+    "pulmonary:PULMONARY ARTERIES:BOXLABEL",
+"space",
+    "heart:HEART:BOXLABEL",
+    "vessels:OTHER VESSELS:BOXLABEL",
+    "lymph:LYMPH NODES:BOXLABEL",
+    "mediastinum:OTHER MEDIASTINUM:BOXLABEL",
+    "lungs:LUNGS:BOXLABEL",
+    "pleural:PLEURAL SPACAES:BOXLABEL",
+    "abdomen:XX:BOXLABEL",
+    "soft:SOFT TISSUES:BOXLABEL",
+    "bones:BONES:BOXLABEL"
+],
   "title" : "CT PULMONARY ANGIOGRAM",
   "findings" : {
     "pulmonary": "No pulmonary embolism.",
-    "vessels": "No signigicant abnormality.",
     "heart": "Heart size normal.",
+    "vessels": "No signigicant abnormality.",
     "lymph": "No suspicious lymph nodes.",
     "mediastinum": "Normal.",
     "lungs": "Normal.",

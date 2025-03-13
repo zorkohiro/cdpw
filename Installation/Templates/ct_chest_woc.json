@@ -1,5 +1,5 @@
 {
-  "version" : 0,
+  "version" : 1,
   "mrn" : "",
   "session" : "",
   "signed" : false,
@@ -16,15 +16,26 @@
     "dlp"  : "XX mGy-cm",
     "comparison" : ""
   },
+"fseq" : [
+    "heart:HEART:BOXLABEL",
+    "vessels:VESSLES:BOXLABEL",
+    "lymph:LYMPH NODES:BOXLABEL",
+    "mediastinum:OTHER MEDIASTINUM:BOXLABEL",
+    "lungs:LUNGS:BOXLABEL",
+    "pleural:PLEURAL SPACE:BOXLABEL",
+    "abdomen:UPPER ABDOMEN:BOXLABEL",
+    "soft:SOFT TISSUES:BOXLABEL",
+    "bones:BONES:BOXLABEL"
+],
   "findings" : {
     "heart" : "Heart size is normal.",
     "vessels" : "No significant abnormality.",
-    "lymph nodes" : "No suspicious lymph nodes.",
-    "other mediastinum"  : "No significant abnormality.",
+    "lymph" : "No suspicious lymph nodes.",
+    "mediastinum"  : "No significant abnormality.",
     "lungs" : "Normal.",
-    "pleural space" : "Normal.",
-    "upper abdomen" : "No significant abnormlity.",
-    "soft tissues" : "No significant abnormality.",
+    "pleural" : "Normal.",
+    "abdomen" : "No significant abnormlity.",
+    "soft" : "No significant abnormality.",
     "bones" : "No significant abnormality."
   },
   "impression" : "Normal CT chest."

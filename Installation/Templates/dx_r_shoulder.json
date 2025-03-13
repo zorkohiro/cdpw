@@ -1,5 +1,5 @@
 {
-	"version" : 0,
+	"version" : 1,
 	"mrn": "",
 	"session": "",
 	"signed": false,
@@ -11,9 +11,10 @@
 	},
 	"title" : "XRAY RIGHT SHOULDER",
 	"technique": {
-		"used": "4 views(s) of the right shoulder acquired.",
+		"description": "4 views(s) of the right shoulder acquired.",
 		"comparison": ""
 	},
-	"findings": "No acute fracture. Normal alignment. No significant glenohumeral arthritis. No significant acromioclavicular arthritis.",
+	"fseq" : [ "findings:FINDINGS:BOX" ],
+	"findings": { "findings" : "No acute fracture. Normal alignment. No significant glenohumeral arthritis. No significant acromioclavicular arthritis."},
 	"impression": "Normal right shoulder."
 }

@@ -1,5 +1,5 @@
 {
-  "version" : 0,
+  "version" : 1,
   "mrn" : "",
   "session" : "",
   "signed" : false,
@@ -9,11 +9,25 @@
     "patient_age" : "",
     "patient_history" : ""
   },
+  "title" : "MRI LUMBAR SPINE WITHOUT CONTRAST",
   "technique" : {
     "description" : "MRI lumbar spine without contrast.",
     "comparison" : ""
   },
-  "title" : "MRI LUMBAR SPINE WITHOUT CONTRAST",
+  "fseq" : [
+	"numbering:NUMBERING:BOXLABEL",
+        "spinal:S:PINAL CORD:BOXLABEL",
+        "discs:DISCS:BOXLABEL",
+        "bones:BONE:BOXLABEL",
+        "soft:SOFT TISSUES:BOXLABEL",
+	"t12-l1:T12-L1:BOXLABEL",
+        "l1-l2:L1-L2:BOXLABEL",
+        "l2-l3:L2-L3:BOXLABEL",
+        "l3-l4:L3-L4:BOXLABEL",
+        "l4-l5:L4-L5:BOXLABEL",
+        "l5-s1:L5-S1:BOXLABEL",
+	"other:XX:BOXLABEL"
+  ],
   "findings" : {
 	"numbering": "Last fully formed disc space is designated L5-S1.",
         "spinal": "Normal conus. Conus terminates at the XX level.",
@@ -26,7 +40,7 @@
         "l3-l4": "No canal or foraminal stenosis.",
         "l4-l5": "No canal or foraminal stenosis.",
         "l5-s1": "No canal or foraminal stenosis.",
-	"other" : "None."
+	"other": "None."
   },
   "impression" : "Normal MRI lumbar spine."
 }

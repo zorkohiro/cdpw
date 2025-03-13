@@ -1,5 +1,5 @@
 {
-	"version" : 0,
+	"version" : 1,
 	"mrn": "",
 	"session": "",
 	"signed": false,
@@ -11,9 +11,10 @@
 	},
 	"title" : "XRAY LUMBAR SPINE",
 	"technique": {
-		"used": "2 views of the lumbar spine acquired.",
+		"description": "2 views of the lumbar spine acquired.",
 		"comparison": ""
 	},
-	"findings": "Normal alignment. Normal vertebral body height. No acute fracture. Disc spaces are normal.",
+	"fseq" : [ "findings:FINDINGS:BOX" ],
+	"findings": { "findings" : "Normal alignment. Normal vertebral body height. No acute fracture. Disc spaces are normal."},
 	"impression": "Normal lumbar spine."
 }

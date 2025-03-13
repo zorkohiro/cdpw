@@ -1,5 +1,5 @@
 {
-  "version" : 0,
+  "version" : 1,
   "mrn" : "",
   "session" : "",
   "signed" : false,
@@ -16,6 +16,23 @@
     "dlp"  : "XX mGy-cm",
     "comparison" : ""
   },
+	"fseq" : [
+"lung:LUNG BASEES:ENTRY",
+"liver:LIVER:ENTRY",
+"gbd:GALLBLADDER/BILE DUCTS:ENTRY",
+"spleen:SPLEEN:ENTRY",
+"pancreas:PANCREAS:ENTRY",
+"adrenal:ADRENALS:ENTRY",
+"kidneys:KIDNEYS:ENTRY",
+"bowel:GI TRACT:ENTRY",
+"meslymph:MESENTERY/LYMPH NODES:ENTRY",
+"peritoneum:PERITONEUM:ENTRY",
+"aorta:AORTA/VESSELS:ENTRY",
+"bladder:BLADDER:ENTRY",
+"pelvic:PELVIC STRUCTURES:ENTRY",
+"soft tissues:SOFT TISSUES:ENTRY",
+"bones:BONES:ENTRY"
+	],
   "findings" : {
     "lung" : "Clear.",
     "liver" : "No significant abnormality.",

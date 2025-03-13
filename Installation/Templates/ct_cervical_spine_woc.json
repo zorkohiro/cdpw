@@ -1,5 +1,5 @@
 {
-  "version" : 0,
+  "version" : 1,
   "mrn" : "",
   "session" : "",
   "signed" : false,
@@ -16,6 +16,13 @@
     "dlp"  : "XX mGy-cm",
     "comparison" : ""
   },
+"fseq" : [
+"bones:BONES:BOXLABEL",
+"discs:DISCS:BOXLABEL",
+"spinal:SPINAL CANAL:BOXLABEL",
+"soft:SOFT TISSUES:BOXLABEL",
+"other:OTHER:BOXLABEL",
+],
   "findings" : {
     "bones": "Normal vertebral alignment. Normal vertebral body height. No acute fracture. Densis intact, C1 and C2 are normally aligned, and the atlantodental interval is normal.",
     "discs": "Disc space heights are normal.",

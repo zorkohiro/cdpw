@@ -1,5 +1,5 @@
 {
-  "version" : 0,
+  "version" : 1,
   "mrn": "",
   "session": "",
   "signed": false,
@@ -14,19 +14,20 @@
     "description": "Ultrasound images of the right upper quadrant acquired. Color and spectral Doppler images of the main portal vein also acquired.",
     "comparison": "None Available"
   },
+  "fseq": [
+    "pancreas:PANCREAS:BOXENTRY",
+    "liver:LIVER:BOXENTRY",
+    "gallbladder:GALLBLADDER:BOXENTRY",
+    "bile:BILE DUCTS:BOXENTRY",
+    "kidney:LEFT KIDNEY:BOXENTRY",
+    "other:OTHER:BOXENTRY"
+  ],
   "findings": {
     "pancreas": "Normal visualized portions.",
     "liver": "Normal echogenicity. Normal hepatopetal flow in the main portal vein.",
-    "gallbladder": "Normal",
-    "bile ducts": {
-      "size": "",
-      "quality": "Normal.",
-      "dilation": "No intrahepatic biliary ductal dilation."
-    },
-    "right kidney": {
-      "size": "",
-      "notes": "Normal cortical echogenicity. No stones or hyrdronephrosis."
-    },
+    "gallbladder": "Normal.",
+    "bile": "Common duct meassure: XX mm, which is normal.  No intrahepatic biliary ductal dilation.",
+    "kidney": "Measures XX cm. Normal cortical echogenicity. No stones or hyrdronephrosis.",
     "other": ""
   },
   "impression": "Normal right upper quadrant ultrasound."

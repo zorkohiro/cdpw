@@ -16,8 +16,10 @@
   },
   "fseq" :
 	[
+"space",
 		"label:RIGHT",
 		"r_testicle:TESTICLE:ENTRY", "r_epididymis:EPIDIDYMIS:ENTRY", "r_doppler:DOPPLER:ENTRY", "r_other:OTHER:ENTRY",
+"space",
 		"label:LEFT",
 		"l_testicle:TESTICLE:ENTRY", "l_epididymis:EPIDIDYMIS:ENTRY", "l_doppler:DOPPLER:ENTRY", "l_other:OTHER:ENTRY"
 	],

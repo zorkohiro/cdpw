@@ -1,5 +1,5 @@
 {
-  "version" : 0,
+  "version" : 1,
   "mrn" : "",
   "session" : "",
   "signed" : false,
@@ -14,6 +14,12 @@
     "description" : "MR angiogram images of the neck acquired without intravenous contrast.",
     "comparison" : ""
   },
+  "fseq" : [
+	"great:GREAT VESSELS:BOXLABEL",
+	"r_ica:RIGHT ICA:BOXLABEL",
+	"l_ica:LEFT ICA:BOXLABEL",
+	"vertebral:VERTEBRAL ARTERIES:BOXLABEL"
+],
   "findings" : {
 	"great": "Visualized segments are patent.",
 	"r_ica": "No stenosis by NASCET criteria at the carotid bifurcation.",

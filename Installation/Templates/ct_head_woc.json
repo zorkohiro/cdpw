@@ -1,5 +1,5 @@
 {
-  "version" : 0,
+  "version" : 1,
   "mrn" : "",
   "session" : "",
   "signed" : false,
@@ -16,6 +16,11 @@
     "dlp"  : "XX mGy-cm",
     "comparison" : ""
   },
+"fseq" : [
+"brain:BRAIN:BOXLABEL",
+"ventricles:VENTRICLES/EXTRA-AXIAL SPACES:BOXLABEL",
+"extracranial:EXTRACRANIAL STRUCTURES:BOXLABEL"
+],
   "findings" : {
     "brain" : "No acute hemorrhage. No mass effect or herniation. Gray-white differentiation is maintained. White matter is within normal limits for age.",
     "ventricles" : "No hydrocephalus or extra-axial fluid collections.",

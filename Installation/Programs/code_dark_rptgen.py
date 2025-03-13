@@ -225,6 +225,7 @@ def add_label(str, row, col):
     tlab.grid(sticky=tk.N+tk.W, row=row, column=col)
     return row + 1
 
+""" Add a label to the column specified (usually col 0 on the left) """
 def add_entry(initial, w, j, row, col):
     tt_text = tk.StringVar()
     tt_text.set(initial)
@@ -236,6 +237,7 @@ def add_entry(initial, w, j, row, col):
             tt_entry.grid(sticky=tk.W, row=row, column=col)
     return tt_text, row + 1
 
+""" Add an entry to the right of a label """
 def add_label_entry(label, ivalue, row):
     tlab = tk.Label(root, text=label, anchor=tk.W, justify="left", font=(fontfamily, fontsize - 1))
     tlab.grid(sticky=tk.N+tk.W, row=row, column=0)
@@ -245,13 +247,14 @@ def add_label_entry(label, ivalue, row):
     tt_entry.grid(sticky=tk.W, row=row, column=1)
     return tt_text, row + 1
     
-
+""" add an unlabeled box """
 def add_box(insert, row):
     box = tk.Text(root, height=boxsize, width=90, font=fontstring)
     box.insert(tk.END, insert)
     box.grid(sticky=tk.EW, row=row, column=0, columnspan=3, pady=(0,10), padx=(0,9))
     return box, row + boxsize
 
+""" add a box hanging to the right of a label """
 def add_label_box(str, insert, row):
     tlab = tk.Label(root, text=str, anchor=tk.W, justify="left", font=(fontfamily, fontsize - 1))
     tlab.grid(sticky=tk.N+tk.W, row=row, column=0)
@@ -285,7 +288,10 @@ rowvar = add_section_label(FINDINGS, rowvar)
 
 for entry in json_data["fseq"]:
     words = entry.split(':')
+    # Add a row when having a space
     if len(words) == 2:
+        rowvar = rowvar + 1
+    elif len(words) == 2:
         rowvar = add_label(words[1], rowvar, 0)
     else:
         key = words[0]
@@ -294,7 +300,7 @@ for entry in json_data["fseq"]:
         if typ == "ENTRY":
             cb, rowvar = add_label_entry(lbl, json_data[FI][key], rowvar)
         elif typ == "BOX":
-            cb, rowvar = add_box(lbl, rowvar)
+            cb, rowvar = add_box(json_data[FI][key], rowvar)
         elif typ == "BOXLABEL":
             cb, rowvar = add_label_box(lbl, json_data[FI][key], rowvar)
         else:
@@ -328,6 +334,7 @@ def save_data(jd):
 
     for entry in json_data["fseq"]:
         words = entry.split(':')
+        # Not worrying about headers or labels here
         if len(words) == 3:
             key = words[0]
             obj = cbobj[key]
@@ -339,7 +346,7 @@ def save_data(jd):
     jd[IM] = impress_box.get("1.0", "end-1c")
 
     with open(jsonfile, "w") as ofile:
-        json.dump(jd, ofile, indent=4)
+        json.dump(jd, ofile, indent=2)
 
 # Define a function that will save existing data to a printable report text file
 def create_report(rpt):
@@ -376,7 +383,9 @@ def create_report(rpt):
 
         for entry in json_data["fseq"]:
             words = entry.split(':')
-            if len(words) == 2:
+            if len(words) == 1:
+                print("", file=ofile)
+            elif len(words) == 2:
                 print("", file=ofile)
                 print(words[1], file=ofile)
                 print("", file=ofile)

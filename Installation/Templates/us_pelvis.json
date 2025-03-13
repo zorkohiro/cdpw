@@ -1,5 +1,5 @@
 {
-  "version" : 0,
+  "version" : 1,
   "mrn": "",
   "session": "",
   "signed": false,
@@ -14,6 +14,14 @@
     "description": "Ultrasound images of the pelvis acquired with endovaginal and transabdominal approach.",
     "comparison": ""
   },
+  "fseq": [
+	"uterus:UTERUS:BOXENTRY",
+	"endometrium:ENDOMETRIUM:BOXENTRY",
+	"r_adnexa:RIGH TADNEXA:BOXENTRY",
+	"l_adnexa:LEFT ADNEXA:BOXENTRY",
+	"fluid:FLUID:BOXENTRY",
+	"other:OTHER:BOXENTRY"
+  ],
   "findings": {
 	"uterus": "Measures XX cm. No fibroids or other masses seen.",
 	"endometrium": "Measures XX mm.",
