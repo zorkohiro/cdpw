@@ -1,31 +1,31 @@
 {
-	"version" : 1,
-	"mrn": "",
-	"session": "",
-	"signed": false,
-	"signer": "",
-  	"template" : "dx_bl_ribs",
-	"history": {
-		"patient_age": "",
-		"patient_history": ""
-	},
-	"technique": {
-		"description": "2 views each of the left and right ribs acquired.",
-		"comparison": ""
-	},
-	"title" : "XRAY BILATERAL RIBS",
-"fseq" : [
-	"lungs:LUNGS:BOXLABEL",
-"space",
-	"mediastinum:MEDIASTINUM/OTHER:BOXLABEL",
-"space",
-	"bones:BONES:BOXLABEL",
-"space"
-],
-	"findings": {
-		"lungs": "Visualized lungs demonstrate no significant abnormality.",
-		"mediastinum": "Visualized mediastinum demonstrates no significant abnormality",
-                "bones": "No acute rib fracture."
-        },
-	"impression": "Normal bilateral ribs."
+  "version": 1,
+  "mrn": "bogus",
+  "session": "bogus",
+  "signed": false,
+  "signer": "",
+  "template": "dx_bl_ribs",
+  "history": {
+    "patient_age": "",
+    "patient_history": ""
+  },
+  "technique": {
+    "description": "2 views each of the left and right ribs acquired.",
+    "comparison": ""
+  },
+  "title": "XRAY BILATERAL RIBS",
+  "fseq": [
+    "lungs:LUNGS:BOXLABEL",
+    "space",
+    "mediastinum:MEDIASTINUM/OTHER:BOXLABEL",
+    "space",
+    "bones:BONES:BOXLABEL",
+    "space"
+  ],
+  "findings": {
+    "lungs": "Visualized lungs demonstrate no significant abnormality.",
+    "mediastinum": "Visualized mediastinum demonstrates no significant abnormality",
+    "bones": "No acute rib fracture."
+  },
+  "impression": "Normal bilateral ribs."
 }

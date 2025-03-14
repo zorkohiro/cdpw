@@ -1,28 +1,28 @@
 {
-  "version" : 1,
-  "mrn": "",
-  "session": "",
+  "version": 1,
+  "mrn": "bogus",
+  "session": "bogus",
   "signed": false,
   "signer": "",
-  "template" : "us_l_upper_extremity_veins",
+  "template": "us_l_upper_extremity_veins",
   "history": {
     "patient_age": "",
     "patient_history": ""
   },
-  "title" : "ULTRASOUND LEFT UPPER EXTEMITY VEINS",
+  "title": "ULTRASOUND LEFT UPPER EXTEMITY VEINS",
   "technique": {
     "description": "Ultrasound images of the left upper extremity veins acquired. Color and spectral Doppler images also acquired.",
     "comparison": ""
   },
   "fseq": [
-	"deep:DEEP VEINS:BOXENTRY",
-	"superficial:SUPERFICIAL VEINS:BOXENTRY",
-	"soft:SOFT TISSUES:BOXENTRY"
+    "deep:DEEP VEINS:BOXLABEL",
+    "superficial:SUPERFICIAL VEINS:BOXLABEL",
+    "soft:SOFT TISSUES:BOXLABEL"
   ],
   "findings": {
-	"deep": "No thrombus in the left internal jugular, subclavian, axillary, and brachial veins.",
-	"superficial": "Left basilic and cephalic veins are compressible.",
-	"soft": "Visualized soft tissues are normal."
+    "deep": "No thrombus in the left internal jugular, subclavian, axillary, and brachial veins.",
+    "superficial": "Left basilic and cephalic veins are compressible.",
+    "soft": "Visualized soft tissues are normal."
   },
   "impression": "No deep venous thrombis in the left upper extremity."
 }

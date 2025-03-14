@@ -1,26 +1,26 @@
 {
-  "version" : 1,
-  "mrn": "",
-  "session": "",
+  "version": 1,
+  "mrn": "bogus",
+  "session": "bogus",
   "signed": false,
   "signer": "",
-  "template" : "us_right_upper_quadrant",
+  "template": "us_right_upper_quadrant",
   "history": {
     "patient_age": "",
     "patient_history": ""
   },
-  "title" : "ULTRASOUND RIGHT UPPER QUADRANT",
+  "title": "ULTRASOUND RIGHT UPPER QUADRANT",
   "technique": {
     "description": "Ultrasound images of the right upper quadrant acquired. Color and spectral Doppler images of the main portal vein also acquired.",
-    "comparison": "None Available"
+    "comparison": ""
   },
   "fseq": [
-    "pancreas:PANCREAS:BOXENTRY",
-    "liver:LIVER:BOXENTRY",
-    "gallbladder:GALLBLADDER:BOXENTRY",
-    "bile:BILE DUCTS:BOXENTRY",
-    "kidney:LEFT KIDNEY:BOXENTRY",
-    "other:OTHER:BOXENTRY"
+    "pancreas:PANCREAS:BOXLABEL",
+    "liver:LIVER:BOXLABEL",
+    "gallbladder:GALLBLADDER:BOXLABEL",
+    "bile:BILE DUCTS:BOXLABEL",
+    "kidney:LEFT KIDNEY:BOXLABEL",
+    "other:OTHER:BOXLABEL"
   ],
   "findings": {
     "pancreas": "Normal visualized portions.",

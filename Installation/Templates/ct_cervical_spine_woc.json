@@ -1,34 +1,34 @@
 {
-  "version" : 1,
-  "mrn" : "",
-  "session" : "",
-  "signed" : false,
-  "signer" : "",
-  "template" : "ct_cervical_spine_woc",
-  "history" : {
-    "patient_age" : "",
-    "patient_history" : ""
+  "version": 1,
+  "mrn": "bogus",
+  "session": "bogus",
+  "signed": false,
+  "signer": "",
+  "template": "ct_cervical_spine_woc",
+  "history": {
+    "patient_age": "",
+    "patient_history": ""
   },
-  "title" : "CTA CHEST ABDOMEN PELVIS WITH CONTRAST",
-  "technique" : {
-    "description" : "CT images of the cervical spine read without intravenous contrast.",
-    "ctdi" : "XX mGy",
-    "dlp"  : "XX mGy-cm",
-    "comparison" : ""
+  "title": "CTA CHEST ABDOMEN PELVIS WITH CONTRAST",
+  "technique": {
+    "description": "CT images of the cervical spine read without intravenous contrast.",
+    "ctdi": "XX mGy",
+    "dlp": "XX mGy-cm",
+    "comparison": ""
   },
-"fseq" : [
-"bones:BONES:BOXLABEL",
-"discs:DISCS:BOXLABEL",
-"spinal:SPINAL CANAL:BOXLABEL",
-"soft:SOFT TISSUES:BOXLABEL",
-"other:OTHER:BOXLABEL",
-],
-  "findings" : {
+  "fseq": [
+    "bones:BONES:BOXLABEL",
+    "discs:DISCS:BOXLABEL",
+    "spinal:SPINAL CANAL:BOXLABEL",
+    "soft:SOFT TISSUES:BOXLABEL",
+    "other:OTHER:BOXLABEL"
+  ],
+  "findings": {
     "bones": "Normal vertebral alignment. Normal vertebral body height. No acute fracture. Densis intact, C1 and C2 are normally aligned, and the atlantodental interval is normal.",
     "discs": "Disc space heights are normal.",
     "spinal": "No osseous narrowing of the spinal canal",
     "soft": "No prevertebral soft tissue swelling. Visualized neck soft tissues are normal.",
     "other": "Visualized lung apices are clear."
   },
-  "impression" : "Normal CT cervical spine."
+  "impression": "Normal CT cervical spine."
 }

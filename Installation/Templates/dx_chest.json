@@ -1,24 +1,24 @@
 {
-	"version" : 1,
-	"mrn": "",
-	"session": "",
-	"signed": false,
-	"signer": "",
-  	"template" : "dx_chest",
-	"history": {
-		"patient_age": "",
-		"patient_history": ""
-	},
-	"title" : "XRAY CHEST",
-	"technique": {
-		"description": "XX views of the chest acquired.",
-		"comparison": ""
-	},
-"fseq" : [
-"findings:FINDINGS:BOX"
-],
-	"findings": {
-		"findings" : "No focal consolidation or pleural effusion. Heart size is normal."
-	},
-	"impression": "Normal Chest."
+  "version": 1,
+  "mrn": "bogus",
+  "session": "bogus",
+  "signed": false,
+  "signer": "",
+  "template": "dx_chest",
+  "history": {
+    "patient_age": "",
+    "patient_history": ""
+  },
+  "title": "XRAY CHEST",
+  "technique": {
+    "description": "XX views of the chest acquired.",
+    "comparison": ""
+  },
+  "fseq": [
+    "findings:FINDINGS:BOX"
+  ],
+  "findings": {
+    "findings": "No focal consolidation or pleural effusion. Heart size is normal."
+  },
+  "impression": "Normal Chest."
 }

@@ -1,20 +1,24 @@
 {
-  "version" : 1,
-  "mrn" : "",
-  "session" : "",
-  "signed" : false,
-  "signer" : "",
-  "template" : "mr_generic",
-  "history" : {
-    "patient_age" : "",
-    "patient_history" : ""
+  "version": 1,
+  "mrn": "bogus",
+  "session": "bogus",
+  "signed": false,
+  "signer": "",
+  "template": "mr_generic",
+  "history": {
+    "patient_age": "",
+    "patient_history": ""
   },
   "title": "MRI Generic",
-  "technique" : {
-    "description" : "MR images of the XX acquired [without|with XX mL XX] contrast.",
-    "comparison" : ""
+  "technique": {
+    "description": "MR images of the XX acquired [without|with XX mL XX] contrast.",
+    "comparison": ""
   },
-  "fseq" : [ "findings:FINDINGS:BOX" ],
-  "findings" : { "findings" : "" },
-  "impression" : ""
+  "fseq": [
+    "findings:FINDINGS:BOX"
+  ],
+  "findings": {
+    "findings": ""
+  },
+  "impression": ""
 }

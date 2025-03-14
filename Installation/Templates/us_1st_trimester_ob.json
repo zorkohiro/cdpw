@@ -1,32 +1,32 @@
 {
-  "version" : 1,
-  "mrn": "",
-  "session": "",
+  "version": 1,
+  "mrn": "bogus",
+  "session": "bogus",
   "signed": false,
   "signer": "",
-  "template" : "us_1st_trimester_ob",
+  "template": "us_1st_trimester_ob",
   "history": {
     "patient_age": "",
     "patient_history": "Evaluate for ectopic pregnancy.\nLMP: XX\nBhCG: XX"
   },
-  "title" : "US FIRST TRIMERSTER OB",
+  "title": "US FIRST TRIMERSTER OB",
   "technique": {
     "description": "Ultrasound images of the pelvis acquired with endovaginal and transabdominal approach.",
     "comparison": ""
   },
   "fseq": [
-	"uterus:UTERUS:BOXENTRY",
-	"r_adnexa:RIGHT ADNEXA:BOXENTRY",
-	"l_adnexa:LEFT ADNEXA:BOXENTRY",
-	"fluid:FLUID:BOXENTRY",
-	"other:OTHER:BOXENTRY"
+    "uterus:UTERUS:BOXLABEL",
+    "r_adnexa:RIGHT ADNEXA:BOXLABEL",
+    "l_adnexa:LEFT ADNEXA:BOXLABEL",
+    "fluid:FLUID:BOXLABEL",
+    "other:OTHER:BOXLABEL"
   ],
   "findings": {
-	"uterus": "No intrauterine gestationsal sac.",
-	"r_adnexa": "The right ovary is normal, measuring XX cm.",
-	"l_adnexa": "The left ovary is normal, measuring XX cm.",
-	"fluid": "None.",
-	"other": "None."
+    "uterus": "No intrauterine gestational sac.",
+    "r_adnexa": "The right ovary is normal, measuring XX cm.",
+    "l_adnexa": "The left ovary is normal, measuring XX cm.",
+    "fluid": "None.",
+    "other": "None."
   },
   "impression": ""
 }

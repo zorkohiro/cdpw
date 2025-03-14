@@ -1,21 +1,21 @@
 {
-  "version" : 1,
-  "mrn" : "",
-  "session" : "",
-  "signed" : false,
-  "signer" : "",
-  "template" : "ct_neck_wc",
-  "history" : {
-    "patient_age" : "",
-    "patient_history" : ""
+  "version": 1,
+  "mrn": "bogus",
+  "session": "bogus",
+  "signed": false,
+  "signer": "",
+  "template": "ct_neck_wc",
+  "history": {
+    "patient_age": "",
+    "patient_history": ""
   },
-  "technique" : {
-    "description" : "CT images of the neck acquired with XX mL XX intravenous contrast.",
-    "ctdi" : "XX mGy",
-    "dlp"  : "XX mGy-cm",
-    "comparison" : ""
+  "technique": {
+    "description": "CT images of the neck acquired with XX mL XX intravenous contrast.",
+    "ctdi": "XX mGy",
+    "dlp": "XX mGy-cm",
+    "comparison": ""
   },
-"fseq" : [
+  "fseq": [
     "pharyngeal:PHARYNGEAL MUCOSA:BOXLABEL",
     "oral:ORAL CAVITY:BOXLABEL",
     "larynx:LARYNX:BOXLABEL",
@@ -24,9 +24,9 @@
     "vessels:VESSELS AND CAROTID SPACE:BOXLABEL",
     "bones:BONES:BOXLABEL",
     "other:OTHER:BOXLABEL"
-],
-  "title" : "CT NECK WITH CONTRAST",
-  "findings" : {
+  ],
+  "title": "CT NECK WITH CONTRAST",
+  "findings": {
     "pharyngeal": "Normal nasopharynx, oropharynx and hypopharynx.",
     "oral": "Normal including tongue and floor of mouth.",
     "larynx": "Normal supraglottic, glottic and suglottic larynx.",
@@ -36,5 +36,5 @@
     "bones": "No significant abnormality.",
     "other": "Visualized lung apices are clear."
   },
-  "impression" : "Normal CT neck."
+  "impression": "Normal CT neck."
 }

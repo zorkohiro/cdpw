@@ -1,24 +1,24 @@
 {
-  "version" : 1,
-  "mrn" : "",
-  "session" : "",
-  "signed" : false,
-  "signer" : "",
-  "template" : "dx_generic",
-  "history" : {
-    "patient_age" : "",
-    "patient_history" : ""
+  "version": 1,
+  "mrn": "bogus",
+  "session": "bogus",
+  "signed": false,
+  "signer": "",
+  "template": "dx_generic",
+  "history": {
+    "patient_age": "",
+    "patient_history": ""
   },
   "title": "XRAY Generic",
-  "technique" : {
-    "description" : "XX views of the XX acquired.",
-    "comparison" : ""
+  "technique": {
+    "description": "XX views of the XX acquired.",
+    "comparison": ""
   },
-"fseq" : [
-"findings:FINDINGS:BOX"
-],
-  "findings" : {
-   "findings" : ""
+  "fseq": [
+    "findings:FINDINGS:BOX"
+  ],
+  "findings": {
+    "findings": ""
   },
-  "impression" : ""
+  "impression": ""
 }

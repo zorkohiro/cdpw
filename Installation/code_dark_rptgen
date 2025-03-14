@@ -62,7 +62,6 @@ DC = "description"
 FI = "findings"
 CM = "comparison"
 IM = "impression"
-BD = "bile ducts"
 
 HISTORY = "** HISTORY **"
 PATIENT_AGE = "Patient Age"
@@ -143,6 +142,7 @@ if not session:
 #
 # 1. Housekeeping items
 #   
+#  "version"    : This api's version # (1)
 #  "mrn"        : Medical Record Number (passed from orthanc)
 #  "session"    : Accession Number (passed from orthanc)
 #  "signed"     : boolean about whether the report has been signed (and is thus read-only)
@@ -154,7 +154,9 @@ if not session:
 #    Common nested object to have an entry for patient age (in years) and a free form patient history box.
 #    This section is prefaced by a fixed large label "HISTORY".
 #
-# 3. Technique
+# 3. Title      : the title for this study
+#
+# 4. Technique
 #
 #    Common nested object to describe how the study was performed, optionally containing CTDI and DLP for contrast media.
 #    This ends with freeform box for comparison information.
@@ -169,24 +171,22 @@ if not session:
 #
 # Findings
 #
-#    This section is prefaced by a fixed large label with the name "FINDINGS".
+#    This section is prefaced by a fixed large label with the name "FINDINGS" on either input or on the report.
+#
+#    This consists of two sections.
 #  
-#    To make this generic enough, we start with an array that consists of a sequence of strings.
-#    These strings are either the string label:HDR, the string <key>:HDR:ENTRY or
-#    the string <key>:HDR:BOX.
+#    To make this generic enough, we start with an array called "fseq" that consists of a sequence
+#    of strings. These strings are either the string "space" which just indicates we want a space on
+#    output, a string label:HDR which indicates we want a fixed left aligned label of HDR, or one of the
+#    strings <key>:HDR:ENTRY, <key>:HDR:BOX, or <key>:HDR:BOXLABEL. The latter trio indicates
+#    we want to put out single line input entry with HDR, a plain BOX for entry (HDR is ignored),
+#    or a BOX for entry hanging adjacent to the right of the label HDR.
 #
-#    The string label:HDR indicates that for both entry purposes and printing purposes
-#    a fixed label is to be inserted. The value of HDR is the literal value for that label
-#    as it is to be presented.
+#    This is then followed by the "findings" dictionary which has key value pairs. The first is the
+#    index which <key> above refers to and is used to pull the value or set the value for that
+#    key. This allows starting with pre-defined strings (or empty strings) for all known keys
+#    that can be edited and saved.
 #
-#    The string label that is of the form <key>:HDR:ENTRY is a specifications for a single entry
-#    on input or a single line of output in a report. The <key> portion is used as an associative
-#    index into the "findings" recursive sub-object to retrieve the data associated with that key.
-#    The HDR portion is the literal label for the entry of printed out in the report.
-#
-#    Similarly for <key>:HDR:BOX- it is the same but instead of for a single entry it's for a 
-#    right-hanging box for freeform text input or printed output.
-#    
 
 
 #################################################################################################
@@ -289,11 +289,11 @@ rowvar = add_section_label(FINDINGS, rowvar)
 for entry in json_data["fseq"]:
     words = entry.split(':')
     # Add a row when having a space
-    if len(words) == 2:
+    if len(words) == 1:
         rowvar = rowvar + 1
     elif len(words) == 2:
         rowvar = add_label(words[1], rowvar, 0)
-    else:
+    elif len(words) == 3:
         key = words[0]
         lbl = words[1]
         typ = words[2]
@@ -304,9 +304,12 @@ for entry in json_data["fseq"]:
         elif typ == "BOXLABEL":
             cb, rowvar = add_label_box(lbl, json_data[FI][key], rowvar)
         else:
-            key = None
-        if key:
-            cbobj[key] = cb
+            print("uknown typ", typ, "for", entry)
+            exit(1)
+        cbobj[key] = cb
+    else:
+        print("wordlen of '" + entry + "' is ", len(words))
+        exit(1)
 
 # Impressions Section
 rowvar = add_section_label(IMPRESSION, rowvar)
@@ -338,6 +341,7 @@ def save_data(jd):
         if len(words) == 3:
             key = words[0]
             obj = cbobj[key]
+            typ = words[2]
             if typ == "ENTRY":
                 jd[FI][key] = obj.get()
             elif typ == "BOX" or typ == "BOXLABEL":
@@ -347,6 +351,7 @@ def save_data(jd):
 
     with open(jsonfile, "w") as ofile:
         json.dump(jd, ofile, indent=2)
+        print("", file=ofile)
 
 # Define a function that will save existing data to a printable report text file
 def create_report(rpt):

@@ -5,7 +5,7 @@ ifeq ($(INSTALL_ROOT),)
 $(error INSTALL_ROOT not set)
 endif
 
-BINS    := spawn_editor CheckOrthancDataMount CDW_Configure restart_orthanc
+BINS    := spawn_editor CheckOrthancDataMount CDW_Configure restart_orthanc code_dark_rptgen.py
 
 KPLIB	:= ${INSTALL_ROOT}/usr/lib/kp-report
 
@@ -18,7 +18,6 @@ install:
 	install -D -m 440 orthanc.sudo ${INSTALL_ROOT}/etc/sudoers.d/orthanc
 	for i in Templates/*.json; do install -D -m 555 $$i ${KPLIB}/$$i; done
 	mkdir -p ${INSTALL_ROOT}/usr/bin
-	cp Programs/*.py ${INSTALL_ROOT}/usr/bin/$$i
 	mkdir -p -m 755 $(INSTALL_ROOT)/DEBIAN
 	sed -e "s,%VERSION%,$(RELEASE)," control > $(INSTALL_ROOT)/DEBIAN/control
 	cp copyright preinst postinst postrm ${INSTALL_ROOT}/DEBIAN

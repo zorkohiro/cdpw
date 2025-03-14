@@ -17,14 +17,15 @@ uui=$4
 mkdir -p ${RPT} > /dev/null 2>&1
 inp=${TPD}/${tpt}.json
 fnm=${RPT}/study_${mrn}_${ssn}.json
-prg=${tpt}.py
+prg=code_dark_rptgen
 
 if [[ ! -f ${fnm} ]]; then
  if [[ ! -f ${inp} ]]; then
   echo ${inp} does not exist >> $LOG
   exit 1
  fi
- cp $inp $fnm
+ # Initial copy needs mrn and session grafted in
+ sed -e "s/\"mrn.*$/\"mrn\" : \"${mrn}\",/" -e "s/\"session.*$/\"session\" : \"${session}\",/" $inp > $fnm 2>> $LOG
  if [[ $? -ne 0 ]]; then
   echo unable to create $fnm from $inp >> $LOG
   rm -f ${fnm}

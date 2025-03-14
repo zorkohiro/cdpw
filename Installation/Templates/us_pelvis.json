@@ -1,34 +1,34 @@
 {
-  "version" : 1,
-  "mrn": "",
-  "session": "",
+  "version": 1,
+  "mrn": "bogus",
+  "session": "bogus",
   "signed": false,
   "signer": "",
-  "template" : "us_pelvis",
+  "template": "us_pelvis",
   "history": {
     "patient_age": "",
     "patient_history": ""
   },
-  "title" : "ULTRASOUND PELVIS",
+  "title": "ULTRASOUND PELVIS",
   "technique": {
     "description": "Ultrasound images of the pelvis acquired with endovaginal and transabdominal approach.",
     "comparison": ""
   },
   "fseq": [
-	"uterus:UTERUS:BOXENTRY",
-	"endometrium:ENDOMETRIUM:BOXENTRY",
-	"r_adnexa:RIGH TADNEXA:BOXENTRY",
-	"l_adnexa:LEFT ADNEXA:BOXENTRY",
-	"fluid:FLUID:BOXENTRY",
-	"other:OTHER:BOXENTRY"
+    "uterus:UTERUS:BOXLABEL",
+    "endometrium:ENDOMETRIUM:BOXLABEL",
+    "r_adnexa:RIGH TADNEXA:BOXLABEL",
+    "l_adnexa:LEFT ADNEXA:BOXLABEL",
+    "fluid:FLUID:BOXLABEL",
+    "other:OTHER:BOXLABEL"
   ],
   "findings": {
-	"uterus": "Measures XX cm. No fibroids or other masses seen.",
-	"endometrium": "Measures XX mm.",
-	"r_adnexa": "The right ovary is normal measuring XX cm.",
-	"l_adnexa": "The left ovary is normal measuring XX cm.",
-	"fluid": "None.",
-	"other": "None"
+    "uterus": "Measures XX cm. No fibroids or other masses seen.",
+    "endometrium": "Measures XX mm.",
+    "r_adnexa": "The right ovary is normal measuring XX cm.",
+    "l_adnexa": "The left ovary is normal measuring XX cm.",
+    "fluid": "None.",
+    "other": "None"
   },
   "impression": "Normal pelvic ultrasound. (#amNA)"
 }

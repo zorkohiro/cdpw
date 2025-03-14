@@ -1,38 +1,38 @@
 {
-  "version" : 1,
-  "mrn" : "",
-  "session" : "",
-  "signed" : false,
-  "signer" : "",
-  "template" : "ct_ang_head_neck_wc",
-  "history" : {
-    "patient_age" : "",
-    "patient_history" : ""
+  "version": 1,
+  "mrn": "bogus",
+  "session": "bogus",
+  "signed": false,
+  "signer": "",
+  "template": "ct_ang_head_neck_wc",
+  "history": {
+    "patient_age": "",
+    "patient_history": ""
   },
-  "title" : "CT ANGIOGRAM HEAD AND NECK WITH CONTRAST",
-  "technique" : {
-    "description" : "CT angiogram images of the head and neck acquired with XX ml XX intravenous contrast. Maximum intensity projection (MIP) vessel images were obtained.",
-    "ctdi" : "XX mGy",
-    "dlp"  : "XX mGy-cm",
-    "comparison" : ""
+  "title": "CT ANGIOGRAM HEAD AND NECK WITH CONTRAST",
+  "technique": {
+    "description": "CT angiogram images of the head and neck acquired with XX ml XX intravenous contrast. Maximum intensity projection (MIP) vessel images were obtained.",
+    "ctdi": "XX mGy",
+    "dlp": "XX mGy-cm",
+    "comparison": ""
   },
-"fseq" : [
-"head:CTA HEAD:BOXLABEL",
-"space",
-"label:CTA NECK",
-"vessels:GREAT VESSELS:BOXLABEL",
-"r_ica:RIGHT ICA:BOXLABEL",
-"l_ica:LEFT ICA:BOXLABEL",
-"vertebral:VERTEBRAL ARTERIES:BOXLABEL",
-"other:OTHER:BOXLABEL"
-],
-  "findings" : {
-    "head" : "No occlusion or hemodynamically significant stenosis. No aneurysm.",
-    "vessels" : "Visualized segments are patent.",
-    "r_ica" : "No stenosis or significant plaque. No dissection.",
-    "l_ica" : "No stenosis or significant plaque. No dissection.",
-    "vertebral" : "Patent extracranial segments. No dissection.",
-    "other" : "Visualized lung apices are clear. No neck mass or suspicious lymp nodes. Bones demonstrate no significant abnormality."
+  "fseq": [
+    "head:CTA HEAD:BOXLABEL",
+    "space",
+    "label:CTA NECK",
+    "vessels:GREAT VESSELS:BOXLABEL",
+    "r_ica:RIGHT ICA:BOXLABEL",
+    "l_ica:LEFT ICA:BOXLABEL",
+    "vertebral:VERTEBRAL ARTERIES:BOXLABEL",
+    "other:OTHER:BOXLABEL"
+  ],
+  "findings": {
+    "head": "No occlusion or hemodynamically significant stenosis. No aneurysm.",
+    "vessels": "Visualized segments are patent.",
+    "r_ica": "No stenosis or significant plaque. No dissection.",
+    "l_ica": "No stenosis or significant plaque. No dissection.",
+    "vertebral": "Patent extracranial segments. No dissection.",
+    "other": "Visualized lung apices are clear. No neck mass or suspicious lymp nodes. Bones demonstrate no significant abnormality."
   },
-  "impression" : "Normal CT angiogram head.\nNormal CTA neck. No cervical ICA stenosis."
+  "impression": "Normal CT angiogram head.\nNormal CTA neck. No cervical ICA stenosis."
 }

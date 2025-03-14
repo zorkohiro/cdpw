@@ -1,30 +1,30 @@
 {
-  "version" : 1,
-  "mrn": "",
-  "session": "",
+  "version": 1,
+  "mrn": "bogus",
+  "session": "bogus",
   "signed": false,
   "signer": "",
-  "template" : "us_kidneys",
+  "template": "us_kidneys",
   "history": {
     "patient_age": "",
     "patient_history": ""
   },
-  "title" : "ULTRASOUND KIDNEYS",
+  "title": "ULTRASOUND KIDNEYS",
   "technique": {
     "description": "Ultrasound images of the kidneys and bladder acquired. Color Doppler indicated.",
     "comparison": ""
   },
   "fseq": [
-	"r_kidney:RIGHT KIDNEY:BOXENTRY",
-	"l_kidney:LEFT KIDNEY:BOXENTRY",
-	"bladder:BLADDER:BOXENTRY",
-	"other:OTHER:BOXENTRY"
+    "r_kidney:RIGHT KIDNEY:BOXLABEL",
+    "l_kidney:LEFT KIDNEY:BOXLABEL",
+    "bladder:BLADDER:BOXLABEL",
+    "other:OTHER:BOXLABEL"
   ],
   "findings": {
-	"r_kidney": "Measures XX cm. Normal cortical echogenicity. No stones or hydronephrosis. No suspicious renal mass.",
-	"l_kidney": "Measures XX cm. Normal cortical echogenicity. No stones or hydronephrosis. No suspicious renal mass.",
-	"bladder": "No significant abnormality",
-	"other": "None."
+    "r_kidney": "Measures XX cm. Normal cortical echogenicity. No stones or hydronephrosis. No suspicious renal mass.",
+    "l_kidney": "Measures XX cm. Normal cortical echogenicity. No stones or hydronephrosis. No suspicious renal mass.",
+    "bladder": "No significant abnormality.",
+    "other": "None."
   },
   "impression": "Normal kidneys and bladder."
 }

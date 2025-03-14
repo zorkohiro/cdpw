@@ -1,30 +1,30 @@
 {
-  "version" : 1,
-  "mrn" : "",
-  "session" : "",
-  "signed" : false,
-  "signer" : "",
-  "template" : "ct_head_woc",
-  "history" : {
-    "patient_age" : "",
-    "patient_history" : ""
+  "version": 1,
+  "mrn": "bogus",
+  "session": "bogus",
+  "signed": false,
+  "signer": "",
+  "template": "ct_head_woc",
+  "history": {
+    "patient_age": "",
+    "patient_history": ""
   },
-  "title" : "CT HEAD WITHOUT CONTRAST",
-  "technique" : {
-    "description" : "CT images of the head acquired without contrast.",
-    "ctdi" : "XX mGy",
-    "dlp"  : "XX mGy-cm",
-    "comparison" : ""
+  "title": "CT HEAD WITHOUT CONTRAST",
+  "technique": {
+    "description": "CT images of the head acquired without contrast.",
+    "ctdi": "XX mGy",
+    "dlp": "XX mGy-cm",
+    "comparison": ""
   },
-"fseq" : [
-"brain:BRAIN:BOXLABEL",
-"ventricles:VENTRICLES/EXTRA-AXIAL SPACES:BOXLABEL",
-"extracranial:EXTRACRANIAL STRUCTURES:BOXLABEL"
-],
-  "findings" : {
-    "brain" : "No acute hemorrhage. No mass effect or herniation. Gray-white differentiation is maintained. White matter is within normal limits for age.",
-    "ventricles" : "No hydrocephalus or extra-axial fluid collections.",
-    "extracranial" : "Normal bones and soft tissues. Visualized paranasal sinuses and mastoids demonstrate no significant abnormality."
+  "fseq": [
+    "brain:BRAIN:BOXLABEL",
+    "ventricles:VENTRICLES/EXTRA-AXIAL SPACES:BOXLABEL",
+    "extracranial:EXTRACRANIAL STRUCTURES:BOXLABEL"
+  ],
+  "findings": {
+    "brain": "No acute hemorrhage. No mass effect or herniation. Gray-white differentiation is maintained. White matter is within normal limits for age.",
+    "ventricles": "No hydrocephalus or extra-axial fluid collections.",
+    "extracranial": "Normal bones and soft tissues. Visualized paranasal sinuses and mastoids demonstrate no significant abnormality."
   },
-  "impression" : "Normal CT head."
+  "impression": "Normal CT head."
 }

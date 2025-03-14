@@ -1,54 +1,54 @@
 {
-  "version" : 1,
-  "mrn" : "",
-  "session" : "",
-  "signed" : false,
-  "signer" : "",
-  "template" : "ct_abd_pelvis_wc",
-  "history" : {
-    "patient_age" : "",
-    "patient_history" : "Abdominal pain."
+  "version": 1,
+  "mrn": "bogus",
+  "session": "bogus",
+  "signed": false,
+  "signer": "",
+  "template": "ct_abd_pelvis_wc",
+  "history": {
+    "patient_age": "",
+    "patient_history": "Abdominal pain."
   },
-  "title" : "CT ABDOMEN AND PELVIS WITH CONTRAST",
-  "technique" : {
-    "description" : "CT images of the abdomen and pelvis acquired with 100 mL Omnipaque 300IV contrast",
-    "ctdi" : "XX mGy",
-    "dlp"  : "XX mGy-cm",
-    "comparison" : ""
+  "title": "CT ABDOMEN AND PELVIS WITH CONTRAST",
+  "technique": {
+    "description": "CT images of the abdomen and pelvis acquired with 100 mL Omnipaque 300IV contrast",
+    "ctdi": "XX mGy",
+    "dlp": "XX mGy-cm",
+    "comparison": ""
   },
-	"fseq" : [
-"lung:LUNG BASEES:ENTRY",
-"liver:LIVER:ENTRY",
-"gbd:GALLBLADDER/BILE DUCTS:ENTRY",
-"spleen:SPLEEN:ENTRY",
-"pancreas:PANCREAS:ENTRY",
-"adrenal:ADRENALS:ENTRY",
-"kidneys:KIDNEYS:ENTRY",
-"bowel:GI TRACT:ENTRY",
-"meslymph:MESENTERY/LYMPH NODES:ENTRY",
-"peritoneum:PERITONEUM:ENTRY",
-"aorta:AORTA/VESSELS:ENTRY",
-"bladder:BLADDER:ENTRY",
-"pelvic:PELVIC STRUCTURES:ENTRY",
-"soft tissues:SOFT TISSUES:ENTRY",
-"bones:BONES:ENTRY"
-	],
-  "findings" : {
-    "lung" : "Clear.",
-    "liver" : "No significant abnormality.",
-    "gbd" : "No calcified gallstones. No significant biliary dilation.",
-    "spleen" : "Normal.",
-    "pancreas" : "Normal.",
-    "adrenal" : "No significant abnormality.",
-    "kidneys" : "Normal.",
-    "bowel"  : "No significant abnormality.",
-    "meslymph" : "No suspiscious lymph nodes.",
-    "peritoneum" : "No significant free fluid. No free air.",
-    "aorta" : "Normal abdominal aortica diameter (<3cm).",
-    "bladder" : "No significant abnormlity.",
-    "pelvic" : "No significant abnormality.",
-    "soft tissues" : "No significant abnormality.",
-    "bones" : "No significant abnormality."
+  "fseq": [
+    "lung:LUNG BASEES:ENTRY",
+    "liver:LIVER:ENTRY",
+    "gbd:GALLBLADDER/BILE DUCTS:ENTRY",
+    "spleen:SPLEEN:ENTRY",
+    "pancreas:PANCREAS:ENTRY",
+    "adrenal:ADRENALS:ENTRY",
+    "kidneys:KIDNEYS:ENTRY",
+    "bowel:GI TRACT:ENTRY",
+    "meslymph:MESENTERY/LYMPH NODES:ENTRY",
+    "peritoneum:PERITONEUM:ENTRY",
+    "aorta:AORTA/VESSELS:ENTRY",
+    "bladder:BLADDER:ENTRY",
+    "pelvic:PELVIC STRUCTURES:ENTRY",
+    "soft tissues:SOFT TISSUES:ENTRY",
+    "bones:BONES:ENTRY"
+  ],
+  "findings": {
+    "lung": "Clear.",
+    "liver": "No significant abnormality.",
+    "gbd": "No calcified gallstones. No significant biliary dilation.",
+    "spleen": "Normal.",
+    "pancreas": "Normal.",
+    "adrenal": "No significant abnormality.",
+    "kidneys": "Normal.",
+    "bowel": "No significant abnormality.",
+    "meslymph": "No suspiscious lymph nodes.",
+    "peritoneum": "No significant free fluid. No free air.",
+    "aorta": "Normal abdominal aortica diameter (<3cm).",
+    "bladder": "No significant abnormlity.",
+    "pelvic": "No significant abnormality.",
+    "soft tissues": "No significant abnormality.",
+    "bones": "No significant abnormality."
   },
-  "impression" : "Normal CT abdomen pelvis."
+  "impression": "Normal CT abdomen pelvis."
 }

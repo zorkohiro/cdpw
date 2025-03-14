@@ -1,24 +1,24 @@
 {
-	"version" : 1,
-	"mrn": "",
-	"session": "",
-	"signed": false,
-	"signer": "",
-  	"template": "dx_abd",
-	"history": {
-		"patient_age": "",
-		"patient_history": ""
-	},
-	"title" : "XRAY ABDOMEN",
-	"technique": {
-		"description": "1 view(s) of the abdomen acquired.",
-		"comparison": ""
-	},
-	"fseq" : [
-	"findings:FINDINGS:BOX"
-],
-	"findings": {
-		"findings" :	"Normal bowel gas pattern. No urinary tract stones seen."
-	},
-	"impression": "No acute disease."
+  "version": 1,
+  "mrn": "bogus",
+  "session": "bogus",
+  "signed": false,
+  "signer": "",
+  "template": "dx_abd",
+  "history": {
+    "patient_age": "",
+    "patient_history": ""
+  },
+  "title": "XRAY ABDOMEN",
+  "technique": {
+    "description": "1 view(s) of the abdomen acquired.",
+    "comparison": ""
+  },
+  "fseq": [
+    "findings:FINDINGS:BOX"
+  ],
+  "findings": {
+    "findings": "Normal bowel gas pattern. No urinary tract stones seen."
+  },
+  "impression": "No acute disease."
 }

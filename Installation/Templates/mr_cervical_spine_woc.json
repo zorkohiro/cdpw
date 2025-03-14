@@ -1,44 +1,44 @@
 {
-  "version" : 1,
-  "mrn" : "",
-  "session" : "",
-  "signed" : false,
-  "signer" : "",
-  "template" : "mr_cervical_spine_woc",
-  "history" : {
-    "patient_age" : "",
-    "patient_history" : ""
+  "version": 1,
+  "mrn": "bogus",
+  "session": "bogus",
+  "signed": false,
+  "signer": "",
+  "template": "mr_cervical_spine_woc",
+  "history": {
+    "patient_age": "",
+    "patient_history": ""
   },
-  "title" : "MRI CERVICAL SPINE WITHUT CONTRAST",
-  "technique" : {
-    "description" : "MRI cervical Spine without contrast.",
-    "comparison" : ""
+  "title": "MRI CERVICAL SPINE WITHOUT CONTRAST",
+  "technique": {
+    "description": "MRI cervical Spine without contrast.",
+    "comparison": ""
   },
-  "fseq" : [
-        "spinal:SPINAL CORD:BOXLABEL",
-        "discs:DISCS:BOXLABEL",
-        "bones:BONES:BOXLABEL",
-        "soft:SOFT TISSUES:BOXLABEL",
-	"c2-c3:C2-C3:BOXLABEL",
-	"c3-c4:C3-C4:BOXLABEL",
-	"c4-c5:C4-C5:BOXLABEL",
-	"c5-c6:C5-C6:BOXLABEL",
-	"c6-c7:C6-C7:BOXLABEL",
-	"c7-t1:C7-T1:BOXLABEL",
-	"other:OTHER:BOXLABEL"
+  "fseq": [
+    "spinal:SPINAL CORD:BOXLABEL",
+    "discs:DISCS:BOXLABEL",
+    "bones:BONES:BOXLABEL",
+    "soft:SOFT TISSUES:BOXLABEL",
+    "c2-c3:C2-C3:BOXLABEL",
+    "c3-c4:C3-C4:BOXLABEL",
+    "c4-c5:C4-C5:BOXLABEL",
+    "c5-c6:C5-C6:BOXLABEL",
+    "c6-c7:C6-C7:BOXLABEL",
+    "c7-t1:C7-T1:BOXLABEL",
+    "other:OTHER:BOXLABEL"
   ],
-  "findings" : {
-        "spinal": "Normal.",
-        "discs": "Normal.",
-        "bones": "Normal vertebral alignment. Normal vertebral body height. Marrow signal is normal.",
-        "soft": "Normal.",
-	"c2-c3": "No canal or foraminal stenosis.",
-	"c3-c4": "No canal or foraminal stenosis.",
-	"c4-c5": "No canal or foraminal stenosis.",
-	"c5-c6": "No canal or foraminal stenosis.",
-	"c6-c7": "No canal or foraminal stenosis.",
-	"c7-t1": "No canal or foraminal stenosis.",
-	"other" : "Visualized posterior fossa is normal."
+  "findings": {
+    "spinal": "Normal.",
+    "discs": "Normal.",
+    "bones": "Normal vertebral alignment. Normal vertebral body height. Marrow signal is normal.",
+    "soft": "Normal.",
+    "c2-c3": "No canal or foraminal stenosis.",
+    "c3-c4": "No canal or foraminal stenosis.",
+    "c4-c5": "No canal or foraminal stenosis.",
+    "c5-c6": "No canal or foraminal stenosis.",
+    "c6-c7": "No canal or foraminal stenosis.",
+    "c7-t1": "No canal or foraminal stenosis.",
+    "other": "Visualized posterior fossa is normal."
   },
-  "impression" : "Normal MRI cervical spine."
+  "impression": "Normal MRI cervical spine."
 }

@@ -1,22 +1,22 @@
 {
-  "version" : 1,
-  "mrn" : "",
-  "session" : "",
-  "signed" : false,
-  "signer" : "",
-  "template" : "ct_chest_woc",
-  "history" : {
-    "patient_age" : "",
-    "patient_history" : ""
+  "version": 1,
+  "mrn": "bogus",
+  "session": "bogus",
+  "signed": false,
+  "signer": "",
+  "template": "ct_chest_woc",
+  "history": {
+    "patient_age": "",
+    "patient_history": ""
   },
-  "title" : "CT CHEST ABDOMEN PELVIS WITH CONTRAST",
-  "technique" : {
-    "description" : "CT images of the chest acquired without contrast.",
-    "ctdi" : "XX mGy",
-    "dlp"  : "XX mGy-cm",
-    "comparison" : ""
+  "title": "CT CHEST ABDOMEN PELVIS WITH CONTRAST",
+  "technique": {
+    "description": "CT images of the chest acquired without contrast.",
+    "ctdi": "XX mGy",
+    "dlp": "XX mGy-cm",
+    "comparison": ""
   },
-"fseq" : [
+  "fseq": [
     "heart:HEART:BOXLABEL",
     "vessels:VESSLES:BOXLABEL",
     "lymph:LYMPH NODES:BOXLABEL",
@@ -26,17 +26,17 @@
     "abdomen:UPPER ABDOMEN:BOXLABEL",
     "soft:SOFT TISSUES:BOXLABEL",
     "bones:BONES:BOXLABEL"
-],
-  "findings" : {
-    "heart" : "Heart size is normal.",
-    "vessels" : "No significant abnormality.",
-    "lymph" : "No suspicious lymph nodes.",
-    "mediastinum"  : "No significant abnormality.",
-    "lungs" : "Normal.",
-    "pleural" : "Normal.",
-    "abdomen" : "No significant abnormlity.",
-    "soft" : "No significant abnormality.",
-    "bones" : "No significant abnormality."
+  ],
+  "findings": {
+    "heart": "Heart size is normal.",
+    "vessels": "No significant abnormality.",
+    "lymph": "No suspicious lymph nodes.",
+    "mediastinum": "No significant abnormality.",
+    "lungs": "Normal.",
+    "pleural": "Normal.",
+    "abdomen": "No significant abnormlity.",
+    "soft": "No significant abnormality.",
+    "bones": "No significant abnormality."
   },
-  "impression" : "Normal CT chest."
+  "impression": "Normal CT chest."
 }

@@ -1,35 +1,35 @@
 {
-  "version" : 1,
-  "mrn" : "",
-  "session" : "",
-  "signed" : false,
-  "signer" : "",
-  "template" : "ct_pulm_angio_wc",
-  "history" : {
-    "patient_age" : "",
-    "patient_history" : ""
+  "version": 1,
+  "mrn": "bogus",
+  "session": "bogus",
+  "signed": false,
+  "signer": "",
+  "template": "ct_pulm_angio_wc",
+  "history": {
+    "patient_age": "",
+    "patient_history": ""
   },
-  "technique" : {
-    "description" : "CT angiogram images of the chest acquired with XX mL XX contrast. Multiplanar reformations performed. Maximum intensity projection (MIP) vessel images were obtained.",
-    "ctdi" : "XX mGy",
-    "dlp"  : "XX mGy-cm",
-    "comparison" : ""
+  "technique": {
+    "description": "CT angiogram images of the chest acquired with XX mL XX contrast. Multiplanar reformations performed. Maximum intensity projection (MIP) vessel images were obtained.",
+    "ctdi": "XX mGy",
+    "dlp": "XX mGy-cm",
+    "comparison": ""
   },
-"fseq" : [
+  "fseq": [
     "pulmonary:PULMONARY ARTERIES:BOXLABEL",
-"space",
+    "space",
     "heart:HEART:BOXLABEL",
     "vessels:OTHER VESSELS:BOXLABEL",
     "lymph:LYMPH NODES:BOXLABEL",
     "mediastinum:OTHER MEDIASTINUM:BOXLABEL",
     "lungs:LUNGS:BOXLABEL",
-    "pleural:PLEURAL SPACAES:BOXLABEL",
-    "abdomen:XX:BOXLABEL",
+    "pleural:PLEURAL SPACES:BOXLABEL",
+    "abdomen:UPPER ABDOMEN:BOXLABEL",
     "soft:SOFT TISSUES:BOXLABEL",
     "bones:BONES:BOXLABEL"
-],
-  "title" : "CT PULMONARY ANGIOGRAM",
-  "findings" : {
+  ],
+  "title": "CT PULMONARY ANGIOGRAM",
+  "findings": {
     "pulmonary": "No pulmonary embolism.",
     "heart": "Heart size normal.",
     "vessels": "No signigicant abnormality.",
@@ -41,5 +41,5 @@
     "soft": "No signigicant abnormality.",
     "bones": "No signigicant abnormality."
   },
-  "impression" : "Negative for pulmonary embolism (#pe0)."
+  "impression": "Negative for pulmonary embolism (#pe0)."
 }

@@ -1,38 +1,38 @@
 {
-  "version" : 1,
-  "mrn" : "",
-  "session" : "",
-  "signed" : false,
-  "signer" : "",
-  "template" : "mr_neck_wc_woc",
-  "history" : {
-    "patient_age" : "",
-    "patient_history" : ""
+  "version": 1,
+  "mrn": "bogus",
+  "session": "bogus",
+  "signed": false,
+  "signer": "",
+  "template": "mr_neck_wc_woc",
+  "history": {
+    "patient_age": "",
+    "patient_history": ""
   },
-  "title" : "MRI NECK WITHOUT AND WITH CONTRAST",
-  "technique" : {
-    "description" : "MRI images of the neck acquired with and with XX ml XX intravenous contrast.",
-    "comparison" : ""
+  "title": "MRI NECK WITHOUT AND WITH CONTRAST",
+  "technique": {
+    "description": "MRI images of the neck acquired with and with XX ml XX intravenous contrast.",
+    "comparison": ""
   },
-  "fseq" : [
-	"pharyngeal:PARYNGEAL MUCOSA:BOXLABEL",
-	"oral:XX:BOXLABEL",
-	"larynx:LARYNX:BOXLABEL",
-	"salivary:SALIVARY GLANDS:BOXLABEL",
-	"thyroid:THYROID:BOXLABEL",
-	"flow:FLOW VOIDS AND CAROTID SPACE:BOXLABEL",
-	"bones:BONES:BOXLABEL",
-	"other:OTHER:BOXLABEL"
+  "fseq": [
+    "pharyngeal:PHARYNGEAL MUCOSA:BOXLABEL",
+    "oral:ORAL CAVITY:BOXLABEL",
+    "larynx:LARYNX:BOXLABEL",
+    "salivary:SALIVARY GLANDS:BOXLABEL",
+    "thyroid:THYROID:BOXLABEL",
+    "flow:FLOW VOIDS AND CAROTID SPACE:BOXLABEL",
+    "bones:BONES:BOXLABEL",
+    "other:OTHER:BOXLABEL"
   ],
-  "findings" : {
-	"pharyngeal": "Normal nasopharynx, oropharynx and hypopharynx.",
-	"oral": "Normal including tongue and floor of mount.",
-	"larynx": "Normal supraglottic, glottic and subglottic larynx.",
-	"salivary": "Normal parotid, submandibular and sublingual glands.",
-	"thyroid": "Normal.",
-	"flow": "Normal.",
-	"bones": "No significant abnormality.",
-	"other" : "None."
+  "findings": {
+    "pharyngeal": "Normal nasopharynx, oropharynx and hypopharynx.",
+    "oral": "Normal including tongue and floor of mount.",
+    "larynx": "Normal supraglottic, glottic and subglottic larynx.",
+    "salivary": "Normal parotid, submandibular and sublingual glands.",
+    "thyroid": "Normal.",
+    "flow": "Normal.",
+    "bones": "No significant abnormality.",
+    "other": "None."
   },
-  "impression" : "Normal MRI neck."
+  "impression": "Normal MRI neck."
 }

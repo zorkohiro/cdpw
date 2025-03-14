@@ -1,20 +1,24 @@
 {
-	"version" : 1,
-	"mrn": "",
-	"session": "",
-	"signed": false,
-	"signer": "",
-  	"template" : "dx_r_shoulder",
-	"history": {
-		"patient_age": "",
-		"patient_history": ""
-	},
-	"title" : "XRAY RIGHT SHOULDER",
-	"technique": {
-		"description": "4 views(s) of the right shoulder acquired.",
-		"comparison": ""
-	},
-	"fseq" : [ "findings:FINDINGS:BOX" ],
-	"findings": { "findings" : "No acute fracture. Normal alignment. No significant glenohumeral arthritis. No significant acromioclavicular arthritis."},
-	"impression": "Normal right shoulder."
+  "version": 1,
+  "mrn": "bogus",
+  "session": "bogus",
+  "signed": false,
+  "signer": "",
+  "template": "dx_r_shoulder",
+  "history": {
+    "patient_age": "",
+    "patient_history": ""
+  },
+  "title": "XRAY RIGHT SHOULDER",
+  "technique": {
+    "description": "4 views(s) of the right shoulder acquired.",
+    "comparison": ""
+  },
+  "fseq": [
+    "findings:FINDINGS:BOX"
+  ],
+  "findings": {
+    "findings": "No acute fracture. Normal alignment. No significant glenohumeral arthritis. No significant acromioclavicular arthritis."
+  },
+  "impression": "Normal right shoulder."
 }
