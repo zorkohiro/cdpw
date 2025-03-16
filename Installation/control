@@ -3,7 +3,7 @@ Version: %VERSION%
 Section: base
 Priority: optional
 Architecture: all
-Depends: orthanc, orthanc-dicomweb, orthanc-gdcm, orthanc-imagej, orthanc-webviewer, python3-tk, cups-bsd, enscript, sudo
+Depends: orthanc, orthanc-dicomweb, orthanc-gdcm, orthanc-imagej, orthanc-webviewer, python3-tk, cups-bsd, enscript, sudo, curl
 Maintainer: Matthew Jacob <lydianconcepts@gmail.com>
 Description: Kaiser Permanente Report Writer Plugin for Orthanc
  This is a pluging and auxillary scripts and data to create imaging

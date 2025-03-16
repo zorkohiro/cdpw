@@ -34,6 +34,8 @@ Search for Date & Time and disable automatic date and time.
 
 Unpin 'A' window and help icons from taskbar on botton.
 
+Fire up a Kconsole and pin it to the task bar.
+
 #
 # Set background to plain gray
 #
@@ -58,6 +60,9 @@ Settings/Home
 
 Enter “about:config” in the address search bar
 Type “full” in the search bar, and toggle “full-screen-api.enabled” to “false”:
+
+Enter http://localhost:8042 in chrome and bookmark it and name it Orthanc is it
+will not connect at this step.
 
 5. Upgrade kernel
 
@@ -84,9 +89,3 @@ sudo apt install -y ./kp-report-latest.deb
 
 This should install all of the main Orthanc binaries plus our changes and additions.
 
-8. Final step
-
-#
-# Point google browser to orthanc page
-#
-Enter http://localhost:8042 in chrome and bookmark it
