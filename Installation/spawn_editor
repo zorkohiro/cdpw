@@ -1,12 +1,12 @@
 #!/bin/bash
 export DISPLAY=:0
+export XDG_RUNTIME_DIR=/run/user/$UID
+export XAUTHORITY=$(ls ${XDG_RUNTIME_DIR}/.mutter*)
 export PATH=/usr/local/bin:/usr/bin:/usr/sbin
 LOG=/tmp/spawn_editor.log
 TPD=/usr/lib/kp-report/Templates
 CDB=/code_dark
 RPT=${CDB}/reports
-
-echo called with $* on `date` >> $LOG
 
 tpt=$1
 mrn=$2
