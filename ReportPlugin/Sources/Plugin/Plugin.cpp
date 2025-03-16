@@ -28,8 +28,10 @@
 #include <fstream>
 #include <dirent.h>
 #include <fcntl.h>
+#include <stdio.h>
 #include <string.h>
 #include <syslog.h>
+#include <ctype.h>
 
 #define ORTHANC_PLUGIN_NAME "report"
 #define TEMPLATES_DIR       "/usr/lib/kp-report/Templates"
@@ -40,15 +42,52 @@ static OrthancPluginContext* context = NULL;
 
 static void fetch_templates(OrthancPluginRestOutput* output, const char* url, const OrthancPluginHttpRequest* request) {
   OrthancPluginContext* context = OrthancPlugins::GetGlobalContext();
-  
+
   if (request->method != OrthancPluginHttpMethod_Get) {
     OrthancPluginSendMethodNotAllowed(context, output, "GET");
   } else {
     Json::Value result;
     char prtbuf[1024] = { 0 };
     int nent = 0;
+    char modality[8] = { 0 };
     DIR *dir = opendir(TEMPLATES_DIR);
 
+    snprintf(prtbuf, sizeof (prtbuf), "%s: URL %s", __func__, url);
+    OrthancPluginLogWarning(context, prtbuf);
+
+    const char *resourceId = strrchr(url, '/');
+    if (resourceId) {
+        resourceId++;
+        snprintf(prtbuf, sizeof (prtbuf), "%s: URL called with resourceId %s", __func__, resourceId);
+        OrthancPluginLogWarning(context, prtbuf);
+    }
+
+    if (resourceId) {
+        FILE *pp;
+        snprintf(prtbuf, sizeof (prtbuf), "GetModality -r %s", resourceId);
+        OrthancPluginLogWarning(context, prtbuf);
+        pp = popen(prtbuf, "r");
+        if (pp != NULL) {
+            char lbuf[24];
+            if (fgets(lbuf, sizeof (lbuf), pp) != NULL) {
+                char *ridx = strrchr(lbuf, '\n');
+                if (ridx) {
+                    *ridx = '\0';
+                    snprintf(prtbuf, sizeof (prtbuf), "GetModality of %s returns %s", resourceId, lbuf);
+                    OrthancPluginLogWarning(context, prtbuf);
+                    // Convert to lower case as we copy to modality
+                    for (size_t index = 0; lbuf[index] && index < sizeof (modality) - 1; index++) {
+                        modality[index] = lbuf[index];
+                        if (isupper(lbuf[index]))
+                           modality[index] += ' ';
+                    }
+                    snprintf(prtbuf, sizeof (prtbuf), "Modality is now %s", modality);
+                    OrthancPluginLogWarning(context, prtbuf);
+                }
+            }
+            pclose(pp);
+        }
+    }
     if (dir) {
       snprintf(prtbuf, sizeof (prtbuf) - 1, "Opened TEMPLATES_DIR %s", TEMPLATES_DIR);
       OrthancPluginLogWarning(context, prtbuf);
@@ -56,6 +95,13 @@ static void fetch_templates(OrthancPluginRestOutput* output, const char* url, co
       while ((ent = readdir(dir)) != NULL) {
         char *suffix = strstr(ent->d_name, ".json");
         if (suffix && strlen(suffix) == 5) {
+          if (modality[0]) {
+              if (strncmp(ent->d_name, modality, strlen(modality)) != 0) {
+                  snprintf(prtbuf, sizeof (prtbuf) - 1, "skipping %s because front of name does not match modality %s", ent->d_name, modality);
+                  OrthancPluginLogWarning(context, prtbuf);
+                  continue;
+              }
+          }
           snprintf(prtbuf, sizeof (prtbuf) - 1, "Appending %s", ent->d_name);
           OrthancPluginLogWarning(context, prtbuf);
           char jname[128];
@@ -202,7 +248,7 @@ extern "C"
     }
 
     OrthancPlugins::SetDescription(ORTHANC_PLUGIN_NAME, "Add support for Study Report Writing in Orthanc.");
-    OrthancPlugins::RegisterRestCallback<fetch_templates>("/kp-report/templates", true /* thread safe */);
+    OrthancPlugins::RegisterRestCallback<fetch_templates>("/kp-report/templates/([^/]*)", true /* thread safe */);
     OrthancPlugins::RegisterRestCallback<create_report>("/kp-report/create", true /* thread safe */);
 
     {

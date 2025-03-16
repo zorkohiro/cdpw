@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-function ChooseTemplate(callback)
+function ChooseTemplate(callback, id)
 {
   var clickedTemplate = '';
   var items = $('<ul>')
@@ -25,7 +25,7 @@ function ChooseTemplate(callback)
 
   items.append('<li data-role="list-divider">Report Templates</li>');
   $.ajax({
-    url: '../kp-report/templates',
+    url: '../kp-report/templates/' + $.mobile.pageData.uuid,
     type: 'GET',
     dataType: 'json',
     async: false,
