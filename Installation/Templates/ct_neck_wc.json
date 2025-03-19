@@ -11,8 +11,8 @@
   },
   "technique": {
     "description": "CT images of the neck acquired with XX mL XX intravenous contrast.",
-    "ctdi": "XX mGy",
-    "dlp": "XX mGy-cm",
+    "ctdi": "",
+    "dlp": "",
     "comparison": ""
   },
   "fseq": [

@@ -12,8 +12,8 @@
   "title": "CTA CHEST ABDOMEN PELVIS WITH CONTRAST",
   "technique": {
     "description": "CT angiogram images of the chest, abdomen and pelvis with XX ml XX intravenous contrast.",
-    "ctdi": "XX mGy",
-    "dlp": "XX mGy-cm",
+    "ctdi": "",
+    "dlp": "",
     "comparison": ""
   },
   "fseq": [

@@ -12,8 +12,8 @@
   "title": "CT ABDOMEN AND PELVIS WITH CONTRAST",
   "technique": {
     "description": "CT images of the abdomen and pelvis acquired with 100 mL Omnipaque 300IV contrast",
-    "ctdi": "XX mGy",
-    "dlp": "XX mGy-cm",
+    "ctdi": "",
+    "dlp": "",
     "comparison": ""
   },
   "fseq": [

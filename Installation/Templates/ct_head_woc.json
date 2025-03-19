@@ -12,8 +12,8 @@
   "title": "CT HEAD WITHOUT CONTRAST",
   "technique": {
     "description": "CT images of the head acquired without contrast.",
-    "ctdi": "XX mGy",
-    "dlp": "XX mGy-cm",
+    "ctdi": "",
+    "dlp": "",
     "comparison": ""
   },
   "fseq": [

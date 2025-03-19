@@ -12,8 +12,8 @@
   "title": "CT ANGIOGRAM HEAD AND NECK WITH CONTRAST",
   "technique": {
     "description": "CT angiogram images of the head and neck acquired with XX ml XX intravenous contrast. Maximum intensity projection (MIP) vessel images were obtained.",
-    "ctdi": "XX mGy",
-    "dlp": "XX mGy-cm",
+    "ctdi": "",
+    "dlp": "",
     "comparison": ""
   },
   "fseq": [

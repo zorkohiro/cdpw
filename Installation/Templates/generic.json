@@ -10,7 +10,7 @@
     "patient_history": ""
   },
   "fseq": [
-    "modality:MODALITY:SHORTENTRY",
+    "modality:MODALITY:TIGHTENTRY",
     "findings:FINDINGS:BOX"
   ],
   "title": "Generic Radiological Report",
@@ -19,7 +19,7 @@
     "comparison": ""
   },
   "findings": {
-    "modality": "XX",
+    "modality": "",
     "findings": ""
   },
   "impression": ""

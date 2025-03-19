@@ -12,8 +12,8 @@
   "title": "MRI BRAIN WITHOUT CONTRAST",
   "technique": {
     "description": "MRI brain without contrast.",
-    "ctdi": "XX mGy",
-    "dlp": "XX mGy-cm",
+    "ctdi": "",
+    "dlp": "",
     "comparison": ""
   },
   "fseq": [

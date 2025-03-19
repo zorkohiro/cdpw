@@ -12,8 +12,8 @@
   "title": "CT CHEST ABDOMEN PELVIS WITH CONTRAST",
   "technique": {
     "description": "CT images of the chest acquired with XX mL XX contrast.",
-    "ctdi": "XX mGy",
-    "dlp": "XX mGy-cm",
+    "ctdi": "",
+    "dlp": "",
     "comparison": ""
   },
   "fseq": [

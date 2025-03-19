@@ -11,8 +11,8 @@
   },
   "technique": {
     "description": "CT angiogram images of the chest acquired with XX mL XX contrast. Multiplanar reformations performed. Maximum intensity projection (MIP) vessel images were obtained.",
-    "ctdi": "XX mGy",
-    "dlp": "XX mGy-cm",
+    "ctdi": "",
+    "dlp": "",
     "comparison": ""
   },
   "fseq": [

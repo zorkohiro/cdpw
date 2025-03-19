@@ -216,7 +216,7 @@ root.grid_columnconfigure(1, weight=1)
 # Shorthand functions
 #
 def add_section_label(str, row):
-    tlab = tk.Label(root, text=str, relief=tk.RAISED, font=(fontfamily, fontsize + 1))
+    tlab = tk.Label(root, text=str, relief=tk.RAISED, font=(fontfamily, fontsize))
     tlab.grid(sticky=tk.N+tk.W, row=row, pady=(1,1))
     return row + 1
 
@@ -233,7 +233,7 @@ def add_entry(initial, w, j, row, col):
             tt_entry = tk.Entry(root, textvariable=tt_text, justify=j, font=fontstring)
             tt_entry.grid(sticky=tk.EW, row=row, column=col)
     else:
-            tt_entry = tk.Entry(root, textvariable=tt_text, width=w, justify=j, font=fontstring)
+            tt_entry = tk.Entry(root, textvariable=tt_text, justify=j, width=w, font=fontstring)
             tt_entry.grid(sticky=tk.W, row=row, column=col)
     return tt_text, row + 1
 
@@ -257,6 +257,18 @@ def add_short_label_entry(label, ivalue, row):
     tt_entry.grid(sticky=tk.W, row=row, column=1)
     return tt_text, row + 1
 
+""" Add an entry scrunched up next to a label """
+def add_tight_label_entry(label, ivalue, row, w, ew):
+    tlab = tk.Label(root, text=label, anchor=tk.W, width=w, justify="left", font=(fontfamily, fontsize - 1))
+    tlab.grid(sticky=tk.W, row=row, column=0)
+    tt_text = tk.StringVar()
+    tt_text.set(ivalue)
+    tt_entry = tk.Entry(root, textvariable=tt_text, width=ew, justify="left", font=fontstring)
+    tt_entry.grid(sticky=tk.W, row=row, column=0, padx=(((w * fontsize) * 3)/ 5, 0))
+    return tt_text, row + 1
+
+# History Section
+rowvar = add_section_label(HISTORY, rowvar)
 """ add an unlabeled box """
 def add_box(insert, row):
     box = tk.Text(root, height=boxsize, width=90, font=fontstring)
@@ -273,8 +285,22 @@ def add_label_box(str, insert, row):
     box.grid(sticky=tk.W, row=row, column=1, columnspan=2, pady=(0,10), padx=(0,10))
     return box, row + boxsize
 
-# History Section
-rowvar = add_section_label(HISTORY, rowvar)
+""" add an optionMenu scrunched up next to a label """
+##def add_label_menu(str, options, initial, row, col, w):
+#    tlab = tk.Label(root, text=str.upper() + ":", relief=tk.RAISED, font=(fontfamily, fontsize - 1))
+#    tlab.grid(sticky=tk.W, row=row, column=col)
+#    clickval = tk.StringVar()
+#    clickval.set(initial)
+#    tt_menu = tk.OptionMenu(root, clickval, *options)
+#    tt_menu.config(width=w)
+#    tt_menu.grid(row=row, column=col, sticky=tk.E, padx=(100, 0))
+#    return clickval, row + 1
+
+#copts = [ "alpha", "beta", "gamma" ]
+#initial = json_data["dd"]
+#if not initial:
+#    initial = "<undefined>"
+#dd_value, rowvar = add_label_menu("Terpinols", copts, initial, rowvar, 0, 10)
 
 age_entry, rowvar = add_short_label_entry(PATIENT_AGE + " (years) ", json_data[HI][PA], rowvar)
 
@@ -285,10 +311,8 @@ rowvar = add_section_label(TECHNIQUE, rowvar)
 tek_box, rowvar = add_box(json_data[TH][DC], rowvar)
 
 if "ctdi" in json_data[TH]:
-    add_label("CTDI: ", rowvar, 0)
-    ctdi_entry, rowvar = add_entry(json_data[TH]["ctdi"], 20, "left", rowvar, 1)
-    add_label("DLP: ", rowvar, 0)
-    dlp_entry, rowvar = add_entry(json_data[TH]["dlp"], 20, "left", rowvar, 1)
+    ctdi_entry, rowvar = add_tight_label_entry("CTDI (mGy)", json_data[TH]["ctdi"], rowvar, 15, 3)
+    dlp_entry, rowvar = add_tight_label_entry("DLP (mGy-cm)", json_data[TH]["dlp"], rowvar, 15, 3)
 
 comparison_box, rowvar = add_label_box(COMPARISON, json_data[TH][CM], rowvar)
 
@@ -308,8 +332,8 @@ for entry in json_data["fseq"]:
         typ = words[2]
         if typ == "ENTRY":
             cb, rowvar = add_label_entry(lbl, json_data[FI][key], rowvar)
-        elif typ == "SHORTENTRY":
-            cb, rowvar = add_short_label_entry(lbl, json_data[FI][key], rowvar)
+        elif typ == "TIGHTENTRY":
+            cb, rowvar = add_tight_label_entry(lbl, json_data[FI][key], rowvar, len(lbl) + 5, 3)
         elif typ == "BOX":
             cb, rowvar = add_box(json_data[FI][key], rowvar)
         elif typ == "BOXLABEL":
@@ -353,13 +377,13 @@ def save_data(jd):
             key = words[0]
             obj = cbobj[key]
             typ = words[2]
-            if typ == "ENTRY" or typ == "SHORTENTRY":
+            if typ == "ENTRY" or typ == "TIGHTENTRY":
                 jd[FI][key] = obj.get()
             elif typ == "BOX" or typ == "BOXLABEL":
                 jd[FI][key] = obj.get("1.0", "end-1c")
 
     jd[IM] = impress_box.get("1.0", "end-1c")
-
+#    jd["dd"] = dd_value.get()
     with open(jsonfile, "w") as ofile:
         json.dump(jd, ofile, indent=2)
         print("", file=ofile)
@@ -377,6 +401,7 @@ def create_report(rpt):
         print("", file=ofile)
         print(HISTORY + ":", file=ofile)
         print("", file=ofile)
+#        print("DD" + ": ", json_data["dd"], file=ofile)
         print(PATIENT_AGE + " (years):  " + json_data[HI][PA], file=ofile)
         print(PATIENT_HISTORY + ":", file=ofile)
         for line in json_data[HI][PH].split('\n'):
@@ -412,7 +437,7 @@ def create_report(rpt):
                 if typ == "ENTRY":
                     front = lbl + ":"
                     print(front.ljust(25) + json_data[FI][key], file=ofile)
-                elif typ == "SHORTENTRY":
+                elif typ == "TIGHTENTRY":
                     front = lbl + ":"
                     print(front.ljust(10) + json_data[FI][key], file=ofile)
                 elif typ == "BOX" or typ == "BOXLABEL":
