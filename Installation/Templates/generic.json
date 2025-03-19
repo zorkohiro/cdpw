@@ -9,8 +9,13 @@
     "patient_age": "",
     "patient_history": ""
   },
+  "pseq": [
+    "modality:MODALITY:TIGHTENTRY"
+  ],
+  "parameters": {
+    "modality": ""
+  },
   "fseq": [
-    "modality:MODALITY:TIGHTENTRY",
     "findings:FINDINGS:BOX"
   ],
   "title": "Generic Radiological Report",
@@ -19,7 +24,6 @@
     "comparison": ""
   },
   "findings": {
-    "modality": "",
     "findings": ""
   },
   "impression": ""
