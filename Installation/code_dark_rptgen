@@ -246,7 +246,17 @@ def add_label_entry(label, ivalue, row):
     tt_entry = tk.Entry(root, textvariable=tt_text, width=90, justify="left", font=fontstring)
     tt_entry.grid(sticky=tk.W, row=row, column=1)
     return tt_text, row + 1
-    
+
+""" Add a short entry to the right of a label """
+def add_short_label_entry(label, ivalue, row):
+    tlab = tk.Label(root, text=label, anchor=tk.W, justify="left", font=(fontfamily, fontsize - 1))
+    tlab.grid(sticky=tk.N+tk.W, row=row, column=0)
+    tt_text = tk.StringVar()
+    tt_text.set(ivalue)
+    tt_entry = tk.Entry(root, textvariable=tt_text, width=4, justify="left", font=fontstring)
+    tt_entry.grid(sticky=tk.W, row=row, column=1)
+    return tt_text, row + 1
+
 """ add an unlabeled box """
 def add_box(insert, row):
     box = tk.Text(root, height=boxsize, width=90, font=fontstring)
@@ -266,8 +276,7 @@ def add_label_box(str, insert, row):
 # History Section
 rowvar = add_section_label(HISTORY, rowvar)
 
-add_label(PATIENT_AGE + " (years) ", rowvar, 0)
-age_entry, rowvar = add_entry(json_data[HI][PA], 4, "right", rowvar, 1)
+age_entry, rowvar = add_short_label_entry(PATIENT_AGE + " (years) ", json_data[HI][PA], rowvar)
 
 history_box, rowvar = add_label_box(PATIENT_HISTORY, json_data[HI][PH], rowvar)
 
@@ -299,6 +308,8 @@ for entry in json_data["fseq"]:
         typ = words[2]
         if typ == "ENTRY":
             cb, rowvar = add_label_entry(lbl, json_data[FI][key], rowvar)
+        elif typ == "SHORTENTRY":
+            cb, rowvar = add_short_label_entry(lbl, json_data[FI][key], rowvar)
         elif typ == "BOX":
             cb, rowvar = add_box(json_data[FI][key], rowvar)
         elif typ == "BOXLABEL":
@@ -342,7 +353,7 @@ def save_data(jd):
             key = words[0]
             obj = cbobj[key]
             typ = words[2]
-            if typ == "ENTRY":
+            if typ == "ENTRY" or typ == "SHORTENTRY":
                 jd[FI][key] = obj.get()
             elif typ == "BOX" or typ == "BOXLABEL":
                 jd[FI][key] = obj.get("1.0", "end-1c")
@@ -401,6 +412,9 @@ def create_report(rpt):
                 if typ == "ENTRY":
                     front = lbl + ":"
                     print(front.ljust(25) + json_data[FI][key], file=ofile)
+                elif typ == "SHORTENTRY":
+                    front = lbl + ":"
+                    print(front.ljust(10) + json_data[FI][key], file=ofile)
                 elif typ == "BOX" or typ == "BOXLABEL":
                     print(lbl + ":", file=ofile)
                     for line in json_data[FI][key].split('\n'):

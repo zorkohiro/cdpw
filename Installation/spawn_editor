@@ -9,36 +9,36 @@ CDB=/code_dark
 RPT=${CDB}/reports
 
 tpt=$1
-mrn=$2
-ssn=$3
+mrn="$2"
+ssn="$3"
 # For use in the future
 uui=$4
 
 mkdir -p ${RPT} > /dev/null 2>&1
 inp=${TPD}/${tpt}.json
-fnm=${RPT}/study_${mrn}_${ssn}.json
+fnm="${RPT}/study_${mrn}_${ssn}.json"
 prg=code_dark_rptgen
 
-if [[ ! -f ${fnm} ]]; then
+if [[ ! -f "${fnm}" ]]; then
  if [[ ! -f ${inp} ]]; then
   echo ${inp} does not exist >> $LOG
   exit 1
  fi
  # Initial copy needs mrn and session grafted in
- sed -e "s/\"mrn.*$/\"mrn\" : \"${mrn}\",/" -e "s/\"session.*$/\"session\" : \"${ssn}\",/" $inp > $fnm 2>> $LOG
+ sed -e "s/\"mrn.*$/\"mrn\" : \"${mrn}\",/" -e "s/\"session.*$/\"session\" : \"${ssn}\",/" $inp > "$fnm" 2>> $LOG
  if [[ $? -ne 0 ]]; then
-  echo unable to create $fnm from $inp >> $LOG
-  rm -f ${fnm}
+  echo unable to create "$fnm" from $inp >> $LOG
+  rm -f "${fnm}"
   exit 1
  fi
- chmod +w $fnm
+ chmod +w "$fnm"
 else
- st=$(stat -c%A ${fnm})
- echo ${fnm} already exists with mode $st >> $LOG
+ st=$(stat -c%A "${fnm})")
+ echo "${fnm}" already exists with mode $st >> $LOG
 fi
 
-echo calling $prg -j $fnm on `date` >> $LOG
-${prg} -j $fnm  >> $LOG 2>&1
+echo calling $prg -j "$fnm" on `date` >> $LOG
+${prg} -j "$fnm"  >> $LOG 2>&1
 if [[ $? -ne 0 ]]; then
  echo $prg exited witn non-zero status >> $LOG
 fi

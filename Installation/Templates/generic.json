@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "mrn": "bogus",
+  "session": "bogus",
+  "signed": false,
+  "signer": "",
+  "template": "generic",
+  "history": {
+    "patient_age": "",
+    "patient_history": ""
+  },
+  "fseq": [
+    "modality:MODALITY:SHORTENTRY",
+    "findings:FINDINGS:BOX"
+  ],
+  "title": "Generic Radiological Report",
+  "technique": {
+    "description": "",
+    "comparison": ""
+  },
+  "findings": {
+    "modality": "XX",
+    "findings": ""
+  },
+  "impression": ""
+}

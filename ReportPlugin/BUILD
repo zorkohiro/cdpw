@@ -2,7 +2,7 @@ Build Requirements
 ---------
 Ubuntu 24.04 installed with:
 
-build-essential, cmake, libjsoncpp-dev, uuid-dev, orthanc-dev
+build-essential cmake libjsoncpp-dev uuid-dev orthanc-dev libboost-all-dev
 
 Build steps
 --------

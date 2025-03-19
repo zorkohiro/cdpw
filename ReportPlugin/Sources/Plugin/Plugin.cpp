@@ -104,16 +104,19 @@ static void fetch_templates(OrthancPluginRestOutput* output, const char* url, co
           }
           snprintf(prtbuf, sizeof (prtbuf) - 1, "Appending %s", ent->d_name);
           OrthancPluginLogWarning(context, prtbuf);
-          char jname[128];
-          strcpy(jname, ent->d_name);
-          char *ptr = jname + (suffix - ent->d_name);
-          *ptr = '\0'; // eliminate suffix
+          /*
+           * We already know we have the suffix .json.
+           * We own the data that a pointer was returned
+           * for and we aren't using it after this, so
+           * we can muck with it.
+           */
+          *suffix = '\0';
           // Convert all '_' to ' ' for pretty print in a menu
-          for (ptr = jname; *ptr; ptr++) {
+          for (char *ptr = ent->d_name; *ptr; ptr++) {
             if (*ptr == '_')
               *ptr = ' ';
           }
-          result.append(jname);
+          result.append(ent->d_name);
           nent++;
         } else {
           snprintf(prtbuf, sizeof (prtbuf) - 1, "Did not append %s", ent->d_name);
@@ -125,17 +128,26 @@ static void fetch_templates(OrthancPluginRestOutput* output, const char* url, co
       snprintf(prtbuf, sizeof (prtbuf) - 1,  "failed to open TEMPLATES_DIR %s", TEMPLATES_DIR);
       OrthancPluginLogWarning(context, prtbuf);
     }
-    if (nent == 0) {
-      char buffer[64];
+    /*
+     * If we have a modality but no entries, we have a modality for which we have no template.
+     * Use the generic template instead.
+     */
+    char buffer[64];
+    if (nent == 0 && modality[0]) {
+      snprintf(buffer, sizeof (buffer), "no templates found for modality %s", modality);
+      OrthancPluginLogWarning(context, buffer);
+      result.append("generic");
+      nent++;
+    } else if (nent == 0) {
       snprintf(buffer, sizeof (buffer), "no templates found");
       OrthancPluginLogWarning(context, buffer);
       OrthancPluginAnswerBuffer(context, output, buffer, strlen(buffer), "text/plain");
-    } else {
-      snprintf(prtbuf, sizeof (prtbuf) - 1, "sending back json list of %d entries", nent);
-      OrthancPluginLogWarning(context, prtbuf);
-      std::string answer = result.toStyledString();
-      OrthancPluginAnswerBuffer(context, output, answer.c_str(), answer.size(), "application/json");
+      return;
     }
+    snprintf(prtbuf, sizeof (prtbuf) - 1, "sending back json list of %d entries", nent);
+    OrthancPluginLogWarning(context, prtbuf);
+    std::string answer = result.toStyledString();
+    OrthancPluginAnswerBuffer(context, output, answer.c_str(), answer.size(), "application/json");
   }
 }
 
