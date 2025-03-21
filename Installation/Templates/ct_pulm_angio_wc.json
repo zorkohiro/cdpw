@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "mrn": "bogus",
-  "session": "bogus",
+  "mrn": ,
+  "session": ,
   "signed": false,
   "signer": "",
   "template": "ct_pulm_angio_wc",

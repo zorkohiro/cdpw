@@ -114,21 +114,21 @@ if version < 1:
     exit(1)
 
 #
-# Supply a default mrn/session if there isn't one.
+# Set mrn/session from database.
 #
-# At this time we expect other parts of the code to thread
-# mrn and session in the json file that will be edited
-# at initial creation time.
+# We never update it from this program,
+# so if it is unset, we live with it unset
+# by calling it out to be bogus.
 #
 mrn = json_data["mrn"]
-if not mrn:
-    mrn = "bogus"
-    json_data["mrn"] = mrn
+if mrn == "":
+    mrn = "BOGUS1234"
 
 session = json_data["session"]
-if not session:
-    json_data["session"] = mrn
-    session = "bogus"
+if session == "":
+    session = "BOGUS5678"
+
+
 
 #
 # Structure of JSON data
