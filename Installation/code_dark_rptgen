@@ -47,6 +47,7 @@ fontstring = fontfamily + ' ' + str(fontsize)
 boxsize = 3
 cbobj = {}
 pbobj = {}
+have_pseq = False
 
 #################################################################################################
 #
@@ -154,8 +155,9 @@ if session == "":
 #
 # 2. Parameters (optional section)
 #
-#   This has the same format as Findings below, but has a "pseq" array. This allows us
-#   to place some option menu items.
+#   This allows us to place some paramters ahead of Patient History.
+#
+#   This has the simlar format as Findings below below.
 #
 #   This has the form:
 #
@@ -283,21 +285,15 @@ def add_label_box(str, insert, row):
 
 """ add an optionMenu scrunched up next to a label """
 
-#def add_label_menu(str, options, initial, row, col, w):
-#    tlab = tk.Label(root, text=str.upper() + ":", relief=tk.RAISED, font=(fontfamily, fontsize - 1))
-#    tlab.grid(sticky=tk.W, row=row, column=col)
-#    clickval = tk.StringVar()
-#    clickval.set(initial)
-#    tt_menu = tk.OptionMenu(root, clickval, *options)
-#    tt_menu.config(width=w)
-#    tt_menu.grid(row=row, column=col, sticky=tk.E, padx=(100, 0))
-#    return clickval, row + 1
-
-#copts = [ "alpha", "beta", "gamma" ]
-#initial = json_data["dd"]
-#if not initial:
-#    initial = "<undefined>"
-#dd_value, rowvar = add_label_menu("Terpinols", copts, initial, rowvar, 0, 10)
+def add_label_menu(str, options, initial, row, col, w):
+    tlab = tk.Label(root, text=str.upper() + ":", relief=tk.RAISED, font=(fontfamily, fontsize - 1))
+    tlab.grid(sticky=tk.W, row=row, column=col)
+    clickval = tk.StringVar()
+    clickval.set(initial)
+    tt_menu = tk.OptionMenu(root, clickval, *options)
+    tt_menu.config(width=w)
+    tt_menu.grid(row=row, column=col, sticky=tk.E, padx=(100, 0))
+    return clickval, row + 1
 
 #################################################################################################
 #
@@ -331,31 +327,54 @@ rowvar = rowvar + 2
 
 # (Optional) Parameter Section
 try:
-    if json_data[PM] and json_data["pseq"]:
-        rowvar = add_section_label(PARAMETERS, rowvar)
-        for entry in json_data["pseq"]:
-            words = entry.split(':')
-            if len(words) == 3:
-                key = words[0]
-                lbl = words[1]
-                typ = words[2]
-                if typ == "ENTRY":
-                    cb, rowvar = add_label_entry(lbl, json_data[PM][key], rowvar)
-                elif typ == "TIGHTENTRY":
-                    cb, rowvar = add_tight_label_entry(lbl, json_data[PM][key], rowvar, len(lbl) + 5, 3)
-                elif typ == "BOX":
-                    cb, rowvar = add_box(json_data[PM][key], rowvar)
-                elif typ == "BOXLABEL":
-                    cb, rowvar = add_label_box(lbl, json_data[PM][key], rowvar)
-                else:
-                    print("uknown typ", typ, "for", entry)
-                    exit(1)
-                pbobj[key] = cb
-    else:
-        print("wordlen of '" + entry + "' is ", len(words))
-        exit(1)
+    if json_data["pseq"]:
+        have_pseq = True
 except:
     pass
+
+if have_pseq:
+    rowvar = add_section_label(PARAMETERS, rowvar)
+    for entry in json_data["pseq"]:
+        words = entry.split(':')
+        nw = len(words)
+        if nw == 3:
+            key = words[0]
+            lbl = words[1]
+            typ = words[2]
+            if typ == "ENTRY":
+                cb, rowvar = add_label_entry(lbl, json_data[PM][key], rowvar)
+            elif typ == "TIGHTENTRY":
+                cb, rowvar = add_tight_label_entry(lbl, json_data[PM][key], rowvar, len(lbl) + 5, 3)
+            elif typ == "BOX":
+                cb, rowvar = add_box(json_data[PM][key], rowvar)
+            elif typ == "BOXLABEL":
+                cb, rowvar = add_label_box(lbl, json_data[PM][key], rowvar)
+            else:
+                print("uknown typ", typ, "for", entry)
+                exit(1)
+            pbobj[key] = cb
+        elif nw == 4:
+            key = words[0]
+            lbl = words[1]
+            typ = words[2]
+            lst = words[3]
+            if typ == "MENU":
+                mwrds = lst.split(',')
+                if len(mwrds) > 1:
+                    if json_data[PM][key]:
+                        dfl = json_data[PM][key]
+                    else:
+                        dfl = mwrds[0]
+                        if dfl == '*':
+                            dfl = ""
+                    del(mwrds[0])
+                    pbobj[key], rowvar = add_label_menu(lbl, mwrds, dfl, rowvar, 0, 10)
+                else:
+                    print("bad MENU specification: ", entry)
+                    exit(1)
+        else:
+            print("wordlen of '" + entry + "' is ", len(words))
+            exit(1)
 
 # History Section
 rowvar = add_section_label(HISTORY, rowvar)
@@ -418,21 +437,19 @@ impress_box, rowvar = add_box(json_data[IM], rowvar)
 def save_data(jd):
     """ Update from tkinter entry and box areas """
 
-    """ Parameters - still optional so handle the exception """
-    try:
-        if json_data[PM] and json_data["pseq"]:
-            for entry in json_data["pseq"]:
-                words = entry.split(':')
-                if len(words) == 3:
-                    key = words[0]
-                    obj = pbobj[key]
-                    typ = words[2]
-                    if typ == "ENTRY" or typ == "TIGHTENTRY":
-                        jd[PM][key] = obj.get()
-                    elif typ == "BOX" or typ == "BOXLABEL":
-                        jd[PM][key] = obj.get("1.0", "end-1c")
-    except:
-        pass
+    """ Parameters - still optional so check whether we have set that true earlier """
+    if have_pseq:
+        for entry in json_data["pseq"]:
+            words = entry.split(':')
+            if len(words) == 4:
+                key = words[0]
+                obj = pbobj[key]
+                typ = words[2]
+                if typ == "ENTRY" or typ == "TIGHTENTRY" or typ == "MENU":
+                    jd[PM][key] = obj.get()
+                elif typ == "BOX" or typ == "BOXLABEL":
+                    jd[PM][key] = obj.get("1.0", "end-1c")
+
     """ Patient History """
     jd[HI][PA] = age_entry.get()
     jd[HI][PH] = history_box.get("1.0", "end-1c")
@@ -471,23 +488,15 @@ def create_report(rpt):
         print("Session: " + session, file=ofile)
         print("", file=ofile)
         print("", file=ofile)
-        try:
+        if have_pseq:
             didprint = False
-            if json_data[PM] and json_data["pseq"]:
-                for entry in json_data["pseq"]:
-                    words = entry.split(':')
+            for entry in json_data["pseq"]:
+                words = entry.split(':')
+                if len(words) == 4:
                     key = words[0]
                     lbl = words[1]
                     typ = words[2]
-                    if typ == "ENTRY":
-                        front = lbl + ":"
-                        if didprint == False:
-                            print(PARAMETERS, file=ofile)
-                            print("", file=ofile)
-                            didprint = True
-                        print(front.ljust(25) + json_data[PM][key], file=ofile)
-                        didprint = True
-                    elif typ == "TIGHTENTRY":
+                    if typ == "MENU":
                         front = lbl + ":"
                         if didprint == False:
                             print(PARAMETERS, file=ofile)
@@ -495,18 +504,8 @@ def create_report(rpt):
                             didprint = True
                         print(front.ljust(10) + json_data[PM][key], file=ofile)
                         didprint = True
-                    elif typ == "BOX" or typ == "BOXLABEL":
-                        print(lbl + ":", file=ofile)
-                        if didprint == False:
-                            print(PARAMETERS, file=ofile)
-                            print("", file=ofile)
-                            didprint = True
-                        for line in json_data[PM][key].split('\n'):
-                            print(wrapper.fill(text=line), file=ofile)
             if didprint == True:
                 print("", file=ofile)
-        except:
-            pass
         print(HISTORY + ":", file=ofile)
         print("", file=ofile)
         print(PATIENT_AGE + " (years):  " + json_data[HI][PA], file=ofile)
