@@ -3,12 +3,12 @@
   "mrn": "",
   "session": "",
   "signed": false,
-  "signer": ""
+  "signer": "",
   "signtime": "",
   "template": "us_of_extremity_veins",
   "parameters": {
-    "lr": "Left",
-    "ul": "Lower"
+    "lr": "",
+    "ul": ""
   },
   "pseq": [
     "lr:LEFT/RIGHT:MENU:*,Left,Right",
