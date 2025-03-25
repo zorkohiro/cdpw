@@ -54,6 +54,8 @@ have_pseq = False
 
 rdobj = {}
 
+entryables = []
+
 report_dir = "/code_dark/reports"
 physicians = "/code_dark/config/physicians"
 
@@ -243,6 +245,9 @@ def add_entry(initial, w, j, row, col):
     else:
             tt_entry = tk.Entry(root, textvariable=tt_text, justify=j, width=w, font=fontstring)
             tt_entry.grid(sticky=tk.W, row=row, column=col)
+    if json_data["signed"]:
+        tt_entry.config(state="disabled", bg="orange")
+    entryables.append(tt_entry)
     return tt_text, row + 1
 
 """ Add an entry to the right of a label """
@@ -253,6 +258,9 @@ def add_label_entry(label, ivalue, row):
     tt_text.set(ivalue)
     tt_entry = tk.Entry(root, textvariable=tt_text, width=90, justify="left", font=fontstring)
     tt_entry.grid(sticky=tk.W, row=row, column=1)
+    if json_data["signed"]:
+        tt_entry.config(state="disabled", bg="orange")
+    entryables.append(tt_entry)
     return tt_text, row + 1
 
 """ Add a short entry to the right of a label """
@@ -263,6 +271,9 @@ def add_short_label_entry(label, ivalue, row):
     tt_text.set(ivalue)
     tt_entry = tk.Entry(root, textvariable=tt_text, width=4, justify="left", font=fontstring)
     tt_entry.grid(sticky=tk.W, row=row, column=1)
+    if json_data["signed"]:
+        tt_entry.config(state="disabled", bg='orange')
+    entryables.append(tt_entry)
     return tt_text, row + 1
 
 """ Add an entry scrunched up next to a label """
@@ -273,6 +284,9 @@ def add_tight_label_entry(label, ivalue, row, w, ew):
     tt_text.set(ivalue)
     tt_entry = tk.Entry(root, textvariable=tt_text, width=ew, justify="left", font=fontstring)
     tt_entry.grid(sticky=tk.W, row=row, column=0, padx=(((w * fontsize) * 3)/ 5, 0))
+    if json_data["signed"]:
+        tt_entry.config(state="disabled", bg="orange")
+    entryables.append(tt_entry)
     return tt_text, row + 1
 
 """ add an unlabeled box """
@@ -280,6 +294,9 @@ def add_box(insert, row):
     box = tk.Text(root, height=boxsize, width=90, font=fontstring)
     box.insert(tk.END, insert)
     box.grid(sticky=tk.EW, row=row, column=0, columnspan=3, pady=(0,10), padx=(0,9))
+    if json_data["signed"]:
+        box.config(state="disabled", bg="orange")
+    entryables.append(box)
     return box, row + boxsize
 
 """ add a box hanging to the right of a label """
@@ -289,6 +306,9 @@ def add_label_box(str, insert, row):
     box = tk.Text(root, height=boxsize, width=90, font=fontstring)
     box.insert(tk.END, insert)
     box.grid(sticky=tk.W, row=row, column=1, columnspan=2, pady=(0,10), padx=(0,10))
+    if json_data["signed"]:
+        box.config(state="disabled", bg="orange")
+    entryables.append(box)
     return box, row + boxsize
 
 """ add an optionMenu scrunched up next to a label """
@@ -301,6 +321,9 @@ def add_label_menu(str, options, initial, row, col, w, ew):
     tt_menu = tk.OptionMenu(root, clickval, *options)
     tt_menu.config(width=w)
     tt_menu.grid(row=row, column=col, sticky=tk.E, padx=(((w * fontsize) * 3)/ 5, 0))
+    if json_data["signed"]:
+        tt_menu.config(state="disabled", bg="orange")
+    entryables.append(tt_menu)
     return clickval, row + 1
 
 #################################################################################################
@@ -614,6 +637,9 @@ def sign_report():
         """ Save data again to note we have now signed the report """
         save_data(json_data)
 
+        """ Now update menus """
+        for e in entryables:
+            e.config(state="disabled", bg="orange")
 
         """
         # Need to see whether we should chmod to not writable
