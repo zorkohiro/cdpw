@@ -31,30 +31,36 @@ a text based report from this data.
 #
 import subprocess
 import tkinter as tk
+from tkinter import messagebox
+import datetime
 import json
 import textwrap
 import argparse
+from os import path as p
 
 #################################################################################################
 #
 # Variables
 #
-radiologist = "Dr Roberts"
 rowvar = 0
 fontfamily = 'Times'
 fontsize = 12
 fontstring = fontfamily + ' ' + str(fontsize)
 boxsize = 3
 cbobj = {}
+
 pbobj = {}
 have_pseq = False
+
+rdobj = {}
+
+report_dir = "/code_dark/reports"
+physicians = "/code_dark/config/physicians"
 
 #################################################################################################
 #
 # Constants and shorthands
 #
-REPORT_DIR = "/code_dark/reports"
-
 
 HI = "history"
 PA = "patient_age"
@@ -83,17 +89,19 @@ IMPRESSION = "** IMPRESSION **"
 #
 parser = argparse.ArgumentParser(description="Code Dark Report Entry Package")
 parser.add_argument("-j", "--json", help="Input json file", required=True)
-parser.add_argument("-R", "--report_dir", help="Where we fetch/save reports", default="/code_dark/reports")
+parser.add_argument("-R", "--report_dir", help="Where we fetch/save reports", default=report_dir)
+parser.add_argument("-P", "--physicians", help="Where we have a list of signing physicians", default=physicians)
 parser.add_argument("-f", "--fontsize", help="Font Size (default 12)")
 
 args = vars(parser.parse_args())
-report_dir = REPORT_DIR
 
 jsonfile=args['json']
-reportfl=jsonfile.replace(".json", ".txt")
+reportfl=report_dir + '/' + p.basename(jsonfile.replace(".json", ".txt"))
 
 if args['report_dir']:
     report_dir = args['report_dir']
+if args['physicians']:
+    physicians = args['physicians']
 if args['fontsize']:
     fontsize = int(args['fontsize'])
     fontstring = 'Time ' + args['fontsize']
@@ -285,14 +293,14 @@ def add_label_box(str, insert, row):
 
 """ add an optionMenu scrunched up next to a label """
 
-def add_label_menu(str, options, initial, row, col, w):
+def add_label_menu(str, options, initial, row, col, w, ew):
     tlab = tk.Label(root, text=str.upper() + ":", relief=tk.RAISED, font=(fontfamily, fontsize - 1))
     tlab.grid(sticky=tk.W, row=row, column=col)
     clickval = tk.StringVar()
     clickval.set(initial)
     tt_menu = tk.OptionMenu(root, clickval, *options)
     tt_menu.config(width=w)
-    tt_menu.grid(row=row, column=col, sticky=tk.E, padx=(100, 0))
+    tt_menu.grid(row=row, column=col, sticky=tk.E, padx=(((w * fontsize) * 3)/ 5, 0))
     return clickval, row + 1
 
 #################################################################################################
@@ -368,7 +376,7 @@ if have_pseq:
                         if dfl == '*':
                             dfl = ""
                     del(mwrds[0])
-                    pbobj[key], rowvar = add_label_menu(lbl, mwrds, dfl, rowvar, 0, 10)
+                    pbobj[key], rowvar = add_label_menu(lbl, mwrds, dfl, rowvar, 0, len(lbl) + 5, 20)
                 else:
                     print("bad MENU specification: ", entry)
                     exit(1)
@@ -473,6 +481,15 @@ def save_data(jd):
                 jd[FI][key] = obj.get("1.0", "end-1c")
 
     jd[IM] = impress_box.get("1.0", "end-1c")
+
+    """ Try and fetch the signing physician entry """
+    try:
+        rd = rdobj.get()
+        if rd:
+            json_data["signer"] = rd
+    except:
+        pass
+
     with open(jsonfile, "w") as ofile:
         json.dump(jd, ofile, indent=2)
         print("", file=ofile)
@@ -484,8 +501,14 @@ def create_report(rpt):
         wrapper = textwrap.TextWrapper(width=60, replace_whitespace=False)
         print(json_data["title"], file=ofile)
         print("", file=ofile)
-        print("MRN: " + mrn, file=ofile)
-        print("Session: " + session, file=ofile)
+        if mrn == "BOGUS1234":
+            print("MRN: NONE AVAILABLE", file=ofile)
+        else:
+            print("MRN: " + mrn, file=ofile)
+        if session == "BOGUS5678":
+            print("Session: NONE AVAILABLE", file=ofile)
+        else:
+            print("Session: " + session, file=ofile)
         print("", file=ofile)
         print("", file=ofile)
         if have_pseq:
@@ -556,36 +579,55 @@ def create_report(rpt):
         for line in json_data[IM].split('\n'):
             print(wrapper.fill(text=line), file=ofile)
         print("", file=ofile)
-        """ PRINT SIGNING RADIOLIGIST NAME """
+
+        if json_data["signed"]:
+            print("", file=ofile)
+            print("Signing Physician: ", json_data["signer"], file=ofile)
+            print("Report Signed:  ", json_data["signtime"], file=ofile)
+            print("", file=ofile)
+
 
 # Define a function that will print the report after saving text output to a file
 def print_report():
-    save_data(json_data)
     create_report(reportfl)
     try:
         result = subprocess.run(["enscript", "-B", reportfl ], capture_output=True, text=True)
         if result.returncode != 0:
-            messagebox.showerror("Subprocess Error", result.stderr)
+            tk.messagebox.showerror("Error", "Subprocess Error", result.stderr)
     except subprocess.CalledProcessError as e:
-        messagebox.showerror("Process Error", e.output)
+        tk.messagebox.showerror("Error", "Process Error", e.output)
 
 # Define a function that will sign the report
 def sign_report():
-    json_data["signed"] = True
-    json_data["signer"] = radiologist
+    """ The save will make sure everything, including signing physician, is saved """
     save_data(json_data)
-    try:
-        result = subprocess.run(["chmod", "-w", jsonfile ], capture_output=True, text=True)
-        if result.returncode != 0:
-            messagebox.showerror("Subprocess Error", result.stderr)
-            exit(1)
-    except subprocess.CalledProcessError as e:
-        messagebox.showerror("Process Error", e.output)
-        exit(1)
+    if json_data["signed"]:
+        tk.messagebox.showerror("Sorry", "Report has been already been signed.")
+    elif json_data["signer"] == "":
+        tk.messagebox.showerror("Error", "The reviewing physician has not been selected.")
+    else:
+        json_data["signed"] = True
+        now = datetime.datetime.now()
+        tzs = now.astimezone().tzname()
+        json_data["signtime"] = now.strftime("%B %d, %Y  %H:%M") + " " + tzs
+
+        """ Save data again to note we have now signed the report """
+        save_data(json_data)
+
+
+        """
+        # Need to see whether we should chmod to not writable
+        try:
+            result = subprocess.run(["chmod", "-w", jsonfile ], capture_output=True, text=True)
+            if result.returncode != 0:
+                tk.messagebox.showerror("Error", "Subprocess Error", result.stderr)
+                exit(1)
+        except subprocess.CalledProcessError as e:
+            tk.messagebox.showerror("Error", "Process Error", e.output)
+        """
 
 # define a function that will exit, saving data and creating on-disk report as it does so.
 def exit_edit():
-    save_data(json_data)
     create_report(reportfl)
     exit(0)
 
@@ -593,15 +635,37 @@ def exit_edit():
 # Add action buttons to the end
 #
 rowvar = rowvar + 1
-sign_btn = tk.Button(root, text = 'Sign Report', command = sign_report)
-sign_btn.grid(sticky=tk.W, column=0, row=rowvar)
+
+#
+# First check for whether it's been signed- we put up something different if the report has been signed.
+#
+
+if json_data["signed"]:
+    rowvar = add_section_label("*** SIGNED ***", rowvar)
+    rowvar = rowvar + 1
+    rowvar = add_label("Report Signed By: " + json_data["signer"], rowvar, 0);
+    rowvar = add_label("Report Signed On: " + json_data["signtime"], rowvar, 0);
+else:
+    """ Need to check that certain fields have been filled out """
+    signers = []
+    with open(physicians) as f:
+        for line in f:
+            signers.append(line.rstrip('\n'))
+    phdr = "Reviewing Physician"
+    rowvar = rowvar + 1
+    rdobj, rowvar = add_label_menu(phdr, signers, "", rowvar, 0, len(phdr) + 8, 40)
+
+rowvar = rowvar + 2
+
+if not json_data["signed"]:
+    sign_btn = tk.Button(root, text = 'Sign Report', command = sign_report)
+    sign_btn.grid(sticky=tk.W, column=0, row=rowvar)
 
 print_btn = tk.Button(root, text = 'Print Report', command = print_report)
-print_btn.grid(sticky=tk.W, column=1, row=rowvar)
+print_btn.grid(column=1, row=rowvar)
 
-exit_btn = tk.Button(root, text = 'Exit', command = exit_edit)
+exit_btn = tk.Button(root, text = 'Save and Exit', command = exit_edit)
 exit_btn.grid(sticky=tk.W, column=2, row=rowvar)
-
 
 #
 # Enter edit tkinter loop
