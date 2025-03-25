@@ -3,15 +3,16 @@
   "mrn": "",
   "session": "",
   "signed": false,
-  "signer": "",
+  "signer": ""
+  "signtime": "",
   "template": "us_of_extremity_veins",
   "parameters": {
     "lr": "Left",
     "ul": "Lower"
   },
   "pseq": [
-    "lr:SIDE:MENU:*,Left,Right",
-    "ul:VERT:MENU:*,Upper,Lower"
+    "lr:LEFT/RIGHT:MENU:*,Left,Right",
+    "ul:UPPER/LOWER:MENU:*,Upper,Lower"
   ],
   "history": {
     "patient_age": "",
