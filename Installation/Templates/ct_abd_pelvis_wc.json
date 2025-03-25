@@ -3,7 +3,7 @@
   "mrn": ,
   "session": ,
   "signed": false,
-  "signer": "",
+  "signer": "", "signtime" : "",
   "template": "ct_abd_pelvis_wc",
   "history": {
     "patient_age": "",
