@@ -339,7 +339,7 @@ root.title(json_data["title"]  + " MRN: " + mrn + " SESSION: " + session)
 
 #
 # Need this to make sure Entry fields abut labels,
-# because otherwise boxes willf orce then Entry field
+# because otherwise boxes will force then Entry field
 # to the middle of a wide box.
 #
 root.grid_columnconfigure(1, weight=1)
