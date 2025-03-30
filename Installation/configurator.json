@@ -1,8 +1,8 @@
 {
   "version" : 1,
   "networking" : {
-    "addr" : "172 20.3.41",
-    "mask" : "255.255.255.0"
+    "addr" : "",
+    "mask" : ""
   },
   "dicom" : {
      "port" : "4242",

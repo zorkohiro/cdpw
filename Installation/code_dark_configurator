@@ -49,8 +49,13 @@ if args['json']:
 
 """ Data hanlders """
 def save_n_exit():
-    json_data[NW]["addr"] = ip_entry.get()
-    json_data[NW]["mask"] = nm_entry.get()
+    addr = ip_entry.get()
+    mask = nm_entry.get()
+    if (addr == "" and mask != "") or (addr != "" and mask == ""):
+        tk.messagebox.showerror("Error", "Both or Neither IP Address/Mask must be set")
+        return
+    json_data[NW]["addr"] = addr
+    json_data[NW]["mask"] = mask
     json_data[DC]["port"] = port_entry.get()
     json_data[DC]["aet"] = aet_entry.get()
     pboxstr = pbox.get("1.0", "end-1c")
@@ -127,7 +132,10 @@ headliner.grid(sticky=tk.N, row=0, column=0, columnspan = 2)
 
 rowvar = 2
 
-rowvar = add_section_label("IP NETWORKING", rowvar)
+if json_data[NW]["addr"] == "" and json_data[NW]["mask"] == "":
+    rowvar = add_section_label("IP NETWORKING (currently automatic via DHCP)", rowvar)
+else:
+    rowvar = add_section_label("IP NETWORKING", rowvar)
 ip_entry, rowvar = add_label_entry("Static IP Address", json_data[NW]["addr"], rowvar, 16)
 nm_entry, rowvar = add_label_entry("Static IP Netmask", json_data[NW]["mask"], rowvar, 16)
 
