@@ -1,19 +1,41 @@
 #!/bin/bash
 
+CFG=/code_dark/config/configurator.json
+ORT=/etc/orthanc/orthanc.json
+
 #
-# Change Dicom Port if there is a file containing a new port number in it.
+# Check for configuration database
+# and make changes based upon what
+# we find in it.
 #
-port=
-if [[ -f /code_dark/config/dicomport ]]; then
- port=$(cat /code_dark/config/dicomport)
-fi
-if [[ -n "$port" ]]; then
- echo changing Dicom port to $port
- sed -i -e "/DicomPort/c\\ \"DicomPort\" : ${port}," /etc/orthanc/orthanc.json
- systemctl restart orthanc
+changed=no
+if [[ -f /code_dark/config/configurator.json ]]; then
+ port=$(jq -r .dicom.port 2> /dev/null < $CFG)
+ if [[ "$port" != "null" ]]; then
+  echo Changing Dicom port to $port
+  sed -i -e "/DicomPort/c\\ \"DicomPort\" : ${port}," ${ORT}
+  changed=yes
+ fi
+ aet=$(jq -r .dicom.aet 2> /dev/null < $CFG)
+ if [[ "$aet" != "null" ]]; then
+  echo Changing Dicom aet to $aet
+  sed -i -e "/DicomAet/c\\ \"DicomAet\" : ${aet}," ${ORT}
+  changed=yes
+ fi
 fi
 
 #
 # Change database directory to code_dark
 #
-sed -i 's,/var/lib/orthanc/db-v6,/code_dark/database,' /etc/orthanc/orthanc.json
+grep -q /var/lib/orthanc/db-v6 ${ORT}
+if [[ $? -eq 1 ]]; then
+ sed -i 's,/var/lib/orthanc/db-v6,/code_dark/database,' ${ORT}
+ changed="yes"
+fi
+
+#
+# If we made any actual changes, restart Orthanc
+#
+if [[ $changed == "yes" ]]; then
+ systemctl restart orthanc
+fi

@@ -54,10 +54,13 @@ have_pseq = False
 
 rdobj = {}
 
+last_signer = ""
+cnfg_data = []
 entryables = []
 
 report_dir = "/code_dark/reports"
-physicians = "/code_dark/config/physicians"
+configurator = "/code_dark/config/configurator.json"
+last_signer_file  = "/dev/shm/last_signer"
 
 #################################################################################################
 #
@@ -92,7 +95,7 @@ IMPRESSION = "** IMPRESSION **"
 parser = argparse.ArgumentParser(description="Code Dark Report Entry Package")
 parser.add_argument("-j", "--json", help="Input json file", required=True)
 parser.add_argument("-R", "--report_dir", help="Where we fetch/save reports", default=report_dir)
-parser.add_argument("-P", "--physicians", help="Where we have a list of signing physicians", default=physicians)
+parser.add_argument("-C", "--configurator", help="Where we have the CDW configuration file", default=configurator)
 parser.add_argument("-f", "--fontsize", help="Font Size (default 12)")
 
 args = vars(parser.parse_args())
@@ -102,12 +105,18 @@ reportfl=report_dir + '/' + p.basename(jsonfile.replace(".json", ".txt"))
 
 if args['report_dir']:
     report_dir = args['report_dir']
-if args['physicians']:
-    physicians = args['physicians']
+if args['configurator']:
+    configurator = args['configurator']
 if args['fontsize']:
     fontsize = int(args['fontsize'])
     fontstring = 'Time ' + args['fontsize']
 
+#
+# Read in configurator data
+#
+
+with open(configurator, "r") as cfile:
+    cnfg_data = json.load(cfile)
 
 #
 # Read in JSON saved data
@@ -505,14 +514,19 @@ def save_data(jd):
 
     jd[IM] = impress_box.get("1.0", "end-1c")
 
-    """ Try and fetch the signing physician entry """
+    """ Try and fetch the signing physician entry and update """
     try:
+        print("try and get doctor object")
         rd = rdobj.get()
         if rd:
             json_data["signer"] = rd
+            # Update cached signer file
+            with open(last_signer_file, "w") as f:
+                f.write(json_data["signer"]+"\n")
     except:
         pass
 
+    """ Save JSON data """
     with open(jsonfile, "w") as ofile:
         json.dump(jd, ofile, indent=2)
         print("", file=ofile)
@@ -627,7 +641,7 @@ def sign_report():
     if json_data["signed"]:
         tk.messagebox.showerror("Sorry", "Report has been already been signed.")
     elif json_data["signer"] == "":
-        tk.messagebox.showerror("Error", "The reviewing physician has not been selected.")
+        tk.messagebox.showerror("Error", "The reviewing physician has not been selected yet.")
     else:
         json_data["signed"] = True
         now = datetime.datetime.now()
@@ -635,6 +649,7 @@ def sign_report():
         json_data["signtime"] = now.strftime("%B %d, %Y  %H:%M") + " " + tzs
 
         """ Save data again to note we have now signed the report """
+        """ This will also update the signer cache """
         save_data(json_data)
 
         """ Now update menus """
@@ -673,13 +688,27 @@ if json_data["signed"]:
     rowvar = add_label("Report Signed On: " + json_data["signtime"], rowvar, 0);
 else:
     """ Need to check that certain fields have been filled out """
-    signers = []
-    with open(physicians) as f:
-        for line in f:
-            signers.append(line.rstrip('\n'))
+    signers = cnfg_data["physicians"]
+
+    #
+    # If we already have a signer, use that as the default, otherwise
+    # look for cached last signer and if they are still in the list,
+    # set them as default
+    #
+    if json_data["signer"]:
+        last_signer = json_data["signer"]
+    else:
+        try:
+            with open(last_signer_file) as f:
+                for line in f:
+                    last_signer = line.rstrip()
+                if last_signer not in signers:
+                    last_signer = ""
+        except:
+            pass
     phdr = "Reviewing Physician"
     rowvar = rowvar + 1
-    rdobj, rowvar = add_label_menu(phdr, signers, "", rowvar, 0, len(phdr) + 8, 40)
+    rdobj, rowvar = add_label_menu(phdr, signers, last_signer, rowvar, 0, len(phdr) + 8, 40)
 
 rowvar = rowvar + 2
 

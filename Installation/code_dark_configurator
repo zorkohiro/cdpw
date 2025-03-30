@@ -4,6 +4,7 @@
 import subprocess
 import tkinter as tk
 from tkinter import messagebox
+import argparse
 import json
 
 """
@@ -28,11 +29,23 @@ NW = "networking"
 DC = "dicom"
 PH = "physicians"
 
-jsonfile = "configurator.json"
+cdwconfig = "/code_dark/config"
+jsonfile = cdwconfig + "/" + "configurator.json"
 fontfamily = 'Times'
 fontsize = 12
 fontstring = fontfamily + ' ' + str(fontsize)
 boxsize = 5
+
+""" Argument Parsing """
+
+parser = argparse.ArgumentParser(description="Code Dark Configurator")
+parser.add_argument("-j", "--json", help="Input json file")
+
+args = vars(parser.parse_args())
+
+if args['json']:
+    jsonfile=args['json']
+
 
 """ Data hanlders """
 def save_n_exit():

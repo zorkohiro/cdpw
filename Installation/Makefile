@@ -5,7 +5,7 @@ ifeq ($(INSTALL_ROOT),)
 $(error INSTALL_ROOT not set)
 endif
 
-BINS    := spawn_editor CheckOrthancDataMount CDW_Configure restart_orthanc code_dark_rptgen GetModality
+BINS    := spawn_editor CheckOrthancDataMount CDW_Configure restart_orthanc code_dark_rptgen code_dark_configurator GetModality
 
 KPLIB	:= ${INSTALL_ROOT}/usr/lib/kp-report
 
