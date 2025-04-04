@@ -2,6 +2,10 @@
 
 CFG=/code_dark/config/configurator.json
 ORT=/etc/orthanc/orthanc.json
+mkdir -p /code_dark/logs >/dev/null 2>&1
+LOG=/code_dark/logs/CDW.log
+touch ${LOG} >/dev/null 2>&1 || LOG=/tmp/CDW.log
+echo CDW_Configure starting on `date` >> $LOG
 
 #
 # Check for configuration database
@@ -9,26 +13,32 @@ ORT=/etc/orthanc/orthanc.json
 # we find in it.
 #
 changed=no
-if [[ -f /code_dark/config/configurator.json ]]; then
+if [[ -f $CFG ]]; then
  port=$(jq -r .dicom.port 2> /dev/null < $CFG)
  if [[ "$port" != "null" ]]; then
-  echo Changing Dicom port to $port
-  sed -i -e "/DicomPort/c\\ \"DicomPort\" : ${port}," ${ORT}
-  changed=yes
+  DicomPort=$(grep 'DicomPort" :' /etc/orthanc/orthanc.json |sed -e 's/,//' -e 's/ //g' | awk -F: ' { print $2 }')
+  if [[ $port != $DicomPort ]]; then
+   echo Changing Dicom port from $DicomPort to $port >> $LOG
+   sed -i -e "/DicomPort/c\\ \"DicomPort\" : ${port}," ${ORT}
+   changed=yes
+  fi
  fi
  aet=$(jq -r .dicom.aet 2> /dev/null < $CFG)
  if [[ "$aet" != "null" ]]; then
-  echo Changing Dicom aet to $aet
-  sed -i -e "/DicomAet/c\\ \"DicomAet\" : ${aet}," ${ORT}
-  changed=yes
+  DicomAet=$(grep 'DicomAet" :'  /etc/orthanc/orthanc.json  | sed -e 's/"//g' -e 's/ //g' -e 's/,//g'| awk -F: ' { print $2 }')
+  if [[ $aet != $DicomAet ]]; then
+   echo Changing Dicom AET from $DicomAet to $aet >> $LOG
+   sed -i -e "/DicomAet\" :/c\\ \"DicomAet\" : \"${aet}\"," ${ORT}
+   changed=yes
+  fi
  fi
 fi
-
 #
 # Change database directory to code_dark
 #
 grep -q /var/lib/orthanc/db-v6 ${ORT}
-if [[ $? -eq 1 ]]; then
+if [[ $? -eq 0 ]]; then
+ echo setting orthanc database to /code_dark/database >> $LOG
  sed -i 's,/var/lib/orthanc/db-v6,/code_dark/database,' ${ORT}
  changed="yes"
 fi
@@ -37,5 +47,7 @@ fi
 # If we made any actual changes, restart Orthanc
 #
 if [[ $changed == "yes" ]]; then
- systemctl restart orthanc
+ echo restarting orthanc >> $LOG
+ systemctl daemon-reload
+ systemctl restart orthanc >> $LOG 2>&1
 fi

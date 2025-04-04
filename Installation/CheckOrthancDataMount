@@ -13,6 +13,14 @@ while :; do
    'Secure data storage device not seen- still locked?'
   stime=$SHRT_SLEEP
  else
+  #
+  # Make sure that code_dark directories are populated correctly
+  # and initial configurator json is in place.
+  #
+  mkdir -p /code_dark/config /code_dark/database /code_dark/reports /code_dark/logs
+  if [[ ! -f /code_dark/config/configurator.json ]]; then
+   cp /usr/lib/kp-report/configurator.json /code_dark/config
+  fi
   nor=$(ps ax | grep -w Orthanc | grep -v grep | wc -l)
   if [[ $nor -eq 0 ]]; then
    echo "Restarting orthanc because it is not running"

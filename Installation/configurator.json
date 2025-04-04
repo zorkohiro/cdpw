@@ -1,8 +1,7 @@
 {
-  "version" : 1,
+  "version" : 2,
   "networking" : {
-    "addr" : "",
-    "mask" : ""
+    "addrmask" : "system"
   },
   "dicom" : {
      "port" : "4242",

@@ -9,10 +9,18 @@ if [[ -z "${OUID}" ]]; then
 fi
 
 #
+# Install desktop icon for Network Configurator
+#
+mkdir -p ~orthanc/.local/share/applications
+cp /usr/lib/kp-report/code_dark_configurator.desktop ~orthanc/.local/share/applications
+mkdir -p ~orthanc/Desktop
+cp /usr/lib/kp-report/*.pdf ~orthanc/Desktop
+
+#
 # Clean up permissions
 #
 chown root:root /etc/sudoers.d/orthanc
-chown -R $OUID ~orthanc/.local
+chown -R $OUID ~orthanc/.local ~orthanc/Desktop
 
 #
 # Give orthanc the ability to bind to privileged ports

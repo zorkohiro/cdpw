@@ -641,7 +641,7 @@ def sign_report():
     if json_data["signed"]:
         tk.messagebox.showerror("Sorry", "Report has been already been signed.")
     elif json_data["signer"] == "":
-        tk.messagebox.showerror("Error", "The reviewing physician has not been selected yet.")
+        tk.messagebox.showerror("Error", "No reviewing physician has been selected yet.")
     else:
         json_data["signed"] = True
         now = datetime.datetime.now()
@@ -655,17 +655,6 @@ def sign_report():
         """ Now update menus """
         for e in entryables:
             e.config(state="disabled", bg="orange")
-
-        """
-        # Need to see whether we should chmod to not writable
-        try:
-            result = subprocess.run(["chmod", "-w", jsonfile ], capture_output=True, text=True)
-            if result.returncode != 0:
-                tk.messagebox.showerror("Error", "Subprocess Error", result.stderr)
-                exit(1)
-        except subprocess.CalledProcessError as e:
-            tk.messagebox.showerror("Error", "Process Error", e.output)
-        """
 
 # define a function that will exit, saving data and creating on-disk report as it does so.
 def exit_edit():

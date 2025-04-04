@@ -1,0 +1,53 @@
+#/bin/bash
+#
+# Handle networking changes here. Called by code_dark_configurator.
+#
+LOG=/code_dark/logs/configurator.log
+echo On `date` called with arguments: $* >> $LOG
+if [[ $# -ne 1 ]]; then
+ echo Called with wrong number of arguments > /dev/stderr
+ exit 1
+fi
+#
+# The argument will either be "dhcp", which means
+# enable auto/dhcp, or an IP/CIDR string to use
+# for manual setting.
+#
+addrmsk=$1
+tmpf=$(mktemp)
+nmcli c show 2>>${LOG} | awk '/ethernet/ { print $2}' > $tmpf
+neth=$(wc -l $tmpf | awk ' { print $1 }')
+if [[ $neth != 1 ]]; then
+ echo "Wrong number ($neth) of ethernets- not handling things" | tee -a $LOG > /dev/stderr
+ rm -f $tmpf
+ exit 1
+fi
+cnxtion=$(cat $tmpf)
+echo "active cnxtion is $cnxtion" >> $LOG
+curnetw=$(nmcli c show $cnxtion | awk '/IP4.ADDRESS/{ print $2 }')
+echo "current ipv4 address is $curnetw" >> $LOG
+addrmsk=$1
+echo "addrmsk argument is ${addrmsk}" >> $LOG
+
+if [[ "${addrmsk}" != "dhcp" ]]; then
+ if [[ $curnetw != $addrmsk ]]; then
+  echo nmcli c m $cnxtion ipv4.method manual ipv4.addresses $addrmsk >> $LOG
+  nmcli c m $cnxtion ipv4.method manual ipv4.addresses $addrmsk >> $LOG 2>&1
+ else
+  echo current address/CIDR and staticip/CIDR are the same, not changing >> $LOG
+ fi
+else
+ #
+ # Check to see if we're already in auto mode.
+ # If not, switch to auto mode (dhcp).
+ #
+ imethod=$(nmcli c show $cnxtion | awk '/ipv4.method/ { print $2 }')
+ echo "imethod is $imethod" >> $LOG
+ if [[ ${imethod} != "auto" ]]; then
+  echo nmcli c m $cnxtion ipv4.method auto >> $LOG
+  nmcli c m $cnxtion ipv4.method auto >> $LOG 2>&1
+ else
+  echo imethod is already auto >> $LOG
+ fi
+fi
+rm -f $tmpf

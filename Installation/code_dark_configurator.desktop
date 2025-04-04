@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Code Dark
+Comment=Code Dark System Parameters Tool
+Exec=/usr/bin/code_dark_configurator
+Icon=/usr/share/icons/hicolor/16x16/apps/software-properties.png
+Terminal=false
+Type=Application

@@ -10,7 +10,10 @@ Get a 16GB USB Key to become the target of the install.
  https://nnenix.mm.fcix.net/ubuntu-releases/24.04.2/ubuntu-24.04.2-desktop-amd64.iso
  sha256sum: d7fe3d6a0419667d2f8eff12796996328daa2d4f90cd9f87aa9371b362f987bf
 
-Create an install USB key from this with dd on a linux system. Boot it.
+Create an install USB key from this with dd on a linux system. Boot it on
+a system with no active network connection (important!).
+
+Select "Do not connect to the internet"
 
 Select 'Saruman B Orthanc' as the name. Select 'orthanc' as the name of the system.
 Select 'orthanc' as the user, 'orthanc' as the password.
@@ -19,18 +22,39 @@ Select to *not* require user password to log in.
 
 Reboot to installed USB key when the install is done.
 
+While rebooting, reconnect network cable.
+
+Attach CODE_DARK USB storage (and unlock it) after it appears the system is almost up.
+
+2. Install our user level packages
+
+After we come up, do
+
+ sudo apt update
+
+This will refresh our package lists but not actually install anything.
+
+Then fetch the latest kp-report package via:
+
+ cd /tmp
+ wget https://feralsw.com/cdw/kp-report-latest.deb
+ sudo apt install -y ./kp-report-latest.deb
+
+Ignore and dismiss all alert boxes that will then show up before things
+finish. As you continue along delete any popups asking to install updates.
+
 2. System Control panel changes
 
-Go to Power Management and uncheck the Suspend Session and Screen Energy Saving buttons.
-Enable shutdown on power button press.
+Go to system settings.
 
-Go to Privacy & Security
-Go to Screen Lock and uncheck everything
+Go to Power and set Screen Blank to "Never"
 
 Go to Ubuntu Desktop and shrink the taskbar icons and place the taskbar
 on the bottom of the screen. Disable Home Folder on desktop.
 
 Search for Date & Time and disable automatic date and time.
+Search for Privacy & Security and go to Screen Lock under it
+and disable all
 
 Unpin 'A' window and help icons from taskbar on botton.
 
@@ -45,10 +69,9 @@ gsettings set org.gnome.desktop.background primary-color gray
 #
 # Disable automatic updates && upgrades
 #
-sed 'g/APT::Periodic::Update-Package-Lists/s/1/0/' /etc/apt/apt.conf.d/20auto-upgrades
-sed 'g/APT::Periodic::Unattended-Upgrade/s/1/0/' /etc/apt/apt.conf.d/20auto-upgrades
+sudo dpkg-reconfigure -plow unattended-upgrades
 
-4. Configure the installed firefox
+3. Configure the installed firefox
 
 Remove crap buttons from bookmark bar
 Settings/General
@@ -61,10 +84,10 @@ Settings/Home
 Enter “about:config” in the address search bar
 Type “full” in the search bar, and toggle “full-screen-api.enabled” to “false”:
 
-Enter http://localhost:8042 in chrome and bookmark it and name it Orthanc is it
-will not connect at this step.
+Enter http://localhost:8042 in chrome and bookmark it. You should
+have connected with the running orthanc server.
 
-5. Upgrade kernel
+4. Upgrade kernel
 
 #
 # Upgrade kernel with updated amdgpu driver.
@@ -75,17 +98,6 @@ This is built by hand elsewhere out of scope of these instructions.
 
 This will be a 'apt add ./*.deb' action.
 
-6. Attach Storage
+Currently the is the 1010_upgrade.tar bundle.
 
-# Make sure we have a data drive to put the Orthanc database and our reports on.
-
-Attach and unlock (if needed for the Apricorn USB secure drive) data storage drive.
-This is an NTFS filesystem on the whole drive with the label CODE_DARK.
-
-7. Fetch latest kp-report package
-
-https://feralsw.com/cdw/kp-report-latest.deb
-sudo apt install -y ./kp-report-latest.deb
-
-This should install all of the main Orthanc binaries plus our changes and additions.
 

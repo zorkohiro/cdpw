@@ -5,7 +5,7 @@ ifeq ($(INSTALL_ROOT),)
 $(error INSTALL_ROOT not set)
 endif
 
-BINS    := spawn_editor CheckOrthancDataMount CDW_Configure restart_orthanc code_dark_rptgen code_dark_configurator GetModality
+BINS    := spawn_editor CheckOrthancDataMount CDW_Configure restart_orthanc code_dark_rptgen code_dark_configurator GetModality network_reconfigurator
 
 KPLIB	:= ${INSTALL_ROOT}/usr/lib/kp-report
 
@@ -17,6 +17,7 @@ install:
 	install -D -m 640 configure.conf ${INSTALL_ROOT}/lib/systemd/system/orthanc.service.d/configure.conf
 	install -D -m 440 orthanc.sudo ${INSTALL_ROOT}/etc/sudoers.d/orthanc
 	for i in Templates/*.json; do install -D -m 555 $$i ${KPLIB}/$$i; done
+	cp *.pdf code_dark_configurator.desktop configurator.json ${KPLIB}
 	mkdir -p ${INSTALL_ROOT}/usr/bin
 	mkdir -p -m 755 $(INSTALL_ROOT)/DEBIAN
 	sed -e "s,%VERSION%,$(RELEASE)," control > $(INSTALL_ROOT)/DEBIAN/control
