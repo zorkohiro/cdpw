@@ -11,7 +11,6 @@ RPT=${CDB}/reports
 tpt=$1
 mrn="$2"
 ssn="$3"
-# For use in the future
 uui=$4
 
 mkdir -p ${RPT} > /dev/null 2>&1
@@ -38,7 +37,7 @@ else
 fi
 
 echo calling $prg -j "$fnm" on `date` >> $LOG
-${prg} -j "$fnm"  >> $LOG 2>&1
+${prg} -j "$fnm" -u $uui  >> $LOG 2>&1
 if [[ $? -ne 0 ]]; then
  echo $prg exited witn non-zero status >> $LOG
 fi

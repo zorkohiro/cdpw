@@ -7,6 +7,9 @@ endif
 
 BINS    := spawn_editor CheckOrthancDataMount CDW_Configure restart_orthanc code_dark_rptgen code_dark_configurator GetModality network_reconfigurator
 
+DOCS	:= Code_Dark_Configuration_Notes.pdf  What_is_Code_Dark.pdf
+DOCDIR	:= $(CURDIR)/../Documentation
+
 KPLIB	:= ${INSTALL_ROOT}/usr/lib/kp-report
 
 install:
@@ -16,8 +19,10 @@ install:
 	install -D -m 640 dbmount.conf ${INSTALL_ROOT}/lib/systemd/system/orthanc.service.d/dbmount.conf
 	install -D -m 640 configure.conf ${INSTALL_ROOT}/lib/systemd/system/orthanc.service.d/configure.conf
 	install -D -m 440 orthanc.sudo ${INSTALL_ROOT}/etc/sudoers.d/orthanc
+	install -D code_dark_configurator.desktop $(INSTALL_ROOT)/home/orthanc/.local/share/applications/code_dark_configurator.desktop
 	for i in Templates/*.json; do install -D -m 555 $$i ${KPLIB}/$$i; done
-	cp *.pdf code_dark_configurator.desktop configurator.json ${KPLIB}
+	mkdir -p ${INSTALL_ROOT}/home/orthanc/Desktop
+	for i in $(DOCS); do cp ${DOCDIR}/$$i $(INSTALL_ROOT)/home/orthanc/Desktop/$$i; done
 	mkdir -p ${INSTALL_ROOT}/usr/bin
 	mkdir -p -m 755 $(INSTALL_ROOT)/DEBIAN
 	sed -e "s,%VERSION%,$(RELEASE)," control > $(INSTALL_ROOT)/DEBIAN/control

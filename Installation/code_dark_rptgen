@@ -48,6 +48,7 @@ fontsize = 12
 fontstring = fontfamily + ' ' + str(fontsize)
 boxsize = 3
 cbobj = {}
+uuid = ""
 
 pbobj = {}
 have_pseq = False
@@ -97,6 +98,7 @@ parser.add_argument("-j", "--json", help="Input json file", required=True)
 parser.add_argument("-R", "--report_dir", help="Where we fetch/save reports", default=report_dir)
 parser.add_argument("-C", "--configurator", help="Where we have the CDW configuration file", default=configurator)
 parser.add_argument("-f", "--fontsize", help="Font Size (default 12)")
+parser.add_argument("-u", "--uuid", help="Orthanc Study UUID", required=True)
 
 args = vars(parser.parse_args())
 
@@ -110,11 +112,11 @@ if args['configurator']:
 if args['fontsize']:
     fontsize = int(args['fontsize'])
     fontstring = 'Time ' + args['fontsize']
-
+if args['uuid']:
+    uuid = args['uuid']
 #
 # Read in configurator data
 #
-
 with open(configurator, "r") as cfile:
     cnfg_data = json.load(cfile)
 

@@ -20,7 +20,6 @@ mkdir -p /code_dark
 # Do this at preinst time so that orthanc reconfiguration
 # does not get upset and fail during kp-report installation.
 #
-#
 sed -i -e '/CODE_DARK/d' /etc/fstab
 echo "LABEL=CODE_DARK /code_dark ntfs-3g defaults,noauto,noatime,uid=${OUID},hide_hid_files,umask=0,dmask=27,fmask=137,x-systemd.automount 0 0" >> /etc/fstab
 systemctl daemon-reload

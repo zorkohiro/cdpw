@@ -1,6 +1,6 @@
 #!/bin/bash
-rm -f ~orthanc/.local/share/applications/SetSystemTime.desktop
-rm -rf /lib/systemd/system/orthanc.service.d
 if [[ "$1" != "upgrade" ]]; then
  sed -i -e '/CODE_DARK/d' /etc/fstab
 fi
+systemctl daemon-reload
+systemctl start orthanc

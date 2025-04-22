@@ -1,0 +1,70 @@
+#!/bin/bash
+monly=0
+#
+# Given a Study UUID, get the Study Date from the main dicom tags
+#
+if [[ $# -eq 0 ]]; then
+ list=$(curl -s  http://localhost:8042/studies|jq -r '.[]')
+else
+ if [[ $1 == "-r" ]]; then
+  monly=1
+  shift
+ fi
+ if [[ $# -eq 0 ]]; then
+  list=$(curl -s  http://localhost:8042/studies|jq -r '.[]')
+ else
+  list=$*
+ fi
+fi
+ct=0
+for entry in $list; do
+ STUDY_UUID=$entry
+ STUDY_DATE=$(curl -s  http://localhost:8042/studies/$STUDY_UUID |jq  -r .MainDicomTags.StudyDate)
+ if [[ -z "$STUDY_DATE" ]]; then
+  STUDY_DATE=NULL
+ elif [[ "$STUDY_DATE" == "null" ]]; then
+  STUDY_DATE=NULL
+ fi
+ STUDY_TIME=$(curl -s  http://localhost:8042/studies/$STUDY_UUID |jq  -r .MainDicomTags.StudyTime)
+ if [[ -z "$STUDY_TIME" ]]; then
+  STUDY_TIME=NULL
+ elif [[ "$STUDY_TIME" == "null" ]]; then
+  STUDY_TIME=NULL
+ fi
+ #
+ # Validate Date
+ #
+ wc=$(echo $STUDY_DATE|wc -c)
+ if [[ $wc -ne 9 ]]; then
+  STUDY_DATE=BAD1XX
+ else
+  if test "$STUDY_DATE" -eq 0 -o "$STUDY_DATE" -ne 0 2> /dev/null; then
+   # We are good
+   :
+  else
+   STUDY_DATE=BAD2XX
+  fi
+ fi
+ #
+ # Validate Time
+ #
+ if [[ "$STUDY_TIME" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
+  # We are good
+  :
+ else
+  STUDY_TIME="BAD3XXX"
+ fi
+ if [[ $ct -eq 0 && $monly -eq 0 ]]; then
+  printf "%-45s %8s %s\n" "Study" "StudyDate/Time"
+ fi
+ if [[ $monly -eq 0 ]]; then
+  if [[ $STUDY_TIME =~ BAD*  || $STUDY_DATE =~ BAD* || $STUDY_TIME == NULL || $STUDY_DATE == NULL ]]; then
+   printf "%-45s %8s %14s\n" $STUDY_UUID $STUDY_DATE $STUDY_TIME
+  else
+   printf "%-45s %8s %014.7f\n" $STUDY_UUID $STUDY_DATE $STUDY_TIME
+  fi
+ else
+  echo $STUDY_DATE $STUDY_TIME
+ fi
+ ct=$((ct + 1))
+done

@@ -7,7 +7,7 @@ endif
 CMAKE_ARGS= .. -DCMAKE_INSTALL_PREFIX=$(INSTALL_ROOT)/usr -DSTATIC_BUILD=ON -DCMAKE_BUILD_TYPE=Release
 NTHREAD := $(shell getconf _NPROCESSORS_ONLN)
 
-all:	.built_ohif .cmake_setup .built_binary
+all:	.built_ohif .cmake_setup build
 
 .built_ohif:
 	mkdir -p Build
@@ -18,9 +18,8 @@ all:	.built_ohif .cmake_setup .built_binary
 	cd Build && cmake $(CMAKE_ARGS)
 	touch $@
 
-.built_binary:
+build:
 	cd Build && make -j $(NTHREAD)
-	touch $@
 
 install:	all
 	cd Build && make install

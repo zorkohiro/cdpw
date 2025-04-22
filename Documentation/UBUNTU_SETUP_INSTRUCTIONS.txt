@@ -18,7 +18,7 @@ Select "Do not connect to the internet"
 Select 'Saruman B Orthanc' as the name. Select 'orthanc' as the name of the system.
 Select 'orthanc' as the user, 'orthanc' as the password.
 Select the defaults and erase the whole disk and install it.
-Select to *not* require user password to log in.
+Keep selection to require user password to log in.
 
 Reboot to installed USB key when the install is done.
 
@@ -47,18 +47,26 @@ finish. As you continue along delete any popups asking to install updates.
 
 Go to system settings.
 
-Go to Power and set Screen Blank to "Never"
-
 Go to Ubuntu Desktop and shrink the taskbar icons and place the taskbar
 on the bottom of the screen. Disable Home Folder on desktop.
-
-Search for Date & Time and disable automatic date and time.
-Search for Privacy & Security and go to Screen Lock under it
-and disable all
-
 Unpin 'A' window and help icons from taskbar on botton.
 
-Fire up a Kconsole and pin it to the task bar.
+Search for Date & Time and disable automatic date and time.
+
+Search for Privacy & Security
+ Set under Screen Lock:
+	+ 10 minutes blank screen delay
+	+ Automatic Screen Lock ON
+	+ Automatic Screen Lock delay 1 minute
+	+ Lock Screen notifications ON
+	+ Lock Screen on Suspend ON
+
+ Set under Diagnostics:
+	+ Send error reports to Canonical to NEVER
+
+ 
+
+Fire up a Kconsole and pin it to the task bar:
 
 #
 # Set background to plain gray
@@ -70,6 +78,11 @@ gsettings set org.gnome.desktop.background primary-color gray
 # Disable automatic updates && upgrades
 #
 sudo dpkg-reconfigure -plow unattended-upgrades
+sudo systemctl disable apt-daily.service apt-daily-upgrade.service
+sudo systemctl disable apt-daily.timer apt-daily-upgrade.timer
+sudo apt remove --purge -y unattended-upgrades
+gsettings set com.ubuntu.update-notifier no-show-notifications true
+
 
 3. Configure the installed firefox
 
