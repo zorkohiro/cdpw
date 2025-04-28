@@ -1,0 +1,6 @@
+Release 0.9.8-1
+
+Don't make uuid a required argument to code_dark_rptgen
+until we actually will do something with it.
+
+Add RELEASE_NOTES to source. Do more installation/removal tweaks.

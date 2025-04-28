@@ -98,7 +98,7 @@ parser.add_argument("-j", "--json", help="Input json file", required=True)
 parser.add_argument("-R", "--report_dir", help="Where we fetch/save reports", default=report_dir)
 parser.add_argument("-C", "--configurator", help="Where we have the CDW configuration file", default=configurator)
 parser.add_argument("-f", "--fontsize", help="Font Size (default 12)")
-parser.add_argument("-u", "--uuid", help="Orthanc Study UUID", required=True)
+parser.add_argument("-u", "--uuid", help="Orthanc Study UUID")
 
 args = vars(parser.parse_args())
 

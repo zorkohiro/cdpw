@@ -19,11 +19,10 @@ install:
 	install -D -m 640 dbmount.conf ${INSTALL_ROOT}/lib/systemd/system/orthanc.service.d/dbmount.conf
 	install -D -m 640 configure.conf ${INSTALL_ROOT}/lib/systemd/system/orthanc.service.d/configure.conf
 	install -D -m 440 orthanc.sudo ${INSTALL_ROOT}/etc/sudoers.d/orthanc
-	install -D code_dark_configurator.desktop $(INSTALL_ROOT)/home/orthanc/.local/share/applications/code_dark_configurator.desktop
+	mkdir -p ${KPLIB}
+	install -D code_dark_configurator.desktop ${KPLIB}
 	for i in Templates/*.json; do install -D -m 555 $$i ${KPLIB}/$$i; done
-	mkdir -p ${INSTALL_ROOT}/home/orthanc/Desktop
-	for i in $(DOCS); do cp ${DOCDIR}/$$i $(INSTALL_ROOT)/home/orthanc/Desktop/$$i; done
-	mkdir -p ${INSTALL_ROOT}/usr/bin
+	for i in $(DOCS); do cp ${DOCDIR}/$$i $(KPLIB)/$$i; done
 	mkdir -p -m 755 $(INSTALL_ROOT)/DEBIAN
 	sed -e "s,%VERSION%,$(RELEASE)," control > $(INSTALL_ROOT)/DEBIAN/control
 	cp copyright preinst postinst postrm ${INSTALL_ROOT}/DEBIAN

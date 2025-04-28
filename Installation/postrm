@@ -2,5 +2,27 @@
 if [[ "$1" != "upgrade" ]]; then
  sed -i -e '/CODE_DARK/d' /etc/fstab
 fi
+#
+# Make sure documentation removed from Orthanc desktop
+#
+for i in /usr/lib/kp-report/*.pdf; do
+ n=/home/orthanc/Desktop/$(basename $i)
+ rm -f $n
+done
+
+#
+# Remove symlink to configurator
+#
+rm -f /home/orthanc/Desktop/code_dark_configurator
+
+#
+# Remove desktop token
+#
+rm -f /home/orthanc/.local/share/applications/code_dark_configurator.desktop
+
+
+#
+# Restart orthanc
+#
 systemctl daemon-reload
 systemctl start orthanc

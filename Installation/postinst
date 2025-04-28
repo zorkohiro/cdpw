@@ -8,6 +8,29 @@ if [[ -z "${OUID}" ]]; then
  OUID=1000
 fi
 
+if [[ -d /home/orthanc/Desktop ]]; then
+ #
+ # Make sure documentation linked to Orthanc desktop, if present
+ #
+ for i in /usr/lib/kp-report/*.pdf; do
+  n=/home/orthanc/Desktop/$(basename $i)
+  rm -f $n
+  ln -s $i $n
+ done
+
+ #
+ # Add direct path to configurator
+ #
+ rm -f /home/orthanc/Desktop/code_dark_configurator
+ ln -s /usr/bin/code_dark_configurator /home/orthanc/Desktop/code_dark_configurator
+fi 
+
+#
+# Add desktop token if directory for it is present
+#
+mkdir -p /home/orthanc/.local/share/applications
+cp /usr/lib/kp-report/code_dark_configurator.desktop /home/orthanc/.local/share/applications
+
 #
 # Clean up permissions
 #
