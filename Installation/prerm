@@ -1,6 +1,27 @@
 #!/bin/bash
+ORT=/etc/orthanc/orthanc.json
+
 #
-# Stop things for removal
+# Stop orthanc while we change things around
 #
-systemctl disable cdw_configure.service
-systemctl stop orthanc
+
+if [[ "$1" == "remove" ]]; then
+ systemctl stop orthanc
+ systemctl disable orthanc_data_checker.service
+ systemctl disable cdw_configure.service
+ umount /code_dark > /dev/null 2>&1
+ sed -i -e '/CODE_DARK/d' /etc/fstab
+ if [[ -f ${ORT}.save ]]; then
+  mv ${ORT}.save ${ORT}
+ fi
+fi
+
+#
+# Do this for both remove and upgrade
+#
+if [[ -f /usr/lib/kp-report/idoc.txt ]]; then
+ for i in  $(cat /usr/lib/kp-report/idoc.txt); do
+  rm -f $i
+ done
+ rm -f /usr/lib/kp-report/idoc.txt
+fi

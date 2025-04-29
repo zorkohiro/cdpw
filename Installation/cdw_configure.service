@@ -6,7 +6,7 @@
 [Unit]
 Description=CDW configuration agent
 Requires=orthanc_datamount_checker.service
-After=orthanc_datamount_checker.service, NetworkManager.service
+After=orthanc_datamount_checker.service NetworkManager.service
 
 [Service]
 Type=oneshot

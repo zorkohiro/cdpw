@@ -39,6 +39,9 @@ fi
 grep -q /var/lib/orthanc/db-v6 ${ORT}
 if [[ $? -eq 0 ]]; then
  echo setting orthanc database to /code_dark/database >> $LOG
+ if [[ ! -f ${ORT}.save ]]; then
+  cp ${ORT} ${ORT}.save
+ fi
  sed -i 's,/var/lib/orthanc/db-v6,/code_dark/database,' ${ORT}
  changed="yes"
 fi

@@ -6,6 +6,7 @@ SHRT_SLEEP=10
 SHRT_MSECS=$((((SHRT_SLEEP - 2)) * 1000))
 set -o pipefail
 while :; do
+ sudo -n mount /code_dark > /dev/null 2>&1
  df | grep -q /code_dark
  if [[ $? -ne 0 ]]; then
   echo Data storage device not mounted- sleeping $SHRT_SLEEP seconds

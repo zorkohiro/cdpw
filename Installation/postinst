@@ -1,21 +1,14 @@
 #!/bin/bash
-#
-# Get orthanc uid- needed to chown ~orthanc/.local additions
-#
-OUID=$(awk -F: '/^orthanc:/ {print $3}' /etc/passwd)
-if [[ -z "${OUID}" ]]; then
- # Hack.
- OUID=1000
-fi
-
 if [[ -d /home/orthanc/Desktop ]]; then
  #
  # Make sure documentation linked to Orthanc desktop, if present
  #
+ cp /dev/null /usr/lib/kp-report/idoc.txt
  for i in /usr/lib/kp-report/*.pdf; do
   n=/home/orthanc/Desktop/$(basename $i)
   rm -f $n
   ln -s $i $n
+  echo $n >> /usr/lib/kp-report/idoc.txt
  done
 
  #
@@ -23,19 +16,13 @@ if [[ -d /home/orthanc/Desktop ]]; then
  #
  rm -f /home/orthanc/Desktop/code_dark_configurator
  ln -s /usr/bin/code_dark_configurator /home/orthanc/Desktop/code_dark_configurator
+ echo /home/orthanc/Desktop/code_dark_configurator >> /usr/lib/kp-report/idoc.txt
 fi 
-
-#
-# Add desktop token if directory for it is present
-#
-mkdir -p /home/orthanc/.local/share/applications
-cp /usr/lib/kp-report/code_dark_configurator.desktop /home/orthanc/.local/share/applications
 
 #
 # Clean up permissions
 #
 chown root:root /etc/sudoers.d/orthanc
-chown -R $OUID ~orthanc/.local ~orthanc/Desktop
 
 #
 # Give orthanc the ability to bind to privileged ports
@@ -46,3 +33,13 @@ setcap 'cap_net_bind_service=+ep' /sbin/Orthanc
 # Enable cdw_configure service
 #
 systemctl enable cdw_configure.service
+
+#
+# Enable orthanc_datamount service
+#
+systemctl enable orthanc_datamount_checker.service
+
+#
+# Explicitly exit with good status
+#
+exit 0
