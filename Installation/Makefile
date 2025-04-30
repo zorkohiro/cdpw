@@ -20,11 +20,13 @@ install:
 	install -D -m 640 configure.conf ${INSTALL_ROOT}/lib/systemd/system/orthanc.service.d/configure.conf
 	install -D -m 440 orthanc.sudo ${INSTALL_ROOT}/etc/sudoers.d/orthanc
 	mkdir -p ${KPLIB}
+	cp images/* ${KPLIB}
 	for i in Templates/*.json; do install -D -m 555 $$i ${KPLIB}/$$i; done
 	for i in $(DOCS); do cp ${DOCDIR}/$$i $(KPLIB)/$$i; done
 	mkdir -p -m 755 $(INSTALL_ROOT)/DEBIAN
 	sed -e "s,%VERSION%,$(RELEASE)," control > $(INSTALL_ROOT)/DEBIAN/control
 	cp copyright preinst postinst prerm postrm ${INSTALL_ROOT}/DEBIAN
+
 all:
 
 clean:

@@ -4,3 +4,14 @@ Don't make uuid a required argument to code_dark_rptgen
 until we actually will do something with it.
 
 Add RELEASE_NOTES to source. Do more installation/removal tweaks.
+
+Switch name from CDW (Code Dark Workstation) to CDPW (Code Dark PACS Workstation).
+
+Add some pictures for login screen and label underneath login.
+There is a kaiser.png which is red. Then there is a label generated
+with (imagemagick installed):
+
+ convert -background lightblue -fill blue -font Bookman-Lightitalic -pointsize 48 -size 940x \
+  caption:'Code Dark PACS Workstation, Alpha 1.0' label-Bookman-Lightitalic-alpha1.0.gif
+
+Generated under ubuntu24.
