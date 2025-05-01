@@ -40,8 +40,8 @@ PT = "port"
 AE = "aet"
 PH = "physicians"
 
-cdwconfig = "/code_dark/config"
-jsonfile = cdwconfig + "/" + "configurator.json"
+cdpwconfig = "/code_dark/config"
+jsonfile = cdpwconfig + "/" + "configurator.json"
 fontfamily = 'Times'
 fontsize = 12
 fontstring = fontfamily + ' ' + str(fontsize)

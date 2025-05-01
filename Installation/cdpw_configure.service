@@ -4,13 +4,13 @@
 # are available.
 #
 [Unit]
-Description=CDW configuration agent
+Description=Code Dark PACS Workstation configuration agent
 Requires=orthanc_datamount_checker.service
 After=orthanc_datamount_checker.service NetworkManager.service
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/CDW_Configure
+ExecStart=/usr/bin/CDPW_Configure
 RemainAfterExit=yes
 
 [Install]

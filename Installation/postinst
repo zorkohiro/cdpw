@@ -30,9 +30,9 @@ chown root:root /etc/sudoers.d/orthanc
 setcap 'cap_net_bind_service=+ep' /sbin/Orthanc
 
 #
-# Enable cdw_configure service
+# Enable cdpw_configure service
 #
-systemctl enable cdw_configure.service
+systemctl enable cdpw_configure.service
 
 #
 # Enable orthanc_datamount service
