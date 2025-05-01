@@ -2,8 +2,7 @@
 
 CFG=/code_dark/config/configurator.json
 ORT=/etc/orthanc/orthanc.json
-mkdir -p /code_dark/logs >/dev/null 2>&1
-LOG=/code_dark/logs/CDPW.log
+LOG=/tmp/CDPW.log
 touch ${LOG} >/dev/null 2>&1 || LOG=/tmp/CDPW.log
 echo CDPW_Configure starting on `date` >> $LOG
 

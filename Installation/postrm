@@ -1,8 +1,5 @@
 #!/bin/bash
-if [[ "$1" == "purge" ]]; then
- # Called second time through for purge
- rmdir /code_dark
-else
+if [[ "$1" == "remove" ]]; then
  systemctl daemon-reload
  systemctl start orthanc
 fi

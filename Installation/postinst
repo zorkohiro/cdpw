@@ -35,9 +35,10 @@ setcap 'cap_net_bind_service=+ep' /sbin/Orthanc
 systemctl enable cdpw_configure.service
 
 #
-# Enable orthanc_datamount service
+# Enable and restart orthanc_datamount service
 #
 systemctl enable orthanc_datamount_checker.service
+systemctl restart orthanc_datamount_checker.service
 
 #
 # Explicitly exit with good status

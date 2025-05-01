@@ -7,7 +7,6 @@ ORT=/etc/orthanc/orthanc.json
 
 if [[ "$1" == "remove" ]]; then
  systemctl stop orthanc
- systemctl disable orthanc_data_checker.service
  systemctl disable cdpw_configure.service
  umount /code_dark > /dev/null 2>&1
  sed -i -e '/CODE_DARK/d' /etc/fstab
