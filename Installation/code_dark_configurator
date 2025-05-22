@@ -10,6 +10,7 @@ import datetime
 import json
 import ipaddress
 import subprocess
+from os import path
 
 """
 We need to be able to configure the following items:
@@ -40,12 +41,14 @@ PT = "port"
 AE = "aet"
 PH = "physicians"
 
+nwc = "/usr/bin/network_reconfigurator"
 cdpwconfig = "/code_dark/config"
 jsonfile = cdpwconfig + "/" + "configurator.json"
 fontfamily = 'Times'
 fontsize = 12
 fontstring = fontfamily + ' ' + str(fontsize)
 boxsize = 5
+dryrun = False
 
 """ Argument Parsing """
 
@@ -56,6 +59,11 @@ args = vars(parser.parse_args())
 
 if args['json']:
     jsonfile=args['json']
+
+if not path.exists(nwc):
+    print("no such file", nwc, "so converting to dryrun")
+    dryrun = True
+
 
 """ Data handlers """
 def save_n_exit():
@@ -109,33 +117,63 @@ def save_n_exit():
             return
     """ Json configuration items """
     """ Validate IP address """
-    addrmask = ip_entry.get()
+    addrmask = ip_entry.get().strip()
+    # Did anything change?
     if addrmask != json_data[NW][AM]:
-        # Check validity of addrmask
-        if addrmask != "system" and addrmask != "":
+        # An empty entry is invalid
+        if addrmask == "":
+            messagebox.showerror("Error", "empty entry")
+            return
+        # addrmask can either be "system" or a IP/CIDR pair
+        achange = False
+        if addrmask != "system":
+            if "/" not in addrmask:
+                messagebox.showerror("Error", "missing / for CIDR field delimiter")
+                return
+            splita = addrmask.split('/')
+            addr = splita[0]
+            cidr = splita[1]
             try:
-                ip = ipaddress.ip_network(addrmask)
+                ip = ipaddress.ip_network(addr)
             except ValueError:
-                messagebox.showerror("Error", "Invalid Nework Address/CIDR combo")
+                messagebox.showerror("Error", "Invalid IPv4 Nework Address")
                 return
             except e:
                 print(e)
                 messagebox.showerror("Error", "Unknown exception in validating network address/cidr")
                 return
-
-        # Let network_reconfigurator decide whether anything needs to actually change each time.
-        nm = addrmask
-        if nm == "":
-            nm = "dhcp"
-        try:
-            result = subprocess.run(["/usr/bin/sudo", "-n", "/usr/bin/network_reconfigurator", nm], capture_output=True, text=True)
-            if result.returncode != 0:
-                messagebox.showerror("Error Result", result.stderr)
+            if not cidr.isdigit():
+                messagebox.showerror("Error", "CIDR is not a valid number")
                 return
-        except subprocess.CalledProcessError as e:
-            messagebox.showerror("System Error", e.output)
-        json_data[NW][AM] = addrmask
-        json_changed = True
+            icidr = int(cidr)
+            if icidr < 1 or icidr > 32:
+                messagebox.showerror("Error", "CIDR " + cidr +  " is out of range")
+                return
+            achange = True
+            if json_data[NW][AM] != addrmask:
+                achange = True
+        else:
+            if json_data[NW][AM] != "system":
+                achange = True
+        if achange:
+            # Let network_reconfigurator decide whether anything needs to actually change each time.
+            nm = addrmask
+            if nm == "system":
+                nm = "dhcp"
+            if dryrun == False:
+                print("will run:", nwc, nm)
+                try:
+                    result = subprocess.run(["/usr/bin/sudo", "-n", nwc, nm], capture_output=True, text=True)
+                    if result.returncode != 0:
+                        messagebox.showerror("Error Result", result.stderr)
+                        return
+                except subprocess.CalledProcessError as e:
+                    messagebox.showerror("System Error", e.output)
+                    return
+            else:
+                print("dryrun- will NOT run:", nwc, nm)
+            json_data[NW][AM] = addrmask
+            json_changed = True
 
     port = port_entry.get()
     if json_data[DC][PT] != port:

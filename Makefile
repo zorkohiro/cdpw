@@ -1,12 +1,12 @@
 #
 # Top makefile for kp-report
 #
-MAJORV  ?= 0
-MINORV  ?= 9
-MICROV  ?= 8
+MAJORV  ?= 1
+MINORV  ?= 0
+RLEASE  ?= Alpha-1.0
 BUILDV  ?= -1
 BASE    := kp-report
-RELEASE := $(MAJORV).$(MINORV).$(MICROV)${BUILDV}
+RELEASE := $(MAJORV).$(MINORV)-$(RLEASE)${BUILDV}
 PKGNAME := $(BASE)-$(RELEASE)
 INSTALL_ROOT = $(CURDIR)/$(PKGNAME)
 

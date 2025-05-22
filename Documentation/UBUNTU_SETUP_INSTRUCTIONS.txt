@@ -64,9 +64,9 @@ Search for Privacy & Security
  Set under Diagnostics:
 	+ Send error reports to Canonical to NEVER
 
- 
+Fire up a Kconsole and pin it to the task bar
 
-Fire up a Kconsole and pin it to the task bar:
+Right click on Desktop and select under arranged 'Keep arranged'.
 
 #
 # Set background to plain gray
@@ -78,7 +78,6 @@ gsettings set org.gnome.desktop.background primary-color gray
 # Disable automatic updates && upgrades
 #
 sudo dpkg-reconfigure -plow unattended-upgrades
-sudo systemctl disable apt-daily.service apt-daily-upgrade.service
 sudo systemctl disable apt-daily.timer apt-daily-upgrade.timer
 sudo apt remove --purge -y unattended-upgrades
 gsettings set com.ubuntu.update-notifier no-show-notifications true
@@ -88,14 +87,10 @@ gsettings set com.ubuntu.update-notifier no-show-notifications true
 
 Remove crap buttons from bookmark bar
 Settings/General
- Check open previous windows and tabs
  Unclick "Open links in new tabs instead of new windows"
 Settings/Home
  Set both Homepage and new tabs as blank page
  Uncheck Shortcuts Recommended Stories 
-
-Enter “about:config” in the address search bar
-Type “full” in the search bar, and toggle “full-screen-api.enabled” to “false”:
 
 Enter http://localhost:8042 in chrome and bookmark it. You should
 have connected with the running orthanc server.
@@ -113,4 +108,14 @@ This will be a 'apt add ./*.deb' action.
 
 Currently the is the 1010_upgrade.tar bundle.
 
+5. Install gdm-settings and set up new login screen with label
 
+Get a Kconsole
+
+sudo apt install gdm-settings libglib2.0-dev-bin
+
+Look under the Apps panel for the GDM-SETTINGS icon and fire it up.
+
+Under Login Screen add /usr/lib/kp-report/code_dark_label_alpha*.gif as the image
+Under Appearance change type to image and add /usr/lib/kp-report/KaiserRedSmall.png as the image.
+Hit the apply Button.

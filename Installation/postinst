@@ -10,13 +10,6 @@ if [[ -d /home/orthanc/Desktop ]]; then
   ln -s $i $n
   echo $n >> /usr/lib/kp-report/idoc.txt
  done
-
- #
- # Add direct path to configurator
- #
- rm -f /home/orthanc/Desktop/code_dark_configurator
- ln -s /usr/bin/code_dark_configurator /home/orthanc/Desktop/code_dark_configurator
- echo /home/orthanc/Desktop/code_dark_configurator >> /usr/lib/kp-report/idoc.txt
 fi 
 
 #
