@@ -10,6 +10,12 @@ if [[ -d /home/orthanc/Desktop ]]; then
   ln -s $i $n
   echo $n >> /usr/lib/kp-report/idoc.txt
  done
+ # XX: Disabled for now
+ # Add the configurator desktop entry
+ #
+ #cp /usr/lib/kp-report/code_dark_configurator.desktop /home/orthanc/Desktop
+ #chown orthanc:orthanc /home/orthanc/Desktop/code_dark_configurator.desktop
+ #gio set /home/orthanc/Desktop/code_dark_configurator.desktop metadata::trusted true
 fi 
 
 #

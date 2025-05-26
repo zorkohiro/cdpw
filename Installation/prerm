@@ -24,3 +24,4 @@ if [[ -f /usr/lib/kp-report/idoc.txt ]]; then
  done
  rm -f /usr/lib/kp-report/idoc.txt
 fi
+rm -f /home/orthanc/Desktop/code_dark_configurator.desktop

@@ -23,6 +23,7 @@ install:
 	cp images/* ${KPLIB}
 	for i in Templates/*.json; do install -D -m 555 $$i ${KPLIB}/$$i; done
 	install -D -m 600 configurator.json ${KPLIB}
+	install -D -m 640 code_dark_configurator.desktop ${KPLIB}
 	for i in $(DOCS); do cp ${DOCDIR}/$$i $(KPLIB)/$$i; done
 	mkdir -p -m 755 $(INSTALL_ROOT)/DEBIAN
 	sed -e "s,%VERSION%,$(RELEASE)," control > $(INSTALL_ROOT)/DEBIAN/control
