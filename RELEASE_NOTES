@@ -1,11 +1,17 @@
-Release 1.0-Alpha-1.0-1
+Release 1.0-Alpha-1.0-3
+
+Retrieve the lost entry to add code dark icon
+under applications now that we have not been
+able to figure out how to make it work under
+Desktop.
+
+Release 1.0-Alpha-1.0-2
 
 Switch release to new base installation with lock screen
 and different login screen with label.
 
 Fix code_dark_configurator networking setup.
 
-Release 0.9.8-1
 
 Don't make uuid a required argument to code_dark_rptgen
 until we actually will do something with it.
