@@ -1,5 +1,5 @@
-  Alpha 1.0 Notes
- Mon Jun  9 12:24:24 PM PDT 2025
+  Alpha 1.0 Notes, version 2
+ Mon Jun 16 05:40:12 PM PDT 2025
 
 
 This is the source repository for building kp-report which is
@@ -15,7 +15,7 @@ bootable USB key can be made from it. Instructions
 for making the key is also under Documentation.
 
 Code DARK PACS Workstation requires an additional
-USB storage device which is a secure ACORN device
+USB storage device which is a secure APRICORN device
 which has a key pad to unlock. This is for patient
 data storage. That needs to be formatted a
 specific way. Instructions under Documentation.
@@ -43,8 +43,8 @@ The entire package consists of the 3 main pieces:
 
    A Ubuntu 24.04 system loaded onto a USB key and
    then modified in certain specific ways to accommodate
-   the somewhat transient requirements of CDPW. Documetation
-   for instructions.
+   the somewhat transient requirements of CDPW.
+   See Documentation for instructions.
 
    The documentation will instruct you how to install to
    a USB key Ubuntu 24.04, take the kp-report package built
