@@ -1,5 +1,5 @@
-  Alpha 1.0 Notes, version 2
- Mon Jun 16 05:40:12 PM PDT 2025
+  Alpha 1.0 Notes, version 3
+ Thu Jun 19 08:40:58 AM PDT 2025
 
 
 This is the source repository for building kp-report which is
@@ -8,17 +8,18 @@ will run Orthanc for the Code Dark PACS Workstation project
 at Kaiser Northern California.
 
 Documentation over what Code Dark is may be found under
-the Documentation directory.
+the Documentation directory or other places as noted
+below.
 
 This source tree can be built under Ubuntu 24.04 and a
 bootable USB key can be made from it. Instructions
 for making the key is also under Documentation.
 
-Code DARK PACS Workstation requires an additional
-USB storage device which is a secure APRICORN device
-which has a key pad to unlock. This is for patient
-data storage. That needs to be formatted a
-specific way. Instructions under Documentation.
+Code DARK PACS Workstation requires an additional USB storage device
+which is a secure APRICORN device which has a key pad to unlock. This
+is for patient data storage. That needs to be formatted a specific way.
+Note that for debugging purposes any USB key with the correct formatting
+will do. Instructions in Documentation/CDW_DATA_KEY_CREATION_INSTRUCTIONS.txt.
 
 BUILD INSTRUCTIONS
 
@@ -34,10 +35,14 @@ The entire package consists of the 3 main pieces:
    You type 'make' in this directory and the output
    should be a .deb file in this directory.
 
- 2 Build modified kernel drivers for Barco adapters
-   <This documentation does not exist yet> the
-   output of this will be a tarball of .deb packages
-   for installing on the USB key Ubuntu system.
+ 2 Build modified kernel drivers for Barco adapters.
+   The output of this will be a tarball of .deb packages
+   for installing on the USB key Ubuntu system. See
+   kernel/README for minimal pointers as to how to do this.
+   I'm using 1010 as the ABI version you will need to
+   modify the release for so as to allow an easy upgrade
+   for the debian packages on a CDPW bootable key you
+   are creating (see next step).
 
  3 Ubuntu USB key
 
