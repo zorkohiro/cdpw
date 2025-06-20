@@ -102,11 +102,15 @@ have connected with the running orthanc server.
 #
 
 Upgrade the kernel packages to get the amdgpu driver fixes for multiple monitors.
-This is built by hand elsewhere out of scope of these instructions.
+See build instructions under kernel.
 
-This will be a 'apt add ./*.deb' action.
+The modules you are interested in capturing out of the entire build will be something like:
 
-Currently the is the 1010_upgrade.tar bundle.
+linux-modules-6.8.0-62-generic_6.8.0-62.1020_amd64.deb
+linux-image-unsigned-6.8.0-62-generic_6.8.0-62.1020_amd64.deb
+
+Get them onto the USB key you are building in /tmp and
+do 'sudo install linux-*.deb' on them and reboot.
 
 5. Install gdm-settings and set up new login screen with label
 

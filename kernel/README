@@ -9,3 +9,16 @@ easily automated at this time.
 
 The amdgpu.c gets inserted or the patch applied into the tree just before
 the build binary step.
+
+Supplements/modifications to instructions marked with '*':
+
+ *change directory into kernel in the checked out kp-report tree- use it as a build location.
+ <follow instructions from website for downloading kernel build packages and source)
+ ...
+ * vi debian.master/changelog <change version at top to, say, 1020)
+ ..
+ cd linux-6.8.0
+ ...
+ fakeroot debian/rules clean
+ *patch -p1 < ../amdgpu_drv.c.diff
+ fakeroot debian/rules binary
