@@ -5,7 +5,7 @@ ifeq ($(INSTALL_ROOT),)
 $(error INSTALL_ROOT not set)
 endif
 
-BINS    := spawn_editor CheckOrthancDataMount CDPW_Configure restart_orthanc code_dark_rptgen code_dark_configurator GetModality network_reconfigurator
+BINS    := spawn_editor CheckOrthancDataMount CDPW_Configure restart_orthanc code_dark_rptgen code_dark_configurator GetModality orthanc_reconfigure
 
 DOCS	:= Code_Dark_PACS_Workstion_Configuration_Notes.pdf What_is_a_Code_Dark_PACS_Workstation.pdf
 DOCDIR	:= $(CURDIR)/../Documentation
@@ -26,6 +26,7 @@ install:
 	install -D -m 640 code_dark_configurator.desktop ${KPLIB}
 	for i in $(DOCS); do cp ${DOCDIR}/$$i $(KPLIB)/$$i; done
 	mkdir -p -m 755 $(INSTALL_ROOT)/DEBIAN
+	echo $(RELEASE) > ${KPLIB}/version
 	sed -e "s,%VERSION%,$(RELEASE)," control > $(INSTALL_ROOT)/DEBIAN/control
 	cp copyright preinst postinst prerm postrm ${INSTALL_ROOT}/DEBIAN
 

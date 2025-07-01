@@ -1,39 +1,25 @@
 #!/bin/bash
 
-CFG=/code_dark/config/configurator.json
 ORT=/etc/orthanc/orthanc.json
-LOG=/tmp/CDPW.log
+LOG=/code_dark/logs/CDPW.log
 touch ${LOG} >/dev/null 2>&1 || LOG=/tmp/CDPW.log
 echo CDPW_Configure starting on `date` >> $LOG
 
+changed="no"
+
 #
-# Check for configuration database
-# and make changes based upon what
-# we find in it.
+# Change database directory to code_dark- this
+# is done at the very first startup after
+# installing kp-report- this saves a copy
+# of the orthanc.json config which gets
+# restored if we remove the kp-report package.
 #
-changed=no
-if [[ -f $CFG ]]; then
- port=$(jq -r .dicom.port 2> /dev/null < $CFG)
- if [[ "$port" != "null" ]]; then
-  DicomPort=$(grep 'DicomPort" :' /etc/orthanc/orthanc.json |sed -e 's/,//' -e 's/ //g' | awk -F: ' { print $2 }')
-  if [[ $port != $DicomPort ]]; then
-   echo Changing Dicom port from $DicomPort to $port >> $LOG
-   sed -i -e "/DicomPort/c\\ \"DicomPort\" : ${port}," ${ORT}
-   changed=yes
-  fi
- fi
- aet=$(jq -r .dicom.aet 2> /dev/null < $CFG)
- if [[ "$aet" != "null" ]]; then
-  DicomAet=$(grep 'DicomAet" :'  /etc/orthanc/orthanc.json  | sed -e 's/"//g' -e 's/ //g' -e 's/,//g'| awk -F: ' { print $2 }')
-  if [[ $aet != $DicomAet ]]; then
-   echo Changing Dicom AET from $DicomAet to $aet >> $LOG
-   sed -i -e "/DicomAet\" :/c\\ \"DicomAet\" : \"${aet}\"," ${ORT}
-   changed=yes
-  fi
- fi
-fi
-#
-# Change database directory to code_dark
+# Note that DicomPort and DicomAet may also
+# be changed by the code_dark_configurator
+# tool. That change mechanism does no save
+# of the configuration and the removal
+# of kp-report will also restore DicomPort
+# and DicomAet to the default.
 #
 grep -q /var/lib/orthanc/db-v6 ${ORT}
 if [[ $? -eq 0 ]]; then
@@ -51,5 +37,5 @@ fi
 if [[ $changed == "yes" ]]; then
  echo restarting orthanc >> $LOG
  systemctl daemon-reload
- systemctl restart orthanc >> $LOG 2>&1
+ sudo -n /usr/bin/restart_orthanc >> $LOG 2>&1
 fi

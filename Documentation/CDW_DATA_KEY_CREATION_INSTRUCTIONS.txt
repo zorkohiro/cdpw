@@ -26,3 +26,48 @@ level of the newly formatted volume:
   reports
   config
   database
+
+=====================================================================
+Alternate instructions for linux- caution! No seatbelts! Command
+line
+
+1. Requirements
+
+A 2GB or better USB device- USB 3.1 or newer.
+A PC running any recent linux distro.
+
+2. Format
+
+ A. Get a Command line window- Konsole, e.g.
+ B. Install USB key.
+ C. Find the device path- dmesg or sudo dmesg and you can get the sdX number of the just attached drive, e.g. /dev/sdb
+ D. Clean up USB key- if this isn't a fresh key and has left over stuff, you'll have to delete all partitions to clean
+ things up. Warning: this might be that you've selected the wrong drive and are about to saw off the branch you are
+ sitting on. Best to use a completely fresh one, but if you have to clean things up use, e.g. for '/dev/sdb' being
+ the newly attached drive:
+
+   sudo wipefs -a -f /dev/sdb
+
+ Any chit-chat about being unable to update partition tables, pull and reinsert the key or pull, reboot and reinsert
+ the key.
+
+ Look in /proc/partitions to see whether there are any sub-partitions on the inserted drive- for a fresh key there
+ shouldn't be but some wankmar USB manufacturers will put a DOS label and partition on the device.
+
+ D. run:
+	+ sudo fdisk /dev/sdb
+	+ To the Command prompt enter: o
+	+ To the Command prompt enter: n
+	+ To the question about primary or extended enter: p
+	+ To the question about which partition (1-4) enter: 1
+	+ Hit return for first and last sector- this should cover most of the disk
+	+ If there is any complaint about old signatures, say Y to removing old signatures
+	+ To the Command prompt enter: w
+
+	This should leave back at a shell prompt
+ E. Run: sudo mkfs.ntfs -L CODE_DARK -f /dev/sdb1
+ F. Run: sudo mount /dev/sdb1 /mnt
+ G. Run: mkdir /mnt/{logs,reports,config,database}
+ H. Run: sudo umount /mnt
+
+This should leave you with a fresh data storage key.

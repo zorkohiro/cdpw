@@ -19,4 +19,4 @@ install:	all
 	cd Build && make install
 
 clean:
-	@rm -rf Build
+	rm -rf Build

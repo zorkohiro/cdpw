@@ -1,0 +1,46 @@
+#!/bin/bash
+
+#
+# Reconfigure Orthanc parameters in orthanc's json config and restart orthanc.
+#
+# We pull values from our own json database. Those are updated via the code_dark_configurator
+# tool.
+#
+
+CFG=/code_dark/config/configurator.json
+ORT=/etc/orthanc/orthanc.json
+LOG=/code_dark/logs/orthanc_reconfigure.log
+touch ${LOG} >/dev/null 2>&1 || LOG=/tmp/orthanc_reconfigure.log
+echo orthanc_reconfigure starting on `date` >> $LOG
+
+#
+# Check for configuration database
+# and make changes based upon what
+# we find in it.
+#
+changed=no
+if [[ -f $CFG ]]; then
+ port=$(jq -r .dicom.port 2> /dev/null < $CFG)
+ if [[ "$port" != "null" ]]; then
+  DicomPort=$(grep 'DicomPort" :' ${ORT} |sed -e 's/,//' -e 's/ //g' | awk -F: ' { print $2 }')
+  if [[ $port != $DicomPort ]]; then
+   echo Changing Dicom port from $DicomPort to $port >> $LOG
+   sed -i -e "/DicomPort/c\\ \"DicomPort\" : ${port}," ${ORT}
+   changed=yes
+  fi
+ fi
+ aet=$(jq -r .dicom.aet 2> /dev/null < $CFG)
+ if [[ "$aet" != "null" ]]; then
+  DicomAet=$(grep 'DicomAet" :' ${ORT}  | sed -e 's/"//g' -e 's/ //g' -e 's/,//g'| awk -F: ' { print $2 }')
+  if [[ $aet != $DicomAet ]]; then
+   echo Changing Dicom AET from $DicomAet to $aet >> $LOG
+   sed -i -e "/DicomAet\" :/c\\ \"DicomAet\" : \"${aet}\"," ${ORT}
+   changed=yes
+  fi
+ fi
+fi
+
+if [[ $changed == "yes" ]]; then
+ echo restarting orthanc >> $LOG
+ sudo -n /usr/bin/restart_orthanc >> $LOG 2>&1
+fi

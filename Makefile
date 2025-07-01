@@ -4,7 +4,7 @@
 MAJORV  ?= 1
 MINORV  ?= 0
 RLEASE  ?= Alpha-1.0
-BUILDV  ?= -4
+BUILDV  ?= -5
 BASE    := kp-report
 RELEASE := $(MAJORV).$(MINORV)-$(RLEASE)${BUILDV}
 PKGNAME := $(BASE)-$(RELEASE)
@@ -24,7 +24,8 @@ sub_build:
 	$(MAKE) -C OHIFPlugin install
 
 clean:
-	@rm -rf $(BASE)-*
-	$(MAKE) -C orthanc-packages INSTALL_ROOT=$(INSTALL_ROOT) clean
+	$(MAKE) -C ReportPlugin clean
+	$(MAKE) -C OHIFPlugin clean
+	rm -rf $(BASE)-*
 
 .PHONY: all sub_build clean

@@ -1,30 +1,44 @@
-Mar 9 2025
+Tue Jul  1 10:35:51 AM PDT 2025
 
-0. Required Hardware
+0. Required Hardware and Environment
 
 Get a  8GB USB flash drive to install the ubuntu install image on.
-Get a 16GB USB Key to become the target of the install. 
 
-1. Copy Ubuntu 24.04.2 from the iso image:
+Get a 16GB USB Key to become the target of the install. You
+can certainly user a larger USB Key for the target of the install-
+but this just makes it more painful when copying the gold master
+to multiple keys for distribution.
+
+You will need to be connected to the internet to perform the following
+steps- but note that some careful steps need to be followed so as to
+not make randomly different base images due to the aggressive attempts
+by the ubuntu installer to update the latest sets of images.
+
+1. Copy Ubuntu 24.04.2 from the iso image, e.g.:
 
  https://nnenix.mm.fcix.net/ubuntu-releases/24.04.2/ubuntu-24.04.2-desktop-amd64.iso
  sha256sum: d7fe3d6a0419667d2f8eff12796996328daa2d4f90cd9f87aa9371b362f987bf
 
-Create an install USB key from this with dd on a linux system. Boot it on
-a system with no active network connection (important!).
+Create an install USB key from this with dd on a linux system or rufus on a Windows system.
+Boot it on any reasonable x86_64 system.
 
 Select "Do not connect to the internet"
+Skip any 'update' installer questions.
+
+Set the timezone you are in. If you booted
+up with an active internet connection it
+should have made a good guess already.
 
 Select 'Saruman B Orthanc' as the name. Select 'orthanc' as the name of the system.
 Select 'orthanc' as the user, 'orthanc' as the password.
 Select the defaults and erase the whole disk and install it.
 Keep selection to require user password to log in.
 
-Reboot to installed USB key when the install is done.
+Reboot to installed USB key when the installation is done.
 
-While rebooting, reconnect network cable.
-
-Attach CODE_DARK USB storage (and unlock it) after it appears the system is almost up.
+Attach CODE_DARK USB storage key (and unlock it if its an Apricon USB encrypted drive)
+after it appears the system is almost up. See CDW_DATA_KEY_CREATION_INSTRUCTIONS.txt
+as to how to create this device.
 
 2. Install our user level packages
 
@@ -78,9 +92,10 @@ gsettings set org.gnome.desktop.background primary-color gray
 # Disable automatic updates && upgrades
 #
 sudo dpkg-reconfigure -plow unattended-upgrades
-sudo systemctl disable apt-daily.timer apt-daily-upgrade.timer
+sudo systemctl disable apt-daily.timer
+sudo systemctl disable apt-daily-upgrade.timer
 sudo apt remove --purge -y unattended-upgrades
-gsettings set com.ubuntu.update-notifier no-show-notifications true
+sudo apt remove --purge -y update-notifier
 
 
 3. Configure the installed firefox
@@ -91,6 +106,12 @@ Settings/General
 Settings/Home
  Set both Homepage and new tabs as blank page
  Uncheck Shortcuts Recommended Stories 
+
+Enter about:config in address bar
+Say yes to continuing and taking the risk
+In the search bar enter sessionstore.
+For browser.sessionstore.resume_from_crash- set to false.
+For browser.sessionstore.max_resumed_crashes- set to 0.
 
 Enter http://localhost:8042 in chrome and bookmark it. You should
 have connected with the running orthanc server.
@@ -109,6 +130,14 @@ The modules you are interested in capturing out of the entire build will be some
 linux-modules-6.8.0-62-generic_6.8.0-62.1020_amd64.deb
 linux-image-unsigned-6.8.0-62-generic_6.8.0-62.1020_amd64.deb
 
+Fetch the updated kernel and drivers:
+
+ mkdir -p /tmp/kupdate
+ cd /tmp/kupdate
+ wget https://feralsw.com/cdw/1010_upgrade.tar
+ tar xf 1010_upgrade.tar
+ sudo apt install -y /tmp/kupdate/*.deb
+
 Get them onto the USB key you are building in /tmp and
 do 'sudo install linux-*.deb' on them and reboot.
 
@@ -122,4 +151,4 @@ Look under the Apps panel for the GDM-SETTINGS icon and fire it up.
 
 Under Login Screen add /usr/lib/kp-report/code_dark_label_alpha*.gif as the image
 Under Appearance change type to image and add /usr/lib/kp-report/KaiserRedSmall.png as the image.
-Hit the apply Button.
+Hit the apply Button. You will likely have to enter the password for user orthanc.

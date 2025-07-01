@@ -8,17 +8,11 @@ from tkinter import messagebox
 import argparse
 import datetime
 import json
-import ipaddress
 import subprocess
 from os import path
 
 """
 We need to be able to configure the following items:
-
- Networking
-  Static IP Address/CIDR for connections from Modalities
-  Empty means "use dhcp"
-  "system" means do nothing- let regular system networking configuration do its job
 
  DICOM
   Static Orthanc Port number to receive DICOM data
@@ -27,28 +21,24 @@ We need to be able to configure the following items:
  Physicians
 
   Display a list of physicians who are authorized to sign reports.
-  The list can be edited and while in the edit box is a list of
+  The list can be edited and in the edit box is a list of
   names separated by commas.
 
   NB: This mean no commas are allowed in physician names!
 
 """
 """ Variables and Constants """
-NW = "networking"
-AM = "addrmask"
 DC = "dicom"
 PT = "port"
 AE = "aet"
 PH = "physicians"
 
-nwc = "/usr/bin/network_reconfigurator"
 cdpwconfig = "/code_dark/config"
 jsonfile = cdpwconfig + "/" + "configurator.json"
 fontfamily = 'Times'
 fontsize = 12
 fontstring = fontfamily + ' ' + str(fontsize)
 boxsize = 5
-dryrun = False
 
 """ Argument Parsing """
 
@@ -60,14 +50,8 @@ args = vars(parser.parse_args())
 if args['json']:
     jsonfile=args['json']
 
-if not path.exists(nwc):
-    print("no such file", nwc, "so converting to dryrun")
-    dryrun = True
-
-
 """ Data handlers """
 def save_n_exit():
-    json_changed = False
     """ Non-json configuration items """
     """ Validate Entered Time, if any """
     newtime = time_entry.get()
@@ -108,82 +92,27 @@ def save_n_exit():
         try:
             result = subprocess.run(["/usr/bin/sudo", "-n", "/usr/bin/date", newtime], capture_output=True, text=True)
             if result.returncode != 0:
-                messagebox.showerror("Error", result.stderr)
+                messagebox.showerror("Error", "Setting new time: " + result.stderr)
                 time_entry.set(orig_time)
                 return
         except subprocess.CalledProcessError as e:
-            messagebox.showerror("Error", e.output)
+            messagebox.showerror("Error", "Invoking process to set new time: " + e.output)
             time_entry.set(orig_time)
             return
     """ Json configuration items """
-    """ Validate IP address """
-    addrmask = ip_entry.get().strip()
-    # Did anything change?
-    if addrmask != json_data[NW][AM]:
-        # An empty entry is invalid
-        if addrmask == "":
-            messagebox.showerror("Error", "empty entry")
-            return
-        # addrmask can either be "system" or a IP/CIDR pair
-        achange = False
-        if addrmask != "system":
-            if "/" not in addrmask:
-                messagebox.showerror("Error", "missing / for CIDR field delimiter")
-                return
-            splita = addrmask.split('/')
-            addr = splita[0]
-            cidr = splita[1]
-            try:
-                ip = ipaddress.ip_network(addr)
-            except ValueError:
-                messagebox.showerror("Error", "Invalid IPv4 Nework Address")
-                return
-            except e:
-                print(e)
-                messagebox.showerror("Error", "Unknown exception in validating network address/cidr")
-                return
-            if not cidr.isdigit():
-                messagebox.showerror("Error", "CIDR is not a valid number")
-                return
-            icidr = int(cidr)
-            if icidr < 1 or icidr > 32:
-                messagebox.showerror("Error", "CIDR " + cidr +  " is out of range")
-                return
-            achange = True
-            if json_data[NW][AM] != addrmask:
-                achange = True
-        else:
-            if json_data[NW][AM] != "system":
-                achange = True
-        if achange:
-            # Let network_reconfigurator decide whether anything needs to actually change each time.
-            nm = addrmask
-            if nm == "system":
-                nm = "dhcp"
-            if dryrun == False:
-                print("will run:", nwc, nm)
-                try:
-                    result = subprocess.run(["/usr/bin/sudo", "-n", nwc, nm], capture_output=True, text=True)
-                    if result.returncode != 0:
-                        messagebox.showerror("Error Result", result.stderr)
-                        return
-                except subprocess.CalledProcessError as e:
-                    messagebox.showerror("System Error", e.output)
-                    return
-            else:
-                print("dryrun- will NOT run:", nwc, nm)
-            json_data[NW][AM] = addrmask
-            json_changed = True
-
+    json_changed = False
+    ocfg_changed = False
     port = port_entry.get()
     if json_data[DC][PT] != port:
         json_data[DC][PT] = port
         json_changed = True
+        ocfg_changed = True
 
     aet = aet_entry.get()
     if json_data[DC][AE] != aet:
         json_data[DC][AE] = aet
         json_changed = True
+        ocfg_changed = True
 
     pboxstr = pbox.get("1.0", "end-1c")
     newp = [x.strip() for x in pboxstr.split(",")]
@@ -191,11 +120,22 @@ def save_n_exit():
         json_data[PH] = newp
         json_changed = True
 
+    if ocfg_changed:
+        try:
+            result = subprocess.run(["/usr/bin/orthanc_reconfigure"], capture_output=True, text=True)
+            if result.returncode != 0:
+                messagebox.showerror("Error reconfiguring Orthanc Parameters", result.stderr)
+                return
+        except subprocess.CalledProcessError as e:
+            messagebox.showerror("Error", e.output)
+            return
+
     if json_changed:
         with open(jsonfile, "w") as ofile:
             json.dump(json_data, ofile, indent=2)
             print("", file=ofile)
         messagebox.showinfo("Saved", "Persistent Information Changed. Reboot to Activate")
+
     exit(0)
 
 """ TK functions """
@@ -257,11 +197,6 @@ now = datetime.datetime.now()
 orig_time = now.strftime("%m%d%H%M%y")
 time_entry, rowvar = add_label_entry("Set New Time (MMDDhhmmYY)", orig_time, rowvar, 10)
 rowvar = add_label("(MM = month, DD = day, hh = hour, mm = minute, YY = year)", rowvar, 0)
-rowvar = rowvar + 1
-rowvar = add_label("============================================================", rowvar, 0)
-
-rowvar = add_section_label("NETWORKING (enter 'system' to use system configuration)", rowvar)
-ip_entry, rowvar = add_label_entry("IP Address/CIDR (e.g. 10.0.0.12/24)", json_data[NW][AM], rowvar, 16)
 rowvar = rowvar + 1
 rowvar = add_label("============================================================", rowvar, 0)
 

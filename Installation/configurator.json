@@ -1,8 +1,5 @@
 {
-  "version" : 2,
-  "networking" : {
-    "addrmask" : "system"
-  },
+  "version" : 3,
   "dicom" : {
      "port" : "4242",
      "aet" : "ORTHANC"

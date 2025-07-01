@@ -1,4 +1,18 @@
+Release 1.0-Alpha-1.0-5
+
+ Document removing of automatic page recovery on system restart in firefox.
+ This never works correctly and just clutters things up.
+
+ Remove networking from configurator tool. We will have people use standard
+ Gnome desktop tools for network configuration.
+
+ Improve setup instructions to where to get the current latest kernel updates
+ from feralsw.com.
+
+ Further cleanups to get rid of the software update notifier.
+
 Release 1.0-Alpha-1.0-4
+
  Correct some more documentation.
 
 Release 1.0-Alpha-1.0-3
