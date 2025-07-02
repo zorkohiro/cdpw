@@ -3,6 +3,10 @@ Release 1.0-Alpha-1.0-5
  Document removing of automatic page recovery on system restart in firefox.
  This never works correctly and just clutters things up.
 
+ Errata: This isn't completely working at this point so you will get
+ on startup. The notes are correct but the image wasn't made correctly
+ with this respect.
+
  Remove networking from configurator tool. We will have people use standard
  Gnome desktop tools for network configuration.
 
