@@ -1,10 +1,8 @@
-Sun Mar  9 05:29:14 PM PDT 2025
-Version 0.3
+Thu Jul  3 06:40:25 AM PDT 2025
+Version 0.4
 
 This a quick checklist to check a Code Dark release for sanity.
 Expect this to change and expand relatively quickly.
-
-The base release is no Ubuntu 24.04.2- no longer Kubuntu.
 
 1. Booting
 
@@ -34,18 +32,12 @@ the search bar on the upper left search for 'clock' and you should see
 a Dat & Time for change date & time. You should be able to set time
 here.
 
-3. Network
-
-Do you get a network address assigned automatically? Hovering over
-the little rj45 icon should be able to tell you whether networking
-has been enabled and an IP address assigned.
-
-4. Basic Orthanc Server Access
+3. Basic Orthanc Server Access
 
 Firing up the browser and pointing it toward  http://localhost:8042 should get you
 the Orthanc main screeen with no privacy complaints etc.
 
-6. Multiple extended monitors and monitor resolution
+4. Multiple extended monitors and monitor resolution
 
 Attaching more than one monitor (preferably before booting) should yield
 multiple separately accessible screens. The monitors should be displaying
@@ -60,7 +52,7 @@ Please report any artifacts like the monitor(s) freezing when moving
 windows around across edge boundarie, or any freezing of obviously
 incoreect video artifacts.
 
-6. Importing Studies
+5. Importing Studies
 
 Given that you know the IP address of the Code Dark workstation,
 you can take that plus the default Orthanc Dicom Port of 4242
