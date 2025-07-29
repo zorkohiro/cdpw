@@ -1,0 +1,5 @@
+The latest label was created using:
+
+ convert -background lightblue -fill blue -font Bookman-DemiItalic -pointsize 72 label:'Code Dark PACS Workstation, Beta 1.0' label.gif
+
+imagemagick has to be installed

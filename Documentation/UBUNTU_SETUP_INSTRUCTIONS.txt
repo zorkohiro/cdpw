@@ -1,4 +1,4 @@
-Tue Jul  1 10:35:51 AM PDT 2025
+Tue Jul 29 03:57:07 PM PDT 2025
 
 0. Required Hardware and Environment
 
@@ -149,6 +149,8 @@ sudo apt install gdm-settings libglib2.0-dev-bin
 
 Look under the Apps panel for the GDM-SETTINGS icon and fire it up.
 
-Under Login Screen add /usr/lib/kp-report/code_dark_label_alpha*.gif as the image
+Under Login Screen add /usr/lib/kp-report/code_dark_label_*.gif as the image.
+You'll have to use ls to see what the latest label is.
+
 Under Appearance change type to image and add /usr/lib/kp-report/KaiserRedSmall.png as the image.
 Hit the apply Button. You will likely have to enter the password for user orthanc.
