@@ -2,8 +2,8 @@
 # Top makefile for kp-report
 #
 MAJORV  ?= 1
-MINORV  ?= 0
-RLEASE  ?= Beta-1.0
+MINORV  ?= 1
+RLEASE  ?= Dev-1.0
 BUILDV  ?= -1
 BASE    := kp-report
 RELEASE := $(MAJORV).$(MINORV)-$(RLEASE)${BUILDV}
