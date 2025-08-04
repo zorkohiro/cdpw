@@ -170,17 +170,17 @@ if uuid == "":
 # Items marked with '*' come from the DiCom object and are interpolated
 # into the json data at first edit by spawn_editor.
 #
-#  "version"    : This api's version # (1)
-#  "mrn"        : Medical Record Number*
-#  "session"    : Accession Number*
-#  "uuid"		: Orthanc Study UUID*
-#  "date"		: Date study was performed*
-#  "description": Description of Study*
-#  "studyid"	: Study Identifier*
-#  "doctor"		: Requesting Physiscian*
-#  "signed"     : boolean about whether the report has been signed (and is thus read-only)
-#  "signer"     : who signed the report
-#  "template"   : self-referential template name to internally identify in the JSON data the template json file name
+#  "version"              : This api's version # (2)
+#  "mrn"                  : Medical Record Number*
+#  "session"              : Accession Number*
+#  "uuid"                 : Orthanc Study UUID*
+#  "date"                 : Date study was performed*
+#  "study_description"    : Description of Study*
+#  "studyid"              : Study Identifier*
+#  "doctor"               : Requesting Physiscian*
+#  "signed"               : boolean about whether the report has been signed (and is thus read-only)
+#  "signer"               : who signed the report
+#  "template"             : self-referential template name to internally identify in the JSON data the template json file name
 #
 # 2. Parameters (optional section)
 #
@@ -354,7 +354,7 @@ def add_label_menu(str, options, initial, row, col, w, ew):
 # Root window creation
 #
 root=tk.Tk()
-root.title(json_data["title"]  + " MRN: " + mrn + " SESSION: " + session + "UUID: " + uuid)
+root.title(json_data["title")
 
 #
 # Need this to make sure Entry fields abut labels,
@@ -368,12 +368,6 @@ root.grid_columnconfigure(1, weight=1)
 # using data read in as existing values.
 #
 
-
-# Add title to top as well as report bar.
-
-title = tk.Label(root, text=json_data["title"], relief=tk.RAISED, font=(fontsize + 4))
-title.grid(sticky=tk.W, row=0, column=1, columnspan=2, rowspan=2)
-rowvar = rowvar + 2
 
 # (Optional) Parameter Section
 try:
@@ -526,7 +520,6 @@ def save_data(jd):
 
     """ Try and fetch the signing physician entry and update """
     try:
-        print("try and get doctor object")
         rd = rdobj.get()
         if rd:
             json_data["signer"] = rd
