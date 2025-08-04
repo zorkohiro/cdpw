@@ -87,47 +87,24 @@ function CreateReport(resourceId)
   console.log("resource ID is " + resourceId);
   b.insertBefore($('#study-delete').parent().parent());
   b.click(function() {
-    var session, mrn, studyid;
+    var studyid;
     $.ajax({
       url: '../studies/' + resourceId + '?full',
       dataType: 'json',
       async: false,
       cache: false,
       success: function(study) {
-        var ACCESSION_NUMBER = '0008,0050';
-        var PATIENT_ID = '0010,0020';
-        for (let i in study.MainDicomTags) {
-          if (i == ACCESSION_NUMBER) {
-            session = study.MainDicomTags[i].Value;
-            break;
-          }
-        }
-        for (let i in study.PatientMainDicomTags) {
-          if (i == PATIENT_ID) {
-            mrn = study.PatientMainDicomTags[i].Value;
-            break;
-          }
-        }
-        console.log(study);
-        if (session && mrn) {
-          studyid = study.ID;
-          console.log("Study " + resourceId + ' has ACESSION_NUMBER ' + session + ' and PATIENT_ID ' + mrn);
-        } else if (!session && !mrn) {
-          alert("Study has no ACCESSION_NUMBER or PATIENT_ID defined");
-        } else if (!session) {
-          alert("Study has no ACCESSION_NUMBER defined");
-        } else if (!mrn) {
-          alert("Study has no PATIENT_ID defined");
-        }
+        studyid = study.ID;
+        console.log("Study " + resourceId);
       }
     }).done(function(){
-      if (session  && mrn) {
+      if (studyid) {
         ChooseTemplate(function(template_choice) {
             if (template_choice == '') {
               console.log("back from ChooseTemplate with no choice");
               return;
             }
-            var pdata = mrn + ":" + session + ":" + template_choice + ":" + resourceId;
+            var pdata = studyid + ":" + template_choice;
             $.ajax({
               url: '../kp-report/create',
               type: 'POST',

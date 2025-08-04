@@ -4,7 +4,7 @@
 MAJORV  ?= 1
 MINORV  ?= 1
 RLEASE  ?= Dev-1.0
-BUILDV  ?= -1
+BUILDV  ?= -2
 BASE    := kp-report
 RELEASE := $(MAJORV).$(MINORV)-$(RLEASE)${BUILDV}
 PKGNAME := $(BASE)-$(RELEASE)

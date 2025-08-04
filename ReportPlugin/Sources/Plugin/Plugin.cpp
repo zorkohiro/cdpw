@@ -151,7 +151,7 @@ static void fetch_templates(OrthancPluginRestOutput* output, const char* url, co
   }
 }
 
-static int spawn_editor(OrthancPluginContext* context, char *tmplt, char *mrn, char *session, char *uuid, char *emsgbuf) {
+static int spawn_editor(OrthancPluginContext* context, char *tmplt, char *uuid, char *emsgbuf) {
   pid_t pid = fork();
   if (pid < 0) {
     sprintf(emsgbuf, "fork failed: %s", strerror(errno));
@@ -168,7 +168,7 @@ static int spawn_editor(OrthancPluginContext* context, char *tmplt, char *mrn, c
     const char *hdr = strrchr(EDITOR, '/'); // Get last component in path for argv[0] setting
     if (hdr == NULL)
       hdr = "spawn_editor";
-    int rslt = execl(EDITOR, hdr, tmplt, mrn, session, uuid, NULL);
+    int rslt = execl(EDITOR, hdr, tmplt, uuid, NULL);
     if (rslt < 0) {
       char buffer[1024];
       sprintf(buffer, "exec failed: %s\n", strerror(errno));
@@ -197,23 +197,16 @@ static void create_report(OrthancPluginRestOutput* output, const char* url, cons
     snprintf(buffer, sizeof (buffer), "Post on URL [%s] with body [%s]", url, rqb);
     OrthancPluginLogWarning(context, buffer);
     const char *colon = ":";
-    char *mrn = strtok_r(rqb, colon, &sptr);
-    char *session = strtok_r(NULL, colon, &sptr);
+    char *uuid = strtok_r(rqb, colon, &sptr);
     char *json_tmplt = strtok_r(NULL, colon, &sptr);
-    char *uuid = strtok_r(NULL, colon, &sptr);
     bool failure = false;
-    if (mrn == NULL) {
+
+    if (uuid == NULL) {
       failure = true;
-      OrthancPluginLogWarning(context, "No discernible mrn passed");
-    } else if (session == NULL) {
-      failure = true;
-      OrthancPluginLogWarning(context, "No discernible session passed");
+      OrthancPluginLogWarning(context, "No discernible uuid passed");
     } else if (json_tmplt == NULL) {
       failure = true;
       OrthancPluginLogWarning(context, "No discernible template name passed");
-    } else if (uuid == NULL) {
-      failure = true;
-      OrthancPluginLogWarning(context, "No discernible uuid passed");
     }
     if (failure) {
       OrthancPluginSendHttpStatusCode(context, output, 400);
@@ -231,7 +224,7 @@ static void create_report(OrthancPluginRestOutput* output, const char* url, cons
     }
     // spawn_editor is responsible for tacking on any suffix to the template
     // that will identify which entry program to use
-    if (spawn_editor(context, jsonfile, mrn, session, uuid, buffer) < 0) {
+    if (spawn_editor(context, jsonfile, uuid, buffer) < 0) {
       OrthancPluginLogWarning(context, buffer);
       OrthancPluginSetHttpHeader(context, output, "Content-Type", "text/plain");
       OrthancPluginSendHttpStatus(context, output, 500, buffer, strlen(buffer));

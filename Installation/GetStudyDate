@@ -1,8 +1,14 @@
 #!/bin/bash
-monly=0
 #
 # Given a Study UUID, get the Study Date from the main dicom tags
 #
+# Usage:
+#
+#  GetStudyDate - get all study's dates and times
+#  GetStudyDate hash - get a single study's date and time
+#  GetStudyDate -r hash - get a single study's date and time and just print friendly time
+#
+monly=0
 if [[ $# -eq 0 ]]; then
  list=$(curl -s  http://localhost:8042/studies|jq -r '.[]')
 else
@@ -59,12 +65,20 @@ for entry in $list; do
  fi
  if [[ $monly -eq 0 ]]; then
   if [[ $STUDY_TIME =~ BAD*  || $STUDY_DATE =~ BAD* || $STUDY_TIME == NULL || $STUDY_DATE == NULL ]]; then
-   printf "%-45s %8s %14s\n" $STUDY_UUID $STUDY_DATE $STUDY_TIME
+   :
   else
-   printf "%-45s %8s %014.7f\n" $STUDY_UUID $STUDY_DATE $STUDY_TIME
+   strounded=$(printf "%06.0f" $STUDY_TIME)
+   hrs=${strounded:0:2}
+   min=${strounded:2:2}
+   sec=${strounded:4:2}
+   printf "%-45s %8s %2s:%2s:%2s %s\n" $STUDY_UUID $STUDY_DATE $hrs $min $sec "$(date -d"$STUDY_DATE ${hrs}:${min}:${sec}")"
   fi
  else
-  echo $STUDY_DATE $STUDY_TIME
+   strounded=$(printf "%06.0f" $STUDY_TIME)
+   hrs=${strounded:0:2}
+   min=${strounded:2:2}
+   sec=${strounded:4:2}
+   date -d"$STUDY_DATE ${hrs}:${min}:${sec}"
  fi
  ct=$((ct + 1))
 done

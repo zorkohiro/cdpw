@@ -1,7 +1,12 @@
 {
-  "version": 1,
+  "version": 2,
   "mrn": ,
   "session": ,
+  "uuid":,
+  "date":,
+  "description":,
+  "studyid":,
+  "doctor":,
   "signed": false,
   "signer": "", "signtime" : "",
   "template": "us_l_upper_extremity_veins",

@@ -48,7 +48,6 @@ fontsize = 12
 fontstring = fontfamily + ' ' + str(fontsize)
 boxsize = 3
 cbobj = {}
-uuid = ""
 
 pbobj = {}
 have_pseq = False
@@ -98,7 +97,6 @@ parser.add_argument("-j", "--json", help="Input json file", required=True)
 parser.add_argument("-R", "--report_dir", help="Where we fetch/save reports", default=report_dir)
 parser.add_argument("-C", "--configurator", help="Where we have the CDPW configuration file", default=configurator)
 parser.add_argument("-f", "--fontsize", help="Font Size (default 12)")
-parser.add_argument("-u", "--uuid", help="Orthanc Study UUID")
 
 args = vars(parser.parse_args())
 
@@ -112,8 +110,6 @@ if args['configurator']:
 if args['fontsize']:
     fontsize = int(args['fontsize'])
     fontstring = 'Time ' + args['fontsize']
-if args['uuid']:
-    uuid = args['uuid']
 #
 # Read in configurator data
 #
@@ -131,7 +127,7 @@ with open(jsonfile, "r") as infile:
 #
 
 version = json_data["version"]
-if version < 1:
+if version < 2:
     print("Version of JSON too low: " + str(version))
     exit(1)
 
@@ -150,6 +146,10 @@ session = json_data["session"]
 if session == "":
     session = "BOGUS5678"
 
+uuid = json_data["uuid"]
+if uuid == "":
+    uuid = "BOGUS9abc"
+
 
 
 #
@@ -167,9 +167,17 @@ if session == "":
 #
 # 1. Housekeeping items
 #   
+# Items marked with '*' come from the DiCom object and are interpolated
+# into the json data at first edit by spawn_editor.
+#
 #  "version"    : This api's version # (1)
-#  "mrn"        : Medical Record Number (passed from orthanc)
-#  "session"    : Accession Number (passed from orthanc)
+#  "mrn"        : Medical Record Number*
+#  "session"    : Accession Number*
+#  "uuid"		: Orthanc Study UUID*
+#  "date"		: Date study was performed*
+#  "description": Description of Study*
+#  "studyid"	: Study Identifier*
+#  "doctor"		: Requesting Physiscian*
 #  "signed"     : boolean about whether the report has been signed (and is thus read-only)
 #  "signer"     : who signed the report
 #  "template"   : self-referential template name to internally identify in the JSON data the template json file name
@@ -346,7 +354,7 @@ def add_label_menu(str, options, initial, row, col, w, ew):
 # Root window creation
 #
 root=tk.Tk()
-root.title(json_data["title"]  + " MRN: " + mrn + " SESSION: " + session)
+root.title(json_data["title"]  + " MRN: " + mrn + " SESSION: " + session + "UUID: " + uuid)
 
 #
 # Need this to make sure Entry fields abut labels,

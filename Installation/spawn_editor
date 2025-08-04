@@ -1,4 +1,9 @@
 #!/bin/bash
+#
+# Spawn the editor on the study UUID with the template passed, e.g.:
+#
+#  spawn_editor template_name uuid
+#
 export DISPLAY=:0
 export XDG_RUNTIME_DIR=/run/user/$UID
 export XAUTHORITY=$(ls ${XDG_RUNTIME_DIR}/.mutter*)
@@ -10,12 +15,10 @@ LOG=${CDB}/logs/spawn_editor.log
 
 echo $* on `date` >> $LOG 2>&1
 tpt=$1
-mrn="$2"
-ssn="$3"
-uui=$4
+uui=$2
 mkdir -p ${RPT} >> $LOG 2>&1
-inp=${TPD}/${tpt}.json
-fnm="${RPT}/study_${mrn}_${ssn}.json"
+inp="${TPD}/${tpt}.json"
+fnm="${RPT}/${uui}.json"
 prg=code_dark_rptgen
 
 if [[ ! -f "${fnm}" ]]; then
@@ -23,8 +26,30 @@ if [[ ! -f "${fnm}" ]]; then
   echo ${inp} does not exist >> $LOG
   exit 1
  fi
- # Initial copy needs mrn and session grafted in
- sed -e "s/\"mrn.*$/\"mrn\" : \"${mrn}\",/" -e "s/\"session.*$/\"session\" : \"${ssn}\",/" $inp > "$fnm" 2>> $LOG
+ #
+ # Initial copy needs some values grafted in
+ #
+ sdt=$(GetStudyDate -r $uui)
+ if [[ $sdt == "null" ]]; then sdt= ; fi
+ dsc=$(curl -s http://localhost:8042/studies/${uui} | jq -r .MainDicomTags.StudyDescription)
+ if [[ $dsc == "null" ]]; then dsc= ; fi
+ ssn=$(curl -s http://localhost:8042/studies/${uui} | jq -r .MainDicomTags.AccessionNumber)
+ if [[ $ssn == "null" ]]; then ssn= ; fi
+ mrn=$(curl -s http://localhost:8042/studies/${uui} | jq -r .PatientMainDicomTags.PatientID)
+ if [[ $mrn == "null" ]]; then mrn= ; fi
+ sid=$(curl -s http://localhost:8042/studies/${uui} | jq -r .PatientMainDicomTags.StudyID)
+ if [[ $sid == "null" ]]; then sid= ; fi
+ rqp=$(curl -s http://localhost:8042/studies/${uui} | jq -r .PatientMainDicomTags.RequestingPhysician)
+ if [[ $rqp == "null" ]]; then rqp= ; fi
+ sed \
+  -e "s/\"uuid.*$/\"uuid\" : \"${uui}\",/"               \
+  -e "s/\"date.*$/\"date\" : \"${sdt}\",/"               \
+  -e "s/\"description.*$/\"description\" : \"${dsc}\",/" \
+  -e "s/\"mrn.*$/\"mrn\" : \"${mrn}\",/"                 \
+  -e "s/\"session.*$/\"session\" : \"${ssn}\",/"         \
+  -e "s/\"studyid.*$/\"studyid\" : \"${sid}\",/"         \
+  -e "s/\"doctor.*$/\"doctor\" : \"${rqp}\",/"           \
+  $inp > "$fnm" 2>> $LOG
  if [[ $? -ne 0 ]]; then
   echo unable to create "$fnm" from $inp >> $LOG
   rm -f "${fnm}"
@@ -37,7 +62,7 @@ else
 fi
 
 echo calling $prg -j "$fnm" on `date` >> $LOG
-${prg} -j "$fnm" -u $uui  >> $LOG 2>&1
+${prg} -j "$fnm"  >> $LOG 2>&1
 if [[ $? -ne 0 ]]; then
  echo $prg exited witn non-zero status >> $LOG
 fi
