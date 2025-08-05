@@ -125,14 +125,13 @@ with open(jsonfile, "r") as infile:
 #
 # Version check
 #
-
 version = json_data["version"]
 if version < 2:
     print("Version of JSON too low: " + str(version))
     exit(1)
 
 #
-# Set mrn/session from database.
+# Set default info input json and set defaults if not present
 #
 # We never update it from this program,
 # so if it is unset, we live with it unset
@@ -150,7 +149,17 @@ uuid = json_data["uuid"]
 if uuid == "":
     uuid = "BOGUS9abc"
 
+#
+# Special case patient age- if we haven't yet set patient age, and we have
+# yrold entry in the input, copy that value on over as a first guess since
+# it came from the Dicom object.
+#
 
+try:
+    if json_data[HI][PA] == "":
+        json_data[HI][PA] = json_data["yrold"]
+except:
+    pass
 
 #
 # Structure of JSON data
@@ -178,6 +187,7 @@ if uuid == "":
 #  "study_description"    : Description of Study*
 #  "studyid"              : Study Identifier*
 #  "doctor"               : Requesting Physiscian*
+#  "yrold"                : How many years old the patient is (calculated from date of study and patient birthdate from Dicom data)
 #  "signed"               : boolean about whether the report has been signed (and is thus read-only)
 #  "signer"               : who signed the report
 #  "template"             : self-referential template name to internally identify in the JSON data the template json file name
@@ -354,7 +364,7 @@ def add_label_menu(str, options, initial, row, col, w, ew):
 # Root window creation
 #
 root=tk.Tk()
-root.title(json_data["title")
+root.title(json_data["title"])
 
 #
 # Need this to make sure Entry fields abut labels,

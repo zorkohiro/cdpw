@@ -41,6 +41,17 @@ if [[ ! -f "${fnm}" ]]; then
  if [[ $sid == "null" ]]; then sid= ; fi
  rqp=$(curl -s http://localhost:8042/studies/${uui} | jq -r .PatientMainDicomTags.RequestingPhysician)
  if [[ $rqp == "null" ]]; then rqp= ; fi
+ dob=$(curl -s http://localhost:8042/studies/${uui} | jq -r .PatientMainDicomTags.PatientBirthDate)
+ if [[ -z "$dob" && "$dob" == "null" ]]; then
+  yro=
+ elif [[ -n "$dob" ]]; then
+  short_sdt=$(GetStudyDate $uui | sed 1d | awk ' { print $2 }')
+  if [[ -n "$short_sdt" && "$short_sdt" != "null" ]]; then
+   yro=$(age_in_years $dob $short_sdt)
+  else
+   yro=
+  fi
+ fi
  sed \
   -e "s/\"uuid.*$/\"uuid\" : \"${uui}\",/"               \
   -e "s/\"date.*$/\"date\" : \"${sdt}\",/"               \
@@ -49,6 +60,7 @@ if [[ ! -f "${fnm}" ]]; then
   -e "s/\"session.*$/\"session\" : \"${ssn}\",/"         \
   -e "s/\"studyid.*$/\"studyid\" : \"${sid}\",/"         \
   -e "s/\"doctor.*$/\"doctor\" : \"${rqp}\",/"           \
+  -e "s/\"yrold.*$/\"yrold\" : \"${yro}\",/"           \
   $inp > "$fnm" 2>> $LOG
  if [[ $? -ne 0 ]]; then
   echo unable to create "$fnm" from $inp >> $LOG
@@ -57,7 +69,7 @@ if [[ ! -f "${fnm}" ]]; then
  fi
  chmod +w "$fnm"
 else
- st=$(stat -c%A "${fnm})")
+ st=$(stat -c%A "${fnm}")
  echo "${fnm}" already exists with mode $st >> $LOG
 fi
 

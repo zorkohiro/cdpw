@@ -1,0 +1,69 @@
+#!/bin/bash
+#
+# Get age in years based upon birth date and date of study passed as YYYYMMDD strings
+#
+
+if [[ $# -ne 2 ]]; then
+ exit 1
+fi
+
+function sanity_check {
+ y=$1
+ m=$2
+ d=$3
+ echo $y | grep -q ^0
+ if [[ $? -eq 0 ]]; then
+  exit 1
+ fi
+ if [[ $y -lt 1800 || $y -gt 2050 ]]; then
+  exit 1
+ fi
+ if [[ $m -lt 1 || $m -gt 12 ]]; then
+  exit 1
+ fi
+ # We aren't looking for validation of dates - just sanity
+ if [[ $d -lt 1 || $d -gt 31 ]]; then
+  exit 1
+ fi
+}
+
+dob=$1
+nc=$(echo -n $dob | wc -c)
+if [[ $nc != 8 ]]; then
+ exit 1
+fi
+sdt=$2
+nc=$(echo -n $sdt | wc -c)
+if [[ $nc != 8 ]]; then
+ exit 1
+fi
+
+byr=${dob:0:4}
+bmon=${dob:4:2}
+bmon=$(echo $bmon |sed 's/^0//')
+bday=${dob:6:2}
+bday=$(echo $bday |sed 's/^0//')
+sanity_check $byr $bmon $bday
+
+syr=${sdt:0:4}
+smon=${sdt:4:2}
+smon=$(echo $smon |sed 's/^0//')
+sday=${sdt:6:2}
+sday=$(echo $sday |sed 's/^0//')
+sanity_check $syr $smon $sday
+if [[ $syr -lt $byr ]]; then
+ exit 1
+elif [[ $syr -eq $byr ]]; then
+ ye=0
+else
+ ye=$((syr - byr))
+ if [[ $bmon -gt $smon ]]; then
+  ye=$((ye - 1))
+ elif [[ $bmon -eq $smon ]]; then
+  # This is the only case where we care about day of the month
+  if [[ $sday -lt $bday ]]; then
+   ye=$((ye - 1))
+  fi
+ fi
+fi
+echo $ye
