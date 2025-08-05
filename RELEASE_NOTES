@@ -1,3 +1,11 @@
+Release 1.1 Dev Changes
+
+ - use Orthanc study UUID for filename- none of this mrn/session stuff
+
+ - pick up more data from the Dicom object and use some of it to pre-fill
+   in some items (like age of patient). Further items may be presented
+   in a new header at the top as read-only information for the radiologist
+
 Release 1.0-Beta-1.0-1
 
  Trivial changes
