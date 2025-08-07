@@ -48,6 +48,7 @@ fontsize = 12
 fontstring = fontfamily + ' ' + str(fontsize)
 boxsize = 3
 cbobj = {}
+parameter_header_added = False
 
 pbobj = {}
 have_pseq = False
@@ -176,7 +177,7 @@ except:
 #
 # 1. Housekeeping items
 #   
-# Items marked with '*' come from the DiCom object and are interpolated
+# Items marked with '*' come from the DICOM object and are interpolated
 # into the json data at first edit by spawn_editor.
 #
 #  "version"              : This api's version # (2)
@@ -261,6 +262,11 @@ def add_section_label(str, row):
 
 def add_label(str, row, col):
     tlab = tk.Label(root, text=str, relief=tk.GROOVE, font=(fontfamily, fontsize))
+    tlab.grid(sticky=tk.N+tk.W, row=row, column=col)
+    return row + 1
+
+def add_fixed_text(str, row, col):
+    tlab = tk.Label(root, text=str, font=("Courier", fontsize))
     tlab.grid(sticky=tk.N+tk.W, row=row, column=col)
     return row + 1
 
@@ -378,6 +384,40 @@ root.grid_columnconfigure(1, weight=1)
 # using data read in as existing values.
 #
 
+#
+# Add pieces of fixed DICOM data as read only values
+# XXX: Should be parameterized and fitted across the canvas
+#
+if (json_data["mrn"] or json_data["session"] or json_data["uuid"] or
+        json_data["date"] or json_data["study_description"] or
+        json_data["studyid"] or json_data["doctor"] or json_data["yrold"]):
+
+    """ widest of labels """
+    pad = 24
+
+    rowvar = add_section_label(PARAMETERS, rowvar)
+    parameter_header_added = True
+
+    if json_data["mrn"] != "":
+        rowvar = add_fixed_text("Medical Record Number: ".ljust(pad) + json_data["mrn"], rowvar, 0)
+
+    if json_data["session"] != "":
+        rowvar = add_fixed_text("Medical Session Number: ".ljust(pad) + json_data["session"], rowvar, 0)
+
+    if json_data["uuid"] != "":
+        rowvar = add_fixed_text("Orthanc Study UUID: ".ljust(pad) + json_data["uuid"], rowvar, 0)
+
+    if json_data["date"] != "":
+        rowvar = add_fixed_text("Date of Study: ".ljust(pad) + json_data["date"], rowvar, 0)
+
+    if json_data["study_description"] != "":
+        rowvar = add_fixed_text("Study Description: ".ljust(pad) + json_data["study_description"], rowvar, 0)
+
+    if json_data["studyid"] != "":
+        rowvar = add_fixed_text("Study Id: ".ljust(pad) + json_data["studyid"], rowvar, 0)
+
+    if json_data["doctor"] != "":
+        rowvar = add_fixed_text("Requesting Physician: ".ljust(pad) + json_data["doctor"], rowvar, 0)
 
 # (Optional) Parameter Section
 try:
@@ -387,7 +427,10 @@ except:
     pass
 
 if have_pseq:
-    rowvar = add_section_label(PARAMETERS, rowvar)
+    if parameter_header_added is False:
+        rowvar = add_section_label(PARAMETERS, rowvar)
+        parameter_header_added = True
+
     for entry in json_data["pseq"]:
         words = entry.split(':')
         nw = len(words)
@@ -429,6 +472,11 @@ if have_pseq:
         else:
             print("wordlen of '" + entry + "' is ", len(words))
             exit(1)
+
+# Pad the parameter section
+if parameter_header_added is True:
+    rowvar = add_fixed_text("", rowvar, 0)
+
 
 # History Section
 rowvar = add_section_label(HISTORY, rowvar)

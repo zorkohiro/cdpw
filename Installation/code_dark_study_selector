@@ -1,0 +1,82 @@
+#!/bin/bash
+#
+# Tool for getting a list of study uuids for the purposes
+# of finding out which ones actually still need review
+# and so on.
+#
+if [[ $# -ne 1 ]]; then
+ echo Usage: "$(basename $0) {all|to-do|to-sign|to-edit|to-print}"
+ exit 1
+fi
+sd=$(mktemp -d)
+curl -s http://localhost:8042/studies |jq -r .[] | sort > ${sd}/studies
+ls -1 /code_dark/reports/*.json 2>/dev/null |sed -e 's,/code_dark/reports/,,' -e 's/.json//' | sort > /${sd}/reports
+ls -1 /code_dark/reports/*.txt 2>/dev/null | sed -e 's,/code_dark/reports/,,' -e 's/.txt//'  | sort > ${sd}/rprints
+
+action=$1
+
+if [[ $action == "all" ]]; then
+ #
+ # Print out all study UUIDs in the database
+ #
+ cat ${sd}/studies
+elif [[ $action == "to-do" ]]; then
+ #
+ # Print out all studies which do not have any report.json yet (has never been edited)
+ # This can present a choice list to invoke the OHIF viewer on as well as code_dark_rptgen
+ #
+ comm -3 ${sd}/reports ${sd}/studies | sed 's/\t//'
+elif [[ $action == "to-sign" ]]; then
+ #
+ # Look for all .json files- these are studies that have been edited with a viewer at least once.
+ #
+ # For each one if it has not been signed and print out the study UUID as a candidate for signing
+ # Note that signing may be prohibited by code_dark_rptgen if some fields have not yet
+ # been filled out.
+ #
+ # This will not invoke a viewer.
+ #
+ for study in $(cat ${sd}/reports); do
+  is=$(jq -r .signed < /code_dark/reports/${study}.json)
+  if [[ $is == "false" ]]; then
+   # XXXX: Do we need a .cansign value and only can be printed out if true?
+   echo $study
+  fi
+ done
+elif [[ $action == "to-edit" ]]; then
+ #
+ # Look for all .json files- these are studies that have been edited with a viewer at least once.
+ #
+ # For each one, if it is not signed, print it out because it can always get more edits.
+ # printed can't set until signed is set.
+ #
+ # Note that to-sign and to-edit may identical if we do not implement a .cansign
+ #
+ for study in $(cat ${sd}/reports); do
+  is=$(jq -r .signed < /code_dark/reports/${study}.json)
+  if [[ $is == "false" ]]; then
+   echo $study
+  fi
+ done
+elif [[ $action == "to-print" ]]; then
+ #
+ # Look for all .txt files (text rendering of report.json)
+ # For each one if it has been signed, but not printed, print out the study UUID as a candidate for printing
+ #
+ # This will not invoke a viewer.
+ #
+ for study in $(cat ${sd}/rprints); do
+  is=$(jq -r .signed < /code_dark/reports/${study}.json)
+  if [[ $is == "true" ]]; then
+   ip=$(jq -r .printed < /code_dark/reports/$study)
+   if [[ $ip == "false" ]]; then
+    echo $study
+   fi
+  fi
+ done
+else
+ echo bad argument $action
+ rm -rf ${sd}
+ exit 1
+fi
+rm -rf ${sd}

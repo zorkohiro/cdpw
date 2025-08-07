@@ -5,7 +5,7 @@ ifeq ($(INSTALL_ROOT),)
 $(error INSTALL_ROOT not set)
 endif
 
-BINS    := spawn_editor CheckOrthancDataMount CDPW_Configure restart_orthanc code_dark_rptgen code_dark_configurator GetModality GetStudyDate age_in_years orthanc_reconfigure
+BINS    := spawn_editor CheckOrthancDataMount CDPW_Configure restart_orthanc code_dark_rptgen code_dark_configurator GetModality GetStudyDate code_dark_study_selector age_in_years orthanc_reconfigure
 
 DOCS	:= Code_Dark_PACS_Workstion_Configuration_Notes.pdf What_is_a_Code_Dark_PACS_Workstation.pdf
 DOCDIR	:= $(CURDIR)/../Documentation
