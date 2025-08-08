@@ -707,7 +707,7 @@ def sign_report():
         json_data["signed"] = True
         now = datetime.datetime.now()
         tzs = now.astimezone().tzname()
-        json_data["signtime"] = now.strftime("%B %d, %Y  %H:%M") + " " + tzs
+        json_data["signtime"] = now.strftime("%B %d, %Y %H:%M %Z") + " " + tzs
 
         """ Save data again to note we have now signed the report """
         """ This will also update the signer cache """

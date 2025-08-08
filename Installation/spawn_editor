@@ -4,11 +4,15 @@
 #
 #  spawn_editor template_name uuid
 #
-export DISPLAY=:0
-export XDG_RUNTIME_DIR=/run/user/$UID
-export XAUTHORITY=$(ls ${XDG_RUNTIME_DIR}/.mutter*)
-export PATH=/usr/local/bin:/usr/bin:/usr/sbin
-TPD=/usr/lib/kp-report/Templates
+if [[ -z "KP_REPORT_TESTING" ]]; then
+ export DISPLAY=:0
+ export XDG_RUNTIME_DIR=/run/user/$UID
+ export XAUTHORITY=$(ls ${XDG_RUNTIME_DIR}/.mutter*)
+ export PATH=/usr/local/bin:/usr/bin:/usr/sbin
+ TPD=/usr/lib/kp-report/Templates
+else
+ TPD=${HOME}/kp-report/Installation/Templates
+fi
 CDB=/code_dark
 RPT=${CDB}/reports
 LOG=${CDB}/logs/spawn_editor.log
