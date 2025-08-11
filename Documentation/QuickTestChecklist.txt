@@ -1,43 +1,22 @@
-Thu Jul  3 06:40:25 AM PDT 2025
-Version 0.4
+Mon Aug 11 02:23:58 PM PDT 2025
+Version 0.5
 
 This a quick checklist to check a Code Dark release for sanity.
 Expect this to change and expand relatively quickly.
 
 1. Booting
 
-Does it boot correctly when you have the USB key inserted?
+Does it boot correctly to the USB key when you have the USB key inserted?
 
-If it boots the hard disk, you may have to retry and hit ESC to get
-into the ROM and boot the key that way.
+If it does not, you may have to enter the BIOS to change configurations
+to be able to boot the USB key, either automatically or being able
+to hit escape and boot if from a boot menu. This is not necessarily
+a test of kp-report- this is a test of correct hardware configuration.
 
-Note: We may need a "prep" checklist for making workstations ready for Code Dark.
-This should include setting up the BIOS to boot the USB key first. However- I have
-notices what seems to be the Z840 ws randomly reverting to boot the primary hard
-disk drive on occassion.
+Booting correctly means booting and being presented with a login screen.
+You should be able to log in with user orthanc, password orthanc.
 
-Booting correctly means booting and being presented automatically with a
-screen where you can fire up a browser or a Konsole terminal session.
-No crashes.
-
-2. Setting System Time
-
-Since the system is planned for being air-gapped it will not be able to use NTP
-or other time synchronization protocols to set system time. Setting system time
-is important for official reporting purposes.
-
-You should be able to navigate to system settings (little circle lower
-right on botton command bar on screen) and go to the settings icon- in
-the search bar on the upper left search for 'clock' and you should see
-a Dat & Time for change date & time. You should be able to set time
-here.
-
-3. Basic Orthanc Server Access
-
-Firing up the browser and pointing it toward  http://localhost:8042 should get you
-the Orthanc main screeen with no privacy complaints etc.
-
-4. Multiple extended monitors and monitor resolution
+2. Multiple extended monitors and monitor resolution
 
 Attaching more than one monitor (preferably before booting) should yield
 multiple separately accessible screens. The monitors should be displaying
@@ -48,12 +27,105 @@ configure the display about what the Wayland server thinks about monitor
 placement (e.g. right to left) and monitor orientation (for monitors
 that flip).
 
-Please report any artifacts like the monitor(s) freezing when moving
-windows around across edge boundarie, or any freezing of obviously
-incoreect video artifacts.
+Test further by opening things like Konsole or the Firefox browswer
+and drag them across monitor boundaries.
 
-5. Importing Studies
+Any artifacts like the monitor(s) freezing when moving windows around
+across edge boundarie, or any freezing of obviously incorect video
+artifacts, indicate a problem that must be resolved in development.
 
-Given that you know the IP address of the Code Dark workstation,
-you can take that plus the default Orthanc Dicom Port of 4242
-and attempt to load studies into the Orthanc database.
+3. Finding out if Orthanc is running.
+
+Once logged in, you should be able to upon the FireFox web browser
+(firefox icon, bottom bar, extreme left). Skipping past any restore
+connections pages nonsense, you should see a bookmark in the upper
+right. You should select that (which selects http://localhost:8042)
+and that should get you the initial Orthanc front page (which is
+used for study or patient selection).
+
+
+4. Setting Network Configuration
+
+After logging in, you should be able to navigate to the network icon
+on the top bar 3rd from the right, click on it, click on the right
+arrow next to the 'Wired Settings" large button and again Wired Settings
+on the bottom of the raised menu and change Network Configurations to
+an appropriate automatic or static configuration.
+
+Knowledge of Gnome Graphical Network configuration for Ubuntu 24 is
+required for this step.
+
+The purpose of this step is to set the address to a known static IP
+address so things like a CT Scanner can find you.
+
+5. Setting Code Dark specific parameters Setting System Time
+
+Once logged in you should be able to start up a Kconsole console tool
+(pinned on bottom bar to the lower left), and enter at the shell prompt:
+
+  code_dark_configurator
+
+5a) Setting Time
+
+Set the time in the time window of code_dark_configurator and push the SAVE AND EXIT
+button on the bottom. The date and time on the center of the top bar should change
+immediately.
+
+5b) Enter AET and DICOM Port Parameters
+
+Change the AET and DICOM Port Parameters to be what things like a CT Scanner
+require you to advertise. A SAVE AND EXIT may generate an alert box that
+a reboot may be required for this to become active.
+
+5c) Edit or add to the authorized physician list
+
+There is an edit box of doctors, separated by a ',' (comma) that you can edit.
+SAVE AND EXIT will give you an alert button that a reboot may be required
+for this to become active.
+
+
+6. Receipt of studies from a remove system
+
+Once you have set network, AET and DICOM paramaters, you should be able to
+receive studies from the remote system. I am unclear how you validate this
+from the remote system's point of view.
+
+Once it is claimed they are there, you should be able to search for them with
+the FireFox  browser pointing to Orthanc.
+
+7. Open a Study for viewing with the OHIF viewer
+
+You should be able to navigate to a particular study and when presented in
+the Orthanc browser, you should be able to invoke the OHIF viewer for that
+study. You should be able to drag the OHIF window to an appropriate high
+resolution monitor and do radiologist things with it.
+
+8. Start a Report
+
+You should see, in the top of the Interact box on the left middle side of the
+Orthanc web window, a "Create Report" button. Pressing that should present you
+with a list of template choices appropriate for the Study's first Instance's
+modality. Select one of those (there should be a "Generic" if none obviously
+match).
+
+This should open up a code_dark_rptgen window which has some fields filled
+out from the DICOM object, some fields predicted based upon Dr Gray's commentary
+based upon study type and others that need to be filled out. The boxes should
+all be able to be free-form edited (unless the report has been signed, in which
+case the box will get an orange background and will not be able to be changed).
+
+Edit as needed/desired. Hit buttons like SAVE. If everything is considered
+complete, you can 'sign' the report- which you pull a physician from a choice
+list for authorized physicians.
+
+9. Configure and Test a Printer
+
+Follow Ubuntu 24.04 documentation for finding a configuring a printer if you have
+one attached (or findable on the net, although that only should be true
+in test environments). Test the printer by printing a test page.
+
+10. Print a Report
+
+Navigate back to the code_dark_rptgen window and print a report and see whether
+it prints on the printer.
+
