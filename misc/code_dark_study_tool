@@ -1,0 +1,138 @@
+#!/usr/bin/python3
+#
+# Program to put up a set up of menus about selecting studies to operate on
+#
+
+import tkinter as tk
+from tkinter import messagebox
+import requests
+import subprocess
+import argparse
+
+""" Variables and Constants """
+ListAllStudies = "List All Studies"
+StudiesToReview = "Studies To Begin Review"
+StudiesToEdit = "Studies to Continue Editing"
+StudiesToSign = "Studies to Sign"
+StudiesToPrint = "Studies to Print"
+
+fontsize = 12
+fontfamily = "Times"
+
+#
+# Process command line arguments if any
+#
+parser = argparse.ArgumentParser(description="Code Dark Report Entry Package")
+parser.add_argument("-f", "--fontsize", help="Font Size (default 12)")
+args = vars(parser.parse_args())
+if args['fontsize']:
+    fontsize = int(args['fontsize'])
+
+
+""" Data handlers """
+def all_studies():
+    response = requests.get("http://localhost:8042/studies")
+    if response.status_code != 200:
+        messagebox.showerror("cannot find any studies")
+        return
+    header = False
+    rowvar = 1
+    nr = tk.Tk()
+    nr.title("All Studies")
+    ss = response.json()
+    print("number of uuids", len(ss))
+
+    for suuid in response.json():
+        srsp = requests.get("http://localhost:8042/studies/" + suuid)
+        if srsp.status_code != 200:
+            continue
+
+        try:
+            result = subprocess.run(["/usr/bin/GetStudyDate", "-r", suuid], capture_output=True, text=True)
+            if result.returncode != 0:
+                print("cannot get study date for" + suuid + ":", result.returnconde)
+                continue
+        except subprocess.CalledProcessError as e:
+            print("Error getting study date for" + suuid + ":", e.output)
+            continue
+        dst = result.stdout.strip()
+        sjsn = srsp.json()
+        patient = sjsn["PatientMainDicomTags"]
+        maindcm = sjsn["MainDicomTags"]
+        for pk in "PatientName","PatientID":
+            try:
+                s = patient[pk]
+            except:
+                patient[pk] = "<NIL>"
+        for dk in "AcessionNumber":
+            try:
+                s = maindcm[dk]
+            except:
+                maindcm[dk] = "<NIL>"
+
+        if header == False:
+            x = tk.Entry(nr, font=(fontfamily,fontsize,'bold'))
+            x.grid(row=rowvar, column=0)
+            x.insert(tk.END, "Patient Name")
+            x = tk.Entry(nr, font=(fontfamily,fontsize,'bold'))
+            x.grid(row=rowvar, column=1)
+            x.insert(tk.END, "MRN")
+            x = tk.Entry(nr, font=(fontfamily,fontsize,'bold'))
+            x.grid(row=rowvar, column=2)
+            x.insert(tk.END, "Session Number")
+            x = tk.Entry(nr, width=32, font=("Courier",fontsize,'bold'))
+            x.grid(row=rowvar, column=3)
+            x.insert(tk.END, "Study Date")
+            header = True
+            rowvar = rowvar + 1
+
+        x = tk.Entry(nr,font=(fontfamily,fontsize))
+        x.grid(row=rowvar, column=0)
+        x.insert(tk.END, patient["PatientName"])
+        x = tk.Entry(nr,font=(fontfamily,fontsize))
+        x.grid(row=rowvar, column=1)
+        x.insert(tk.END, patient["PatientID"])
+        x = tk.Entry(nr,font=(fontfamily,fontsize))
+        x.grid(row=rowvar, column=2)
+        x.insert(tk.END, maindcm["AccessionNumber"])
+        x = tk.Entry(nr, width=32,font=("Courier",fontsize))
+        x.grid(row=rowvar, column=3)
+        x.insert(tk.END, dst)
+        rowvar = rowvar + 1
+
+    nr.mainloop()
+
+def studies_to_do():
+    messagebox.showinfo("", StudiesToReview)
+
+def studies_to_edit():
+    messagebox.showinfo("", StudiesToEdit)
+
+def studies_to_sign():
+    messagebox.showinfo("", StudiesToSign)
+
+def studies_to_print():
+    messagebox.showinfo("", StudiesToPrint)
+
+""" Begin Main Code section """
+
+root=tk.Tk()
+root.title("Code Dark Study Tool")
+
+btn = tk.Button(root, text=ListAllStudies, command=all_studies)
+btn.grid(sticky=tk.E+tk.N, row=5, column=0)
+
+btn = tk.Button(root, text=StudiesToReview, command=studies_to_do)
+btn.grid(sticky=tk.E+tk.N, row=5, column=1)
+
+btn = tk.Button(root, text=StudiesToEdit, command=studies_to_edit)
+btn.grid(sticky=tk.E+tk.N, row=5, column=2)
+
+btn = tk.Button(root, text=StudiesToSign, command=studies_to_sign)
+btn.grid(sticky=tk.E+tk.N, row=5, column=3)
+
+btn = tk.Button(root, text=StudiesToPrint, command=studies_to_print)
+btn.grid(sticky=tk.E+tk.N, row=5, column=4)
+
+root.mainloop()
+

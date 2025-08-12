@@ -35,6 +35,9 @@ PH = "physicians"
 
 cdpwconfig = "/code_dark/config"
 jsonfile = cdpwconfig + "/" + "configurator.json"
+vfile = "/usr/lib/kp-report/version"
+cdw_version = ""
+rowvar = 0
 fontfamily = 'Times'
 fontsize = 12
 fontstring = fontfamily + ' ' + str(fontsize)
@@ -49,6 +52,12 @@ args = vars(parser.parse_args())
 
 if args['json']:
     jsonfile=args['json']
+
+try:
+    with open(vfile) as ov:
+        cdw_version = ov.readline()
+except:
+    pass
 
 """ Data handlers """
 def save_n_exit():
@@ -186,9 +195,12 @@ if version < 2:
 root=tk.Tk()
 cdf ="Code Dark Configurator"
 root.title("")
-headliner = tk.Label(root, text=cdf, font=(fontfamily, fontsize + 4))
-headliner.grid(sticky=tk.N, row=0, column=0, columnspan = 2)
-rowvar = 2
+headliner = tk.Label(root, text=cdf, font=(fontfamily, fontsize + 1))
+headliner.grid(sticky=tk.W + tk.N, row=rowvar, column=0)
+if cdw_version != "":
+    version = tk.Label(root, text="Code Dark Version: " + cdw_version, font=(fontfamily, fontsize + 1))
+    version.grid(sticky=tk.W + tk.N, row=rowvar, column=1)
+rowvar = rowvar + 1
 rowvar = add_label("============================================================", rowvar, 0)
 rowvar = rowvar + 1
 

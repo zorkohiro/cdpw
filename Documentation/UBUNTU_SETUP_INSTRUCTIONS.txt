@@ -1,4 +1,4 @@
-Tue Jul 29 03:57:07 PM PDT 2025
+Sat Aug  9 12:33:20 PM PDT 2025
 
 0. Required Hardware and Environment
 
@@ -36,11 +36,15 @@ Keep selection to require user password to log in.
 
 Reboot to installed USB key when the installation is done.
 
+2. Make sure code_dark USB storage key is available
+
 Attach CODE_DARK USB storage key (and unlock it if its an Apricon USB encrypted drive)
 after it appears the system is almost up. See CDW_DATA_KEY_CREATION_INSTRUCTIONS.txt
 as to how to create this device.
 
-2. Install our user level packages
+Reboot when done.
+
+3. Install our user level packages
 
 After we come up, do
 
@@ -48,16 +52,20 @@ After we come up, do
 
 This will refresh our package lists but not actually install anything.
 
+Then install base othanc:
+
+ sudo apt install -y orthanc
+
 Then fetch the latest kp-report package via:
 
  cd /tmp
  wget https://feralsw.com/cdw/kp-report-latest.deb
- sudo apt install -y ./kp-report-latest.deb
+ sudo apt install -y /tmp/kp-report-latest.deb
 
 Ignore and dismiss all alert boxes that will then show up before things
 finish. As you continue along delete any popups asking to install updates.
 
-2. System Control panel changes
+4. System Control panel changes
 
 Go to system settings.
 
@@ -98,7 +106,7 @@ sudo apt remove --purge -y unattended-upgrades
 sudo apt remove --purge -y update-notifier
 
 
-3. Configure the installed firefox
+5. Configure the installed firefox
 
 Remove crap buttons from bookmark bar
 Settings/General
@@ -116,7 +124,7 @@ For browser.sessionstore.max_resumed_crashes- set to 0.
 Enter http://localhost:8042 in chrome and bookmark it. You should
 have connected with the running orthanc server.
 
-4. Upgrade kernel
+6. Upgrade kernel
 
 #
 # Upgrade kernel with updated amdgpu driver.
@@ -141,7 +149,7 @@ Fetch the updated kernel and drivers:
 Get them onto the USB key you are building in /tmp and
 do 'sudo install linux-*.deb' on them and reboot.
 
-5. Install gdm-settings and set up new login screen with label
+6. Install gdm-settings and set up new login screen with label
 
 Get a Kconsole
 
