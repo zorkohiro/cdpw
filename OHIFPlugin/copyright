@@ -1,6 +1,6 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: KP Report Plugin
-Source: https://github.com/zorkohiro/kp-report
+Source: https://github.com/zorkohiro/cdpw
 
 Files: *
 Copyright: Copyright (C) 2025 Kaiser Permanente

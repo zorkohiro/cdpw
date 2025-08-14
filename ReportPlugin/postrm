@@ -1,0 +1,7 @@
+#!/bin/bash
+
+#
+# Restart orthanc- we had stopped it
+#
+systemctl restart orthanc
+exit 0

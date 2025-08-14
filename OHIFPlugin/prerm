@@ -1,0 +1,7 @@
+#!/bin/bash
+
+#
+# Stop orthanc while we do anything
+#
+systemctl stop orthanc
+exit 0

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+#
+# Restart orthanc to pick up the new plugin (if necessary)
+#
+systemctl restart orthanc
+
+#
+# Explicitly exit with good status
+#
+exit 0

@@ -1,0 +1,12 @@
+Package: orthanc-ohif
+Version: %VERSION%
+Section: base
+Priority: optional
+Architecture: all
+Depends: orthanc, orthanc-dicomweb, orthanc-gdcm, orthanc-imagej
+Maintainer: Matthew Jacob <lydianconcepts@gmail.com>
+Description: Build and Packaing for OHIF Viewer
+ This refers to Open Health Imaging Foundation's image viewer.
+ See https://ohif.org for details on what it is.
+ This just builds the Orthanc wrapper of the OHIF webviewer into a
+ package suitable for installing on Ubuntu version 24.04.

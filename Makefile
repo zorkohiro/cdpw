@@ -1,31 +1,10 @@
 #
-# Top makefile for kp-report
+# Top makefile for cdpw
 #
-MAJORV  ?= 1
-MINORV  ?= 1
-RLEASE  ?= Dev-1.0
-BUILDV  ?= -6
-BASE    := kp-report
-RELEASE := $(MAJORV).$(MINORV)-$(RLEASE)${BUILDV}
-PKGNAME := $(BASE)-$(RELEASE)
-INSTALL_ROOT = $(CURDIR)/$(PKGNAME)
 
-export INSTALL_ROOT
-export RELEASE
-
-NTHREAD := $(shell getconf _NPROCESSORS_ONLN)
-
-all:	sub_build
-	$(MAKE) -C Installation
-	dpkg-deb --build $(INSTALL_ROOT)
-
-sub_build:
+all:
 	$(MAKE) -C ReportPlugin install
 	$(MAKE) -C OHIFPlugin install
+	@echo Missing CDPW Constraints/scripts build
 
-clean:
-	$(MAKE) -C ReportPlugin clean
-	$(MAKE) -C OHIFPlugin clean
-	rm -rf $(BASE)-*
-
-.PHONY: all sub_build clean
+.PHONY: sub_build clean
