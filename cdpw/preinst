@@ -1,0 +1,23 @@
+#!/bin/sh
+set -e
+
+#
+# Get orthanc's UID (needed for ntfs-3g mounts)
+#
+OUID=$(id -u orthanc 2>/dev/null || echo -1)
+if [ $OUID -eq -1 ]; then
+ echo "No user orthanc installed."
+ false
+fi
+
+#
+# Make sure mount point exists
+#
+mkdir -p /code_dark
+
+#
+# Put the mount line we want in /etc/fstab
+#
+sed -i -e '/CODE_DARK/d' /etc/fstab
+echo "LABEL=CODE_DARK /code_dark ntfs-3g defaults,noauto,noatime,uid=${OUID},hide_hid_files,umask=0,dmask=27,fmask=137,noauto 0 0" >> /etc/fstab
+systemctl daemon-reload

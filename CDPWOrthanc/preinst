@@ -1,0 +1,25 @@
+set -e
+
+case $1 in
+install)
+ #
+ # Ensure we have orthanc user in password file and it isn't root uid/gid.
+ #
+ # In the case that we are installing on a system installed as orthanc
+ # these actions should be no-ops
+ #
+ if ! getent passwd orthanc > /dev/null; then
+  echo "adding user orthanc." >&2
+  adduser --quiet --home /var/lib/orthanc --no-create-home \
+    --shell /bin/bash --group --gecos "Orthanc Administrator" orthanc
+ fi
+ if test "`id -u orthanc`" -eq 0; then
+  echo "The orthanc administrative user must not be root." >&2
+  false
+ fi
+ if test "`id -g orthanc`" -eq 0; then
+  echo "The orthanc administrative group must not be root." >&2
+  false
+ fi
+ ;;
+esac

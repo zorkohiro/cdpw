@@ -28,14 +28,14 @@ We need to be able to configure the following items:
 
 """
 """ Variables and Constants """
-DC = "dicom"
-PT = "port"
-AE = "aet"
+PT = "DicomPort"
+AE = "DicomAet"
 PH = "physicians"
 
 cdpwconfig = "/code_dark/config"
 jsonfile = cdpwconfig + "/" + "configurator.json"
-vfile = "/usr/lib/kp-report/version"
+aetpfile = cdpwconfig + "/" + "orthanc" + "/" + "dicom_aet_port.json"
+vfile = "/usr/lib/cdpw/version"
 cdw_version = ""
 rowvar = 0
 fontfamily = 'Times'
@@ -47,11 +47,15 @@ boxsize = 5
 
 parser = argparse.ArgumentParser(description="Code Dark Configurator")
 parser.add_argument("-j", "--json", help="Input json file")
+parser.add_argument("-a", "--aet_port", help="Dicom AET and Port json file")
 
 args = vars(parser.parse_args())
 
 if args['json']:
     jsonfile=args['json']
+
+if args['aet_port']:
+    aetpfile=args['aet_port']
 
 try:
     with open(vfile) as ov:
@@ -108,42 +112,43 @@ def save_n_exit():
             messagebox.showerror("Error", "Invoking process to set new time: " + e.output)
             time_entry.set(orig_time)
             return
-    """ Json configuration items """
-    json_changed = False
-    ocfg_changed = False
+        messagebox.showinfo("Changed", "System date and/or time has been changed.")
+    """ Changed configuration items """
+    aetp_changed = False
     port = port_entry.get()
-    if json_data[DC][PT] != port:
-        json_data[DC][PT] = port
-        json_changed = True
-        ocfg_changed = True
+    if aetp_data[PT] != port:
+        aetp_data[PT] = port
+        aetp_changed = True
 
     aet = aet_entry.get()
-    if json_data[DC][AE] != aet:
-        json_data[DC][AE] = aet
-        json_changed = True
-        ocfg_changed = True
+    if aetp_data[AE] != aet:
+        aetp_data[AE] = aet
+        aetp_changed = True
 
+    json_changed = False
     pboxstr = pbox.get("1.0", "end-1c")
     newp = [x.strip() for x in pboxstr.split(",")]
     if json_data[PH] != newp:
         json_data[PH] = newp
         json_changed = True
 
-    if ocfg_changed:
+    if aetp_changed:
+        with open(aetpfile, "w") as ofile:
+            json.dump(aetp_data, ofile, indent=2)
+            print("", file=ofile)
+        messagebox.showinfo("Saved", "AET or DICOM Port changed- Orthanc will have to be restarted.")
         try:
-            result = subprocess.run(["/usr/bin/orthanc_reconfigure"], capture_output=True, text=True)
+            result = subprocess.run(["/usr/bin/sudo", "-n", "systemctl", "restart", "orthanc"], capture_output=True, text=True)
             if result.returncode != 0:
-                messagebox.showerror("Error reconfiguring Orthanc Parameters", result.stderr)
-                return
+                messagebox.showerror("Error running Orthanc restart", result.stderr)
         except subprocess.CalledProcessError as e:
-            messagebox.showerror("Error", e.output)
-            return
+            messagebox.showerror("Error restarting Orthanc", e.output)
 
     if json_changed:
         with open(jsonfile, "w") as ofile:
             json.dump(json_data, ofile, indent=2)
             print("", file=ofile)
-        messagebox.showinfo("Saved", "Persistent Information Changed. Reboot to Activate")
+        messagebox.showinfo("Saved", "Other config data has changed. Restart any currently open Report Writer sessions.")
 
     exit(0)
 
@@ -184,6 +189,9 @@ def add_label_entry(label, ivalue, rv, w):
 with open(jsonfile, "r") as infile:
     json_data = json.load(infile)
 
+with open(aetpfile, "r") as infile:
+    aetp_data = json.load(infile)
+
 #
 # Version check
 #
@@ -213,8 +221,8 @@ rowvar = rowvar + 1
 rowvar = add_label("============================================================", rowvar, 0)
 
 rowvar = add_section_label("DICOM PARAMETERS", rowvar)
-port_entry, rowvar = add_label_entry("Listening Port", json_data[DC][PT], rowvar, 16)
-aet_entry, rowvar = add_label_entry("AET", json_data[DC][AE], rowvar, 16)
+port_entry, rowvar = add_label_entry("Listening Port", aetp_data[PT], rowvar, 16)
+aet_entry, rowvar = add_label_entry("AET", aetp_data[AE], rowvar, 16)
 rowvar = rowvar + 1
 rowvar = add_label("============================================================", rowvar, 0)
 

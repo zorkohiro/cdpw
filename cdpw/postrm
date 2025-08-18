@@ -1,0 +1,5 @@
+#!/bin/sh
+set -e
+
+sed -i -e '/CODE_DARK/d' /etc/fstab
+systemctl daemon-reload

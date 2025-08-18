@@ -43,7 +43,7 @@ all:	.setup .setup_cmake .built
 install:	all .sub_install
 	mkdir -p -m 755 $(INSTALL_ROOT)/DEBIAN
 	sed -e "s,%VERSION%,$(RELEASE)," control > $(INSTALL_ROOT)/DEBIAN/control
-	cp copyright postinst prerm postrm ${INSTALL_ROOT}/DEBIAN
+	cp copyright ${INSTALL_ROOT}/DEBIAN
 	dpkg-deb --build $(INSTALL_ROOT)
 	mkdir -p ${ARTIFACTS}
 	cp ${PKGNAME}.deb ${ARTIFACTS}

@@ -1,0 +1,82 @@
+#!/bin/bash
+export XDG_RUNTIME_DIR=/run/user/$UID
+export DISPLAY=:0
+export TERM=dumb
+LONG_SLEEP=600
+SHRT_SLEEP=10
+SHRT_MSECS=$((((SHRT_SLEEP - 2)) * 1000))
+LOGFILE=/tmp/orthanc_datachecker.log
+echo =========================================================== >> $LOGFILE
+date >> $LOGFILE
+set -o pipefail
+while :; do
+ #
+ # Is /code_dark mounted?
+ #
+ lsmount |grep -q code_dark
+ if [[ $? -eq 0 ]]; then
+  stime=$LONG_SLEEP
+  #
+  # Yes. Start cdpw service if not running.
+  #
+  systemctl is-active --quiet cdpw.service
+  if [[ $? -ne 0 ]]; then
+   # Make sure an empty CODE_DARK is populated correctly
+   for subdir in config/orthanc database reports logs; do mkdir -p /code_dark/$subdir; done
+   if [[ ! -f /code_dark/config/configurator.json ]]; then
+    cp /usr/share/cdpw/configurator.json /code_dark/config
+   fi
+   if [[ ! -f /code_dark/config/cdpw/orthanc.json ]]; then
+    mkdir -p /code_dark/config/orthanc
+    cp /usr/share/cdpw/cdpw.json /code_dark/config/orthanc
+   fi
+   if [[ ! -f /code_dark/config/orthanc/dicom_aet_port.json ]]; then
+    mkdir -p /code_dark/config/orthanc
+    cp /usr/share/cdpw/dicom_aet_port.json /code_dark/config/orthanc
+   fi
+   tmpfil=$(mktemp)
+   echo sudo -n systemctl restart cdpw.service >> $LOGFILE
+   sudo -n systemctl restart cdpw.service > $tmpfil 2>&1
+   if [[ $? -ne 0 ]]; then
+    echo "unable to start CDPW service"
+    cat $tmpfile
+    cat $tmpfile >> $LOGFILE
+    notify-send -t $SHRT_MSECS -e -a CDPW "Unable to start Orthanc service"
+    stime=$SHRT_SLEEP
+   else
+    echo succeeded >> $LOGFILE
+   fi
+  else
+   echo cdpw.service active >> $LOGFILE
+  fi
+ else
+  stime=$SHRT_SLEEP
+  #
+  # No. Do we have a non-mounted CODE_DARK present?
+  #
+  lsblk -o LABEL | grep -q CODE_DARK
+  if [[ $? -ne 0 ]]; then
+   notify-send  -t $SHRT_MSECS -a CDPW 'Secure data storage device not seen- still locked?'
+   echo "Data storage device not mounted- sleeping $SHRT_SLEEP seconds" >> $LOGFILE
+   echo "Data storage device not mounted- sleeping $SHRT_SLEEP seconds"
+  else
+   tmpfil=$(mktemp)
+   echo sudo -n mount /code_dark >> $LOGFILE
+   sudo -n mount /code_dark > $tmpfil 2>&1
+   if [[ $? -ne 0 ]]; then
+    echo "Unable to mount /code_dark"
+    cat $tmpfil
+    cat $tmpfil >> $LOGFILE
+    notify-send -t $SHRT_MSECS -e -a CDPW "/code_dark cannot be mounted"
+   else
+    echo "Data storage mounted-not sleeping"
+    echo succeeded >> $LOGFILE
+    stime=0
+   fi
+   rm -f $tmpfil
+  fi
+ fi
+ if [[ $stime -ne 0 ]]; then
+  sleep $stime
+ fi
+done

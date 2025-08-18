@@ -1,0 +1,10 @@
+Package: cdpw
+Version: %VERSION%
+Section: base
+Priority: optional
+Architecture: all
+Depends: orthanc, lsmount, python3-tk
+Conflicts: kp-report
+Maintainer: Matthew Jacob <lydianconcepts@gmail.com>
+Description: Control Path for Kaiser Orthanc Report Writer
+ This tools enables orthanc when the mountpoint /code_dark is mounted.

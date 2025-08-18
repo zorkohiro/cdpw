@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -e
+
+#
+# Clean up permissions
+#
+chown root:root /etc/sudoers.d/orthanc
+chmod 600 /etc/sudoers.d/orthanc
+
+#
+# Enable cdpw_configure service and start
+#
+systemctl enable cdpw_data_present.service
+systemctl restart cdpw_data_present.service

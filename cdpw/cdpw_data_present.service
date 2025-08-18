@@ -1,0 +1,14 @@
+#
+# Check for the Orthanc secure data volume being mounted
+#
+[Unit]
+Description=Checker for Patient Data being present for Orthanc to run
+
+[Service]
+User=orthanc
+Group=orthanc
+ExecStart=/usr/sbin/orthanc_checker
+Restart=on-failure
+
+[Install]
+WantedBy=graphical.target

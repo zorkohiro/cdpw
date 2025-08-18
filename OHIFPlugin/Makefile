@@ -8,14 +8,24 @@ BUILDV	?=
 BASE    := orthanc-ohif
 RELEASE := $(MAJORV).$(MINORV).$(RLEASE)${BUILDV}
 PKGNAME := $(BASE)-$(RELEASE)
-INSTALL_ROOT = $(CURDIR)/$(PKGNAME)
+DLCACHE := $(HOME)/Downloads
 
 ARTIFACTS ?= ../artifacts
 
+INSTALL_ROOT = $(CURDIR)/$(PKGNAME)
 CMAKE_ARGS= .. -DCMAKE_INSTALL_PREFIX=$(INSTALL_ROOT)/usr -DSTATIC_BUILD=ON -DCMAKE_BUILD_TYPE=Release
 NTHREAD := $(shell getconf _NPROCESSORS_ONLN)
 
-all:	.setup_ohif .setup_cmake .built
+all:	.source_fetch .setup_ohif .setup_cmake .built
+
+.source_fetch: ThirdPartyDownloads
+	touch $@
+
+ThirdPartyDownloads:  ${DLCACHE}
+	ln -s ${DLCACHE} $@
+
+${DLCACHE}:
+	mkdir -p $@
 
 .setup_ohif:
 	mkdir -p Build
@@ -37,7 +47,7 @@ all:	.setup_ohif .setup_cmake .built
 install:	all .sub_install
 	mkdir -p -m 755 $(INSTALL_ROOT)/DEBIAN
 	sed -e "s,%VERSION%,$(RELEASE)," control > $(INSTALL_ROOT)/DEBIAN/control
-	cp copyright postinst prerm postrm ${INSTALL_ROOT}/DEBIAN
+	cp copyright ${INSTALL_ROOT}/DEBIAN
 	dpkg-deb --build $(INSTALL_ROOT)
 	mkdir -p ${ARTIFACTS}
 	cp ${PKGNAME}.deb ${ARTIFACTS}

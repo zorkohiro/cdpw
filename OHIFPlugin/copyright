@@ -5,24 +5,22 @@ Source: https://github.com/zorkohiro/cdpw
 Files: *
 Copyright: Copyright (C) 2025 Kaiser Permanente
 
-License: GPL-3
+License: GPL-3, LGPL-3, MIT, CC-1.0
 
-License: GPL-3
- KP Report is free software; you can redistribute it
- and/or modify it under the terms of the GNU General Public
- License version 3 as published by the Free Software Foundation.
- .
- KP Report is distributed in the hope that it will be
- useful, but WITHOUT ANY WARRANTY; without even the implied
- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the GNU General Public License for more
- details. http://www.gnu.org/licenses/
- .
- You should have received a copy of the GNU General Public
- License along with this package; if not, write to the Free
- Software Foundation, Inc., 51 Franklin St, Fifth Floor,
- Boston, MA  02110-1301 USA
- .
- On Debian systems, the full text of the GNU General Public
- License version 3 can be found in the file
- `/usr/share/common-licenses/GPL-3'.
+This file is based upon and includes OHIF software
+plus additional software from elsewhere.
+
+The licensing from their sources says:
+
+Licensing
+---------
+
+- OHIF is licensed under the MIT license.
+
+- The OHIF plugin for Orthanc is licensed under the GPL license, to
+  fulfill the GPL license of the Orthanc SDK.
+
+- This project is REUSE compliant for its licensing, as established by
+  Free Software Foundation Europe (FSFE):
+  https://reuse.software/
+

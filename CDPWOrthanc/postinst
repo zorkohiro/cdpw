@@ -1,0 +1,19 @@
+set -e
+
+case $1 in
+configure)
+ #
+ # Give orthanc the ability to bind to privileged ports
+ #
+ setcap 'cap_net_bind_service=+ep' /usr/sbin/Orthanc
+
+ #
+ # Make sure the en_US.UTF-8 locale has been generated
+ # (required for case-insensitive comparison of strings with
+ # accents).
+ #
+ sed -i 's/^# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen
+ locale-gen
+ update-locale
+ ;;
+esac

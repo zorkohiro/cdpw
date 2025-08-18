@@ -1,3 +1,0 @@
-#!/bin/bash
-# We are run as user orthanc and are allowed to sudo restarting orthanc.service
-systemctl restart orthanc.service

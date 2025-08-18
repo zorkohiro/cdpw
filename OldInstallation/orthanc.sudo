@@ -1,1 +1,0 @@
-orthanc ALL=(root) NOPASSWD: /usr/bin/date, /usr/bin/restart_orthanc, /usr/bin/mount

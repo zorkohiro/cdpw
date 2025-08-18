@@ -2,12 +2,11 @@ Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: KP Report Plugin
 Source: https://github.com/zorkohiro/cdpw
 
+This work includes source work written and copyrighted by
+UCLouvain university (Belgium) which is GPLv3 licensed.
+
 Files: *
 Copyright: Copyright (C) 2025 Kaiser Permanente
-
-This code includes code from and uses the SDK from code
-provided by UCLouvain university (Belgium) which is
-licensed under GPL version 3.
 
 License: GPL-3
 

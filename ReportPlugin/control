@@ -1,9 +1,9 @@
-Package: kp-report
+Package: cdpw-report
 Version: %VERSION%
 Section: base
 Priority: optional
 Architecture: all
-Depends: orthanc, orthanc-dicomweb, orthanc-gdcm, orthanc-imagej, orthanc-ohif, python3-tk, cups-bsd, enscript
+Depends: orthanc, python3-tk, cups-bsd, enscript, curl
 Maintainer: Matthew Jacob <lydianconcepts@gmail.com>
 Description: Kaiser Permanente Report Writer Plugin for Orthanc
  This is the plugin and auxillary scripts data to create imaging

@@ -1,0 +1,18 @@
+[Unit]
+Description=Lightweight, RESTful DICOM server for healthcare and medical research
+Documentation=man:orthanc(8)
+Documentation=https://orthanc.uclouvain.be/book/
+After=network.target
+Wants=postgresql.service mysql.service
+
+[Service]
+User=orthanc
+Group=orthanc
+PIDFile=/run/orthanc.pid
+ExecStart=/usr/sbin/Orthanc --logdir=/code_dark/logs /code_dark/config/orthanc
+TimeoutSec=600
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+Alias=orthanc.service

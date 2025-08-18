@@ -30,7 +30,8 @@ install:
 	install -D -m 440 orthanc.sudo ${INSTALL_ROOT}/etc/sudoers.d/orthanc
 	install -D -m 600 configurator.json ${KPLIB}
 	install -D -m 640 code_dark_configurator.desktop ${KPLIB}
-
+#	mkdir -p ${INSTALL_ROOT}/usr/share/orthanc/config.proto
+#	cd ${CURDIR}/config && for c in *.json; do cp $$c ${INSTALL_ROOT}/usr/share/orthanc/config.proto/$$c; done
 	mkdir -p -m 755 $(INSTALL_ROOT)/DEBIAN
 	echo $(RELEASE) > ${KPLIB}/version
 	sed -e "s,%VERSION%,$(RELEASE)," control > $(INSTALL_ROOT)/DEBIAN/control
