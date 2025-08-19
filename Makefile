@@ -3,9 +3,10 @@
 #
 
 all:
-	$(MAKE) -C ReportPlugin install
-	$(MAKE) -C OHIFPlugin install
-	$(MAKE) -C CDPWOrthanc install
-	@echo Missing CDPW Constraints/scripts build
+	$(MAKE) -C cdpw-report install
+	$(MAKE) -C cdpw-ohif install
+	$(MAKE) -C cdpw-dicomweb install
+	$(MAKE) -C cdpw-orthanc install
+	$(MAKE) -C cdpw install
 
-.PHONY: sub_build clean
+.PHONY: clean

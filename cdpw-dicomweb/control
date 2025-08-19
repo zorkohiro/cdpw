@@ -1,0 +1,12 @@
+Package: cdpw-dicomweb
+Version: %VERSION%
+Section: base
+Priority: optional
+Architecture: all
+Depends: cdpw-orthanc
+Maintainer: Matthew Jacob <lydianconcepts@gmail.com>
+Description: Build and Packaging of Orthanc DicomWeb for CDPW
+ This just builds the Orthanc DicomWeb plugin into our own package
+ suitable for Ubuntu.
+ .
+ See https://www.orthanc-server.com.

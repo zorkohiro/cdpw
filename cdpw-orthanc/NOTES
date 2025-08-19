@@ -1,0 +1,8 @@
+
+Unlike ther regular orthanc package, we do not put a startup script here.
+This is because the complexity of waiting for the CODE_DARK volume to be
+mounted is difficult as it is, so keeping orthanc and the additional
+orthanc sub-packages separate has real value.
+
+We also don't put a pre-configured set of json configurations here either.
+That's also the province of the code that moounts CODE_DARK.

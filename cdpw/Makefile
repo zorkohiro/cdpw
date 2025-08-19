@@ -2,9 +2,9 @@
 # Install/packaging step for cdpw
 #
 MAJORV  ?= 1
-MINORV  ?= 2
-RLEASE  ?= 0-Dev
-BUILDV  ?= -1
+MINORV  ?= 0
+RLEASE  ?= 1
+BUILDV  ?=
 BASE    := cdpw
 RELEASE := $(MAJORV).$(MINORV).$(RLEASE)$(BUILDV)
 PKGNAME := $(BASE)-$(RELEASE)
@@ -29,6 +29,7 @@ install:
 	mkdir -p -m 755 $(INSTALL_ROOT)/DEBIAN
 	sed -e "s,%VERSION%,$(RELEASE)," control > $(INSTALL_ROOT)/DEBIAN/control
 	cp copyright preinst postinst prerm postrm ${INSTALL_ROOT}/DEBIAN
+	rm -rf ${INSTALL_ROOT}/usr/include
 	dpkg-deb --build $(INSTALL_ROOT)
 	mkdir -p $(ARTIFACTS)
 	cp $(PKGNAME).deb $(ARTIFACTS)

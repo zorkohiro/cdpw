@@ -1,0 +1,17 @@
+Package: cdpw-orthanc
+Version: %VERSION%
+Section: base
+Priority: optional
+Architecture: all
+Depends: adduser, dcmtk, locales, libcivetweb1 (>= 1), tzdata, libssl-dev, libboost-filesystem1.83.0 (>= 1.83.0),
+ libboost-iostreams1.83.0 (>= 1.83.0), libboost-locale1.83.0 (>= 1.83.0), libboost-thread1.83.0 (>= 1.83.0), libc6 (>= 2.38),
+ libcurl4t64 (>= 7.16.2), libdcmtk17t64 (>= 3.6.7), libgcc-s1 (>= 3.3.1), libjpeg8 (>= 8c), libjsoncpp25 (>= 1.9.5),
+ liblua5.3-0, libpng16-16t64 (>= 1.6.2), libprotobuf32 (>= 3.21.12), libpugixml1v5 (>= 1.14-0.1), libsqlite3-0 (>= 3.7.3),
+ libssl3t64 (>= 3.0.0), libstdc++6 (>= 13.1), libuuid1 (>= 2.16), zlib1g (>= 1:1.2.0)
+Conflicts: kp-report
+Maintainer: Matthew Jacob <lydianconcepts@gmail.com>
+Description: Build and Packaging of Orthanc for CDPW
+ This just builds the Orthanc server into our own package
+ suitable for Ubuntu. It has no autostart capability.
+ .
+ See https://www.orthanc-server.com.

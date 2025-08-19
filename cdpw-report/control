@@ -1,0 +1,11 @@
+Package: cdpw-report
+Version: %VERSION%
+Section: base
+Priority: optional
+Architecture: all
+Depends: cdpw-orthanc, python3-tk, cups-bsd, enscript, curl
+Maintainer: Matthew Jacob <lydianconcepts@gmail.com>
+Description: Kaiser Permanente Report Writer Plugin for Orthanc
+ This is the plugin and auxillary scripts data to create imaging
+ study reports in conjunction with reviewing images being viewed
+ via Orthanc
