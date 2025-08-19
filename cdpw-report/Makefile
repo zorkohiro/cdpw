@@ -4,7 +4,7 @@
 MAJORV  ?= 1
 MINORV  ?= 2
 RLEASE  ?= 0
-BUILDV	?= -1
+BUILDV	?= -3
 BASE    := cdpw-report
 RELEASE := $(MAJORV).$(MINORV)-$(RLEASE)${BUILDV}
 PKGNAME := $(BASE)-$(RELEASE)
@@ -12,7 +12,11 @@ PKGNAME := $(BASE)-$(RELEASE)
 ARTIFACTS ?= ../artifacts
 
 INSTALL_ROOT = $(CURDIR)/$(PKGNAME)
-KPLIB = ${INSTALL_ROOT}/usr/lib/${BASE}
+#
+# Note that we are still putting Templates in /usr/lib/kp-report
+# until we fix the CPP and JS code to used cdpw instead.
+#
+KPLIB = ${INSTALL_ROOT}/usr/lib/kp-report
 TDIR = Templates
 
 CMAKE_ARGS= .. -DCMAKE_INSTALL_PREFIX=$(INSTALL_ROOT)/usr -DALLOW_DOWNLOADS=ON -DCMAKE_BUILD_TYPE=Release
@@ -38,6 +42,8 @@ all:	.setup .setup_cmake .built
 	cd Build && $(MAKE) install
 	mkdir -p ${KPLIB}/${TDIR}
 	for c in ${CURDIR}/${TDIR}/*.json; do cp -f $$c ${KPLIB}/${TDIR}; done
+	mkdir -p ${INSTALL_ROOT}/usr/bin
+	for c in ${CURDIR}/Scripts/*; do cp -f $$c ${INSTALL_ROOT}/usr/bin/`basename $$c`; done
 	touch $@
 
 install:	all .sub_install
