@@ -1,0 +1,19 @@
+Finish code_dark_study_tool which will invoke both code_dark_rptgen and the
+OHIF tool as needed so that study selection/edit can be done from a list
+of "to do" or "to sign" or "to print" items.
+
+Fix code_dark_rptgen to be on top of a scrollable canvas so that we don't end up
+with a report template that is taller than any available monitor (unlikely)
+
+Incorporate kernel package build for fix to amdgpu ---
+
+Make amdgpu just a module to load- possibly with a different name and a blacklist of the
+original to avoid having to build a whole set of packages ---
+
+Update cdpw-report to make sure it builds against 1.12.9
+
+Fix Viewer download for cdpw-ohif each time it is built.
+
+Make bootable key a caspar based self expanding to use all of a USB after first boot.
+
+Make root read-only with overalayfs and have an option to reset the system.

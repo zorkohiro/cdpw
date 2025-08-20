@@ -5,14 +5,18 @@
 
 import tkinter as tk
 from tkinter import messagebox
+from os import path as pp
+import json
 import requests
 import subprocess
 import argparse
 
 """ Variables and Constants """
+REPORTDIR = "/code_dark/reports"
+STUDYURL = "http://localhost:8042/studies"
 ListAllStudies = "List All Studies"
-StudiesToReview = "Studies To Begin Review"
-StudiesToEdit = "Studies to Continue Editing"
+StudiesToReview = "Studies To Begin Reviewing"
+StudiesToEdit = "Studies to Continue Reviewing"
 StudiesToSign = "Studies to Sign"
 StudiesToPrint = "Studies to Print"
 
@@ -29,26 +33,37 @@ if args['fontsize']:
     fontsize = int(args['fontsize'])
 
 
-""" Data handlers """
-def all_studies():
-    response = requests.get("http://localhost:8042/studies")
-    if response.status_code != 200:
-        messagebox.showerror("cannot find any studies")
-        return
+""" Button handlers """
+def show_dicom(uuid, js):
+    sw = tk.Tk()
+    sw.title(uuid + " DICOM data")
+    txt = tk.Text(sw, height=40, width=80)
+    scroll = tk.Scrollbar(sw)
+    txt.configure(yscrollcommand=scroll.set)
+    txt.pack(side=tk.LEFT)
+    txt.insert(tk.END, json.dumps(js, indent=2))
+    sw.mainloop()
+
+""" Study Table construction and presentation """
+#
+#
+# Present the passed array of studies as a table with the passed title
+# 
+# To the right of each table entry is a set of action buttons (still to be formalized)
+#
+def present_table(title, ulist):
     header = False
     rowvar = 1
     nr = tk.Tk()
-    nr.title("All Studies")
-    ss = response.json()
-    print("number of uuids", len(ss))
+    nr.title(title)
 
-    for suuid in response.json():
-        srsp = requests.get("http://localhost:8042/studies/" + suuid)
+    for suuid in ulist:
+        srsp = requests.get(STUDYURL + "/" + suuid)
         if srsp.status_code != 200:
             continue
 
         try:
-            result = subprocess.run(["/usr/bin/GetStudyDate", "-r", suuid], capture_output=True, text=True)
+            result = subprocess.run(["GetStudyDate", "-r", suuid], capture_output=True, text=True)
             if result.returncode != 0:
                 print("cannot get study date for" + suuid + ":", result.returnconde)
                 continue
@@ -83,36 +98,171 @@ def all_studies():
             x = tk.Entry(nr, width=32, font=("Courier",fontsize,'bold'))
             x.grid(row=rowvar, column=3)
             x.insert(tk.END, "Study Date")
+
+            """ XXX Need a "state" column here of where we are with this study """
+
             header = True
             rowvar = rowvar + 1
 
+        """ Constant study related columns """
         x = tk.Entry(nr,font=(fontfamily,fontsize))
         x.grid(row=rowvar, column=0)
         x.insert(tk.END, patient["PatientName"])
+
         x = tk.Entry(nr,font=(fontfamily,fontsize))
         x.grid(row=rowvar, column=1)
         x.insert(tk.END, patient["PatientID"])
+
         x = tk.Entry(nr,font=(fontfamily,fontsize))
         x.grid(row=rowvar, column=2)
         x.insert(tk.END, maindcm["AccessionNumber"])
+
         x = tk.Entry(nr, width=32,font=("Courier",fontsize))
         x.grid(row=rowvar, column=3)
         x.insert(tk.END, dst)
+
+        """ Action buttons """
+        x = tk.Button(nr, text = 'Show DICOM', width = 10, command = lambda u = suuid, j = sjsn : show_dicom(u, j))
+        x.grid(sticky=tk.W, column=4, row=rowvar)
+
         rowvar = rowvar + 1
 
     nr.mainloop()
 
-def studies_to_do():
-    messagebox.showinfo("", StudiesToReview)
+def all_studies():
+    response = requests.get(STUDYURL)
+    if response.status_code != 200:
+        messagebox.showerror("Cannot find any studies at all!")
+        return
+    sulist = response.json()
+    present_table("All " + str(len(sulist)) + " Studies", sulist)
+
+def studies_to_review():
+    """
+    Begin review of studies that haven't been reviewed yet
+
+    A study is in this state if there is no <UUID>.json in /code_dark/reports.
+    We have not looked at it at all.
+    """
+    response = requests.get(STUDYURL)
+    if response.status_code != 200:
+        messagebox.showerror("Cannot find any studies at all!")
+        return
+    sulist = response.json()
+
+    out = []
+    for uu in sulist:
+        jsfile = REPORTDIR + "/" + uu + ".json"
+        if pp.exists(jsfile) is False:
+            out.append(uu)
+    ns = len(out)
+    if ns == 0:
+        messagebox.showinfo("", "No studies are available in this state")
+    elif ns == 1:
+        present_table("One Study to begin reviewing", out)
+    else:
+        present_table(str(ns) + " Studies to begin reviewing", out)
 
 def studies_to_edit():
-    messagebox.showinfo("", StudiesToEdit)
+    """
+    Continue review of studies that have been reviewed at least partially already.
+
+    A study is in this state if there is a <UUID>.json in /code_dark/reports and
+    loading data from that json indicates that the study has not been signed.
+    """
+    response = requests.get(STUDYURL)
+    if response.status_code != 200:
+        messagebox.showerror("Cannot find any studies at all!")
+        return
+    sulist = response.json()
+
+    out = []
+    for uu in sulist:
+        jsfile = REPORTDIR + "/" + uu + ".json"
+        if pp.exists(jsfile):
+            """ Now load report data the file for this study """
+            json_data = []
+            with open(jsfile, "r") as infile:
+                json_data = json.load(infile)
+            if not json_data["signed"]:
+                out.append(uu)
+    ns = len(out)
+    if ns == 0:
+        messagebox.showinfo("", "No studies are available in this state")
+    elif ns == 1:
+        present_table("One Study to continue reviewing", out)
+    else:
+        present_table(str(ns) + " Studies to continue reviewing", out)
 
 def studies_to_sign():
-    messagebox.showinfo("", StudiesToSign)
+    """
+    Find studies which are ready to sign as a list.
+
+    A study is in this state if there is a <UUID>.json in /code_dark/reports and
+    loading data from that json indicates that the study has met the criteria
+    for being signed. The first criteria is that it isn't now signed!
+    """
+    response = requests.get(STUDYURL)
+    if response.status_code != 200:
+        messagebox.showerror("Cannot find any studies at all!")
+        return
+    sulist = response.json()
+
+    out = []
+    for uu in sulist:
+        jsfile = REPORTDIR + "/" + uu + ".json"
+        if pp.exists(jsfile):
+            """ Now load report data the file for this study """
+            json_data = []
+            with open(jsfile, "r") as infile:
+                json_data = json.load(infile)
+            if not json_data["signed"]:
+                """ XXX GET OTHER CRITERIA- MAYBE HAVE AN EXTERNAL SCRIPT TO USE XXX """
+                if json_data["signer"] != "":
+                    out.append(uu)
+    ns = len(out)
+    if ns == 0:
+        messagebox.showinfo("", "No studies are available in this state")
+    elif ns == 1:
+        present_table("One Study ready for signing", out)
+    else:
+        present_table(str(ns) + " Studies ready for signing", out)
 
 def studies_to_print():
-    messagebox.showinfo("", StudiesToPrint)
+    """
+    Find studies which are ready to print.
+
+    A study is in this state if there is a <UUID>.json in /code_dark/reports and
+    loading data from that json indicates that the study has been signed
+    but not printed
+
+    XXX printed database entry not yet implemented- that also means that we have
+    XXX to open the json file for writing. In general we probably need locking
+    XXX to not compete with rptgen
+    """
+    response = requests.get(STUDYURL)
+    if response.status_code != 200:
+        messagebox.showerror("Cannot find any studies at all!")
+        return
+    sulist = response.json()
+
+    out = []
+    for uu in sulist:
+        jsfile = REPORTDIR + "/" + uu + ".json"
+        if pp.exists(jsfile):
+            """ Now load report data the file for this study """
+            json_data = []
+            with open(jsfile, "r") as infile:
+                json_data = json.load(infile)
+            if json_data["signed"]: # and not printed
+                out.append(uu)
+    ns = len(out)
+    if ns == 0:
+        messagebox.showinfo("", "No studies are available in this state")
+    elif ns == 1:
+        present_table("One Study ready for signing", out)
+    else:
+        present_table(str(ns) + " Studies ready for signing", out)
 
 """ Begin Main Code section """
 
@@ -122,7 +272,7 @@ root.title("Code Dark Study Tool")
 btn = tk.Button(root, text=ListAllStudies, command=all_studies)
 btn.grid(sticky=tk.E+tk.N, row=5, column=0)
 
-btn = tk.Button(root, text=StudiesToReview, command=studies_to_do)
+btn = tk.Button(root, text=StudiesToReview, command=studies_to_review)
 btn.grid(sticky=tk.E+tk.N, row=5, column=1)
 
 btn = tk.Button(root, text=StudiesToEdit, command=studies_to_edit)
