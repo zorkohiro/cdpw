@@ -5,9 +5,22 @@
 #  spawn_editor template_name uuid
 #
 if [[ -z "$KP_REPORT_TESTING" ]]; then
- export DISPLAY=:0
- export XDG_RUNTIME_DIR=/run/user/$UID
- export XAUTHORITY=$(ls ${XDG_RUNTIME_DIR}/.mutter*)
+ #
+ # This horrible stuff allows us to spawn an X application via
+ # a callout from a C++ program has no X support information
+ # since it is invoked vis systemd. This mutter nonsense
+ # is for gnome3 under Ubuntu 24.04 vanilla Canonical.
+ #
+ XDG_RUNTIME_DIR=/run/user/$UID
+ if [[ -d ${XDG_RUNTIME_DIR} ]]; then
+  export XDG_RUNTIME_DIR
+  export DISPLAY=:0
+  export XAUTHORITY=$(ls ${XDG_RUNTIME_DIR}/.mutter*)
+ elif [[ -f $HOME/.Xauthority ]]; then
+  # This is all a hack for using a tightvnc window with Xfce
+  export DISPLAY=:1
+  export XAUTHORITY=$HOME/.Xauthority
+ fi
  export PATH=/usr/local/bin:/usr/bin:/usr/sbin
  TPD=/usr/lib/kp-report/Templates
 else
