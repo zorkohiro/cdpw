@@ -4,9 +4,16 @@
 # Stop our systemd version of orthanc if we are removing.
 # Unmount /CODE_DARK if we are removing
 #
-if [ "$1" = "remove" ]; then
+case $1 in
+remove)
+ systemctl is-active --quiet cdpw_data_present.service && systemctl stop cdpw_data_present.service
  systemctl is-active --quiet cdpw.service && systemctl stop cdpw.service && pkill orthanc_checker
  lsmount | grep -q code_dark && umount /code_dark
+ ;;
+upgrade)
  systemctl is-active --quiet cdpw_data_present.service && systemctl stop cdpw_data_present.service
-fi
+ systemctl is-active --quiet cdpw.service && systemctl stop cdpw.service && pkill orthanc_checker
+*)
+ ;;
+esac
 exit 0

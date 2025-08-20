@@ -115,7 +115,7 @@ def save_n_exit():
         messagebox.showinfo("Changed", "System date and/or time has been changed.")
     """ Changed configuration items """
     aetp_changed = False
-    port = port_entry.get()
+    port = int(port_entry.get())
     if aetp_data[PT] != port:
         aetp_data[PT] = port
         aetp_changed = True
@@ -138,7 +138,7 @@ def save_n_exit():
             print("", file=ofile)
         messagebox.showinfo("Saved", "AET or DICOM Port changed- Orthanc will have to be restarted.")
         try:
-            result = subprocess.run(["/usr/bin/sudo", "-n", "systemctl", "restart", "orthanc"], capture_output=True, text=True)
+            result = subprocess.run(["/usr/bin/sudo", "-n", "systemctl", "restart", "cdpw"], capture_output=True, text=True)
             if result.returncode != 0:
                 messagebox.showerror("Error running Orthanc restart", result.stderr)
         except subprocess.CalledProcessError as e:

@@ -1,5 +1,13 @@
 #!/bin/sh
 set -e
 
-sed -i -e '/CODE_DARK/d' /etc/fstab
-systemctl daemon-reload
+case $1 in
+remove|purge)
+ sed -i -e '/CODE_DARK/d' /etc/fstab
+ systemctl daemon-reload
+ ;;
+upgrade)
+ systemctl restart cdpw_data_present.service
+ ;;
+esac
+
