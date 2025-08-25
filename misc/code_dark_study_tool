@@ -51,11 +51,11 @@ def show_dicom(uuid, js):
 # 
 # To the right of each table entry is a set of action buttons (still to be formalized)
 #
-def present_table(title, ulist):
+def present_table(title, ulist, button_creator):
     header = False
-    rowvar = 1
     nr = tk.Tk()
     nr.title(title)
+    rowvar = 1
 
     for suuid in ulist:
         srsp = requests.get(STUDYURL + "/" + suuid)
@@ -125,6 +125,9 @@ def present_table(title, ulist):
         x = tk.Button(nr, text = 'Show DICOM', width = 10, command = lambda u = suuid, j = sjsn : show_dicom(u, j))
         x.grid(sticky=tk.W, column=4, row=rowvar)
 
+        if button_creator != None:
+            button_creator(suuid, nr, 5, rowvar)
+
         rowvar = rowvar + 1
 
     nr.mainloop()
@@ -135,7 +138,40 @@ def all_studies():
         messagebox.showerror("Cannot find any studies at all!")
         return
     sulist = response.json()
-    present_table("All " + str(len(sulist)) + " Studies", sulist)
+    present_table("All " + str(len(sulist)) + " Studies", sulist, None)
+
+def edit_report(uuid):
+    print("edit_report", uuid)
+    result = subprocess.run(["code_dark_rptgen", "-j", "/code_dark/reports/" + str(uuid) + ".json" ], capture_output=True, text=True)
+    if result.returncode != 0:
+        messagebox.showerror("cannot edit study " + uuid + ":", result.returncode)
+        if result.stdout != "":
+            print("stdout", result.stdout)
+        if result.stderr != "":
+            print("stderr", result.stderr)
+    else:
+        if result.stdout:
+            print(result.stdout)
+
+def edit_button_add(uui, nr, col, row):
+    x = tk.Button(nr, text = 'Edit Study Report', width = 20, command = lambda u = uui : edit_report(u))
+    x.grid(sticky=tk.W, column=col, row=row)
+
+def review_study(uuid):
+    result = subprocess.run(["firefox", "http://localhost:8042/app/explorer.html#study?uuid=" + str(uuid)], capture_output=True, text=True)
+    if result.returncode != 0:
+        messagebox.showerror("cannot review study " +  str(uuid) + ":", result.returncode)
+        if result.stdout != "":
+            print("stdout", result.stdout)
+        if result.stderr != "":
+            print("stderr", result.stderr)
+    else:
+        if result.stdout:
+            print(result.stdout)
+
+def review_button_add(uui, nr, col, row):
+    x = tk.Button(nr, text = 'Begin Review', width = 12, command = lambda u = uui : review_study(u))
+    x.grid(sticky=tk.W, column=col, row=row)
 
 def studies_to_review():
     """
@@ -159,9 +195,9 @@ def studies_to_review():
     if ns == 0:
         messagebox.showinfo("", "No studies are available in this state")
     elif ns == 1:
-        present_table("One Study to begin reviewing", out)
+        present_table("One Study to begin reviewing", out, review_button_add)
     else:
-        present_table(str(ns) + " Studies to begin reviewing", out)
+        present_table(str(ns) + " Studies to begin reviewing", out, review_button_add)
 
 def studies_to_edit():
     """
@@ -190,9 +226,9 @@ def studies_to_edit():
     if ns == 0:
         messagebox.showinfo("", "No studies are available in this state")
     elif ns == 1:
-        present_table("One Study to continue reviewing", out)
+        present_table("One Study to continue reviewing", out, edit_button_add)
     else:
-        present_table(str(ns) + " Studies to continue reviewing", out)
+        present_table(str(ns) + " Studies to continue reviewing", out, edit_button_add)
 
 def studies_to_sign():
     """
@@ -224,9 +260,9 @@ def studies_to_sign():
     if ns == 0:
         messagebox.showinfo("", "No studies are available in this state")
     elif ns == 1:
-        present_table("One Study ready for signing", out)
+        present_table("One Study ready for signing", out, None)
     else:
-        present_table(str(ns) + " Studies ready for signing", out)
+        present_table(str(ns) + " Studies ready for signing", out, None)
 
 def studies_to_print():
     """
@@ -260,9 +296,9 @@ def studies_to_print():
     if ns == 0:
         messagebox.showinfo("", "No studies are available in this state")
     elif ns == 1:
-        present_table("One Study ready for signing", out)
+        present_table("One Study ready for signing", out, None)
     else:
-        present_table(str(ns) + " Studies ready for signing", out)
+        present_table(str(ns) + " Studies ready for signing", out, None)
 
 """ Begin Main Code section """
 
@@ -285,4 +321,3 @@ btn = tk.Button(root, text=StudiesToPrint, command=studies_to_print)
 btn.grid(sticky=tk.E+tk.N, row=5, column=4)
 
 root.mainloop()
-
