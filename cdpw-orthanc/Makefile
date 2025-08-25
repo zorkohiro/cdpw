@@ -4,14 +4,15 @@
 MAJORV  ?= 1
 MINORV  ?= 12
 RLEASE  ?= 9
-BUILDV	?=
+BUILDV	?= -1
 BASE    := cdpw-orthanc
+ORTHANC_RELEASE := ${MAJORV}.${MINORV}.${RLEASE}
 RELEASE := $(MAJORV).$(MINORV).$(RLEASE)$(BUILDV)
 PKGNAME := $(BASE)-$(RELEASE)
 DLCACHE := $(HOME)/Downloads
 
 ORTHANC_BASE  := https://orthanc.uclouvain.be/downloads/sources/orthanc
-ORTHANC_TBALL ?= Orthanc-$(RELEASE).tar.gz
+ORTHANC_TBALL ?= Orthanc-$(ORTHANC_RELEASE).tar.gz
 ORTHANC_FETCH = $(ORTHANC_BASE)/$(ORTHANC_TBALL)
 ORTHANC_LOCAL = $(DLCACHE)/$(ORTHANC_TBALL)
 
@@ -54,6 +55,7 @@ install:	all .sub_install
 	mkdir -p -m 755 $(INSTALL_ROOT)/DEBIAN
 	sed -e "s,%VERSION%,$(RELEASE)," control > $(INSTALL_ROOT)/DEBIAN/control
 	cp copyright preinst $(INSTALL_ROOT)/DEBIAN
+	rm -rf ${INSTALL_ROOT}/usr/include
 	dpkg-deb --build $(INSTALL_ROOT)
 	mkdir -p $(ARTIFACTS)
 	cp $(PKGNAME).deb $(ARTIFACTS)
