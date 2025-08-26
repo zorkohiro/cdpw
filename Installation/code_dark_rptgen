@@ -630,7 +630,7 @@ def create_report(rpt):
 def print_report():
     create_report(reportfl)
     try:
-        result = subprocess.run(["enscript", "-2", "-B", reportfl ], capture_output=True, text=True)
+        result = subprocess.run(["enscript", "-n", "2", "-B", reportfl ], capture_output=True, text=True)
         if result.returncode != 0:
             tk.messagebox.showerror("Error", "Subprocess Error", result.stderr)
     except subprocess.CalledProcessError as e:
