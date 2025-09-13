@@ -40,13 +40,14 @@ $(ORTHANC_LOCAL):
 	wget -q -O $(ORTHANC_LOCAL) $(ORTHANC_FETCH)
 
 .setup_ohif: ${DLCACHE} ${VIEWER_LOCAL}
+	mkdir -p OHIF && cd OHIF && if [ ! -f ${VIEWER_TBALL} ]; then cp -v ${VIEWER_LOCAL} .; fi
 	mkdir -p Build
 	cd Build && sudo ../Resources/CreateOHIFDist.sh
 	touch $@
 
 ${VIEWER_LOCAL}:
-	wget -q -o ${VIEWER_LOCAL} ${VIEWER_FETCH}
-	mkdir -p OHIF && cd OHIF && if [ ! -e ${VIEWER} ]; then ln -s ${VIEWER_LOCAL}; fi
+	mkdir -p $(DLCACHE)
+	wget -q -O ${VIEWER_LOCAL} ${VIEWER_FETCH}
 
 .setup_cmake:
 	cd Build && cmake $(CMAKE_ARGS)
