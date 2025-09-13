@@ -41,7 +41,7 @@ $(ORTHANC_LOCAL):
 
 .setup_ohif: ${DLCACHE} ${VIEWER_LOCAL}
 	mkdir -p Build
-	cd Build && ../Resources/CreateOHIFDist.sh
+	cd Build && sudo ../Resources/CreateOHIFDist.sh
 	touch $@
 
 ${VIEWER_LOCAL}:
