@@ -2,7 +2,12 @@ HOW tO BUILD
 
 1. Install and run on Ubuntu 24.04.
 
-2. Install these packages:
+2. Allow password-less sudo for the build user.
+
+This is unfortunately now required for building the OHIF
+plugin for orthanc.
+
+3. Install these packages:
 
 	build-essential
 	cmake
@@ -28,12 +33,13 @@ HOW tO BUILD
 	uuid-dev
 	zlib1g-dev
 
-3. Set up docker for users
+4. Set up docker for users to run
 
-Install docker, any way you like, such that you as a normal
-user can run docker.
+Install docker, such that you as a normal user can run docker.
 
-4. Allow password-less sudo for the build user.
+sudo apt install -y curl apt-transport-https ca-certificates software-properties-common
+sudo apt install -y docker.io
+sudo usermod -aG docker $USER
+<reboot>
+docker run hello-world
 
-This is unfortunately now required for building the OHIF
-plugin for orthanc.
