@@ -14,11 +14,15 @@ import argparse
 """ Variables and Constants """
 REPORTDIR = "/code_dark/reports"
 STUDYURL = "http://localhost:8042/studies"
-ListAllStudies = "List All Studies"
+browser = "konqueror"
+NoStudies = "No such studies"
+NoStudiesPresent = "No studies present"
+CannotReview = "Cannot Open"
 StudiesToReview = "Studies To Begin Reviewing"
 StudiesToEdit = "Studies to Continue Reviewing"
-StudiesToSign = "Studies to Sign"
-StudiesToPrint = "Studies to Print"
+StudiesToSign = "Studies ready to sign"
+StudiesToPrint = "Signed studies ready to Print"
+ListAllStudies = "List All Studies"
 
 fontsize = 12
 fontfamily = "Times"
@@ -27,10 +31,13 @@ fontfamily = "Times"
 # Process command line arguments if any
 #
 parser = argparse.ArgumentParser(description="Code Dark Report Entry Package")
+parser.add_argument("-b", "--browser", help="which web browser to user")
 parser.add_argument("-f", "--fontsize", help="Font Size (default 12)")
 args = vars(parser.parse_args())
 if args['fontsize']:
     fontsize = int(args['fontsize'])
+if args['browser']:
+    browser = int(args['browser'])
 
 
 """ Button handlers """
@@ -135,7 +142,7 @@ def present_table(title, ulist, button_creator):
 def all_studies():
     response = requests.get(STUDYURL)
     if response.status_code != 200:
-        messagebox.showerror("Cannot find any studies at all!")
+        messagebox.showerror(title="Error", message="Cannot find any studies at all!")
         return
     sulist = response.json()
     present_table("All " + str(len(sulist)) + " Studies", sulist, None)
@@ -144,30 +151,26 @@ def edit_report(uuid):
     print("edit_report", uuid)
     result = subprocess.run(["code_dark_rptgen", "-j", "/code_dark/reports/" + str(uuid) + ".json" ], capture_output=True, text=True)
     if result.returncode != 0:
-        messagebox.showerror("cannot edit study " + uuid + ":", result.returncode)
-        if result.stdout != "":
-            print("stdout", result.stdout)
+        messagebox.showerror(title="Error", message=CannotReview)
         if result.stderr != "":
-            print("stderr", result.stderr)
+            print("stderr:", result.stderr)
     else:
         if result.stdout:
-            print(result.stdout)
+            print("stdout:", result.stdout)
 
 def edit_button_add(uui, nr, col, row):
     x = tk.Button(nr, text = 'Edit Study Report', width = 20, command = lambda u = uui : edit_report(u))
     x.grid(sticky=tk.W, column=col, row=row)
 
 def review_study(uuid):
-    result = subprocess.run(["firefox", "http://localhost:8042/app/explorer.html#study?uuid=" + str(uuid)], capture_output=True, text=True)
+    result = subprocess.run([browser, "http://localhost:8042/app/explorer.html#study?uuid=" + str(uuid)], capture_output=True, text=True)
     if result.returncode != 0:
-        messagebox.showerror("cannot review study " +  str(uuid) + ":", result.returncode)
-        if result.stdout != "":
-            print("stdout", result.stdout)
+        messagebox.showerror(title="Error", message=CannotReview)
         if result.stderr != "":
-            print("stderr", result.stderr)
+            print("stderr:", result.stderr)
     else:
         if result.stdout:
-            print(result.stdout)
+            print("stdout:", result.stdout)
 
 def review_button_add(uui, nr, col, row):
     x = tk.Button(nr, text = 'Begin Review', width = 12, command = lambda u = uui : review_study(u))
@@ -182,7 +185,7 @@ def studies_to_review():
     """
     response = requests.get(STUDYURL)
     if response.status_code != 200:
-        messagebox.showerror("Cannot find any studies at all!")
+        messagebox.showerror(message=NoStudiesPresent)
         return
     sulist = response.json()
 
@@ -193,7 +196,7 @@ def studies_to_review():
             out.append(uu)
     ns = len(out)
     if ns == 0:
-        messagebox.showinfo("", "No studies are available in this state")
+        messagebox.showinfo("", NoStudies)
     elif ns == 1:
         present_table("One Study to begin reviewing", out, review_button_add)
     else:
@@ -224,7 +227,7 @@ def studies_to_edit():
                 out.append(uu)
     ns = len(out)
     if ns == 0:
-        messagebox.showinfo("", "No studies are available in this state")
+        messagebox.showinfo("", NoStudies)
     elif ns == 1:
         present_table("One Study to continue reviewing", out, edit_button_add)
     else:
@@ -240,7 +243,7 @@ def studies_to_sign():
     """
     response = requests.get(STUDYURL)
     if response.status_code != 200:
-        messagebox.showerror("Cannot find any studies at all!")
+        messagebox.showerror(message=NoStudiesPresent)
         return
     sulist = response.json()
 
@@ -258,7 +261,7 @@ def studies_to_sign():
                     out.append(uu)
     ns = len(out)
     if ns == 0:
-        messagebox.showinfo("", "No studies are available in this state")
+        messagebox.showinfo("", NoStudies)
     elif ns == 1:
         present_table("One Study ready for signing", out, None)
     else:
@@ -278,7 +281,7 @@ def studies_to_print():
     """
     response = requests.get(STUDYURL)
     if response.status_code != 200:
-        messagebox.showerror("Cannot find any studies at all!")
+        messagebox.showerror(message=NoStudiesPresent)
         return
     sulist = response.json()
 
@@ -294,7 +297,7 @@ def studies_to_print():
                 out.append(uu)
     ns = len(out)
     if ns == 0:
-        messagebox.showinfo("", "No studies are available in this state")
+        messagebox.showinfo("", NoStudies)
     elif ns == 1:
         present_table("One Study ready for signing", out, None)
     else:
@@ -304,20 +307,21 @@ def studies_to_print():
 
 root=tk.Tk()
 root.title("Code Dark Study Tool")
-
-btn = tk.Button(root, text=ListAllStudies, command=all_studies)
-btn.grid(sticky=tk.E+tk.N, row=5, column=0)
+root.minsize(width=300, height=150)
 
 btn = tk.Button(root, text=StudiesToReview, command=studies_to_review)
-btn.grid(sticky=tk.E+tk.N, row=5, column=1)
+btn.grid(sticky=tk.W+tk.N, row=5, column=0)
 
 btn = tk.Button(root, text=StudiesToEdit, command=studies_to_edit)
-btn.grid(sticky=tk.E+tk.N, row=5, column=2)
+btn.grid(sticky=tk.W+tk.N, row=6, column=0)
 
 btn = tk.Button(root, text=StudiesToSign, command=studies_to_sign)
-btn.grid(sticky=tk.E+tk.N, row=5, column=3)
+btn.grid(sticky=tk.W+tk.N, row=7, column=0)
 
 btn = tk.Button(root, text=StudiesToPrint, command=studies_to_print)
-btn.grid(sticky=tk.E+tk.N, row=5, column=4)
+btn.grid(sticky=tk.W+tk.N, row=8, column=0)
+
+btn = tk.Button(root, text=ListAllStudies, command=all_studies)
+btn.grid(sticky=tk.W+tk.N, row=9, column=0)
 
 root.mainloop()
