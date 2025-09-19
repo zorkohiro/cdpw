@@ -4,21 +4,118 @@ You need to build separate kernel packages, per this URL:
 
 https://canonical-kteam-docs.readthedocs-hosted.com/en/public/how-to/build-kernel.html
 
-and use them to upgrade the CODE_DARK image we build. This cannot be
-easily automated at this time.
+and use them to upgrade the CODE_DARK image we build.
 
-The amdgpu.c gets inserted or the patch applied into the tree just before
+This cannot be easily automated.
+
+The amdgpu.c driver file gets the patch applied from the tree.
 the build binary step.
 
-Supplements/modifications to instructions marked with '*':
+Follow the instructions from the web page for getting all of the pre-requisite
+packages installed (Installed required packages), but do not build the source
+for the current running version.
 
- *change directory into kernel in the checked out kp-report tree- use it as a build location.
- <follow instructions from website for downloading kernel build packages and source)
- ...
- * vi debian.master/changelog <change version at top to, say, 1020)
- ..
- cd linux-6.8.0
- ...
- fakeroot debian/rules clean
- *patch -p1 < ../amdgpu_drv.c.diff
- fakeroot debian/rules binary
+The best way I've found to build this since the instructions are less than
+clear and fundamentally incorrect in some ways, is to clone the current
+leading edge of the noble (24.04) kernel development and build from that.
+This will get you a definite better/newer version to boot and get you out
+of trying to install the same revision on a single kernel revisions system
+which is definitely not recommended (the instructions for adding a version
+to the kernel build for the kernel source for the existing kernel version
+do not, in fact, work at this time).
+
+Follow these steps in this kernel subdirectory:
+
+  git clone git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/noble
+  cd noble
+  git tag -l | grep Ubuntu | \
+   grep <the end of the output of 'uname -r', i.e. trimming the '-' on forward>
+
+This should get you a list of versions of which the current version you are running
+under is closely related to. Pick one that is, based upon the number *after* the -
+as the one you'll settle on.
+
+Example- say you are running under Ubuntu 24.04.3. You are likely to have
+6.14.0-29-generic as the version, and the flavor will be hwe, e.g.:
+
+ Ubuntu-hwe-6.14-6.14.0-29.29_24.04.1
+
+Find the running version via uname -r:
+
+  mjacob@orthanc > uname -r
+  6.14.0-29-generic
+
+SEarch for similar branches with:
+
+  mjacob@orthanc > git tag -l |grep Ubuntu |grep 6.14.0
+  Ubuntu-hwe-6.14-6.14.0-15.15_24.04.1
+  Ubuntu-hwe-6.14-6.14.0-22.22_24.04.1
+  Ubuntu-hwe-6.14-6.14.0-23.23_24.04.1
+  Ubuntu-hwe-6.14-6.14.0-24.24_24.04.1
+  Ubuntu-hwe-6.14-6.14.0-24.24_24.04.2
+  Ubuntu-hwe-6.14-6.14.0-24.24_24.04.3
+  Ubuntu-hwe-6.14-6.14.0-25.25_24.04.1
+  Ubuntu-hwe-6.14-6.14.0-27.27_24.04.1
+  Ubuntu-hwe-6.14-6.14.0-28.28_24.04.1
+  Ubuntu-hwe-6.14-6.14.0-29.29_24.04.1
+  Ubuntu-hwe-6.14-6.14.0-32.32_24.04.1
+
+The latest tag is therefore Ubuntu-hwe-6.14-6.14.0-32.32_24.04.1.
+
+  git checkout -b code_dark Ubuntu-hwe-6.14-6.14.0-32.32_24.04.1
+  
+Update the amdgpu driver with our patch:
+
+  patch -p1 < ../amdgpu_drv.c.diff
+  git commit -am'add support for additional Barco adapters'
+
+(obviously look for failure to patch correctly!).
+
+Now you can just build more or less as documented, but here's
+a cheat sheet:
+
+  chmod a+x debian/rules
+  chmod a+x debian/scripts/*
+  chmod a+x debian/scripts/misc/*
+  fakeroot debian/rules clean
+  fakeroot debian/rules binary
+
+Go out for lunch and to the gym- even on a fast system with an
+SSD, it'll take over an hour.
+
+When it completes, the directory above will have all of the requisite
+packages. In the example case:
+
+  mjacob@orthanc > ls -1 ../*.deb
+  ../linux-buildinfo-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
+  ../linux-cloud-tools-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
+  ../linux-headers-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
+  ../linux-hwe-6.14-cloud-tools-6.14.0-32_6.14.0-32.32~24.04.1_amd64.deb
+  ../linux-hwe-6.14-headers-6.14.0-32_6.14.0-32.32~24.04.1_all.deb
+  ../linux-hwe-6.14-tools-6.14.0-32_6.14.0-32.32~24.04.1_amd64.deb
+  ../linux-image-unsigned-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
+  ../linux-lib-rust-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
+  ../linux-modules-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
+  ../linux-modules-extra-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
+  ../linux-modules-ipu6-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
+  ../linux-modules-ipu7-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
+  ../linux-modules-iwlwifi-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
+  ../linux-modules-usbio-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
+  ../linux-modules-vision-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
+  ../linux-tools-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
+
+You only really need 3:
+
+  linux-image-unsigned-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
+  linux-modules-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
+  linux-modules-extra-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
+
+Clean /var/tmp:
+  sudo rm -f /var/tmp/linux*.deb
+
+And copy these packages to /var/tmp and do:
+
+  sudo apt install /var/tmp/linux*.deb
+
+This should install and the next boot should give you a kernel with extra
+Barco support which is the only reason this is being done at all.
