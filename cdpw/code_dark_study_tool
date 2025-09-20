@@ -5,7 +5,8 @@
 
 import tkinter as tk
 from tkinter import messagebox
-from os import path as pp
+import os
+import fcntl
 import json
 import requests
 import subprocess
@@ -24,6 +25,7 @@ StudiesToReview = "Studies To Begin Reviewing"
 StudiesToEdit = "Studies to Continue Reviewing"
 StudiesToSign = "Studies ready to sign"
 StudiesToPrint = "Signed studies ready to Print"
+DeleteUnsigned = "Delete started but unsigned reports"
 ListAllStudies = "List All Studies"
 
 fontsize = 12
@@ -145,15 +147,8 @@ def present_table(title, ulist, button_creator):
 
     nr.mainloop()
 
-def all_studies():
-    response = requests.get(STUDYURL)
-    if response.status_code != 200:
-        messagebox.showerror(title="Error", message="Cannot find any studies at all!")
-        return
-    sulist = response.json()
-    present_table("All " + str(len(sulist)) + " Studies", sulist, None)
-
 def edit_report(uuid):
+    print("edit_report for " + str(uuid))
     logger.info("edit_report for " + str(uuid))
     try:
         pffx = subprocess.Popen([browser, "http://localhost:8042/app/explorer.html#study?uuid=" + str(uuid)])
@@ -161,14 +156,17 @@ def edit_report(uuid):
         print(f"An error: {e}")
         messagebox.showerror(title="Error", message="Could not invoke browser")
         return
+    print("spawned browser with pffx", pffx)
     result = subprocess.run(["code_dark_rptgen", "-j", "/code_dark/reports/" + str(uuid) + ".json" ], capture_output=True, text=True)
     if result.returncode != 0:
         messagebox.showerror(title="Error", message=CannotReview)
         if result.stderr != "":
             logger.error("stderr:", result.stderr)
     else:
+        print("returned from code_dark_rptgen")
         if result.stdout:
             logger.error("stdout:", result.stdout)
+    print("leaving edit_report")
 
 def edit_button_add(uui, nr, col, row):
     x = tk.Button(nr, text = 'Edit Study Report', width = 20, command = lambda u = uui : edit_report(u))
@@ -204,7 +202,7 @@ def studies_to_review():
     out = []
     for uu in sulist:
         jsfile = REPORTDIR + "/" + uu + ".json"
-        if pp.exists(jsfile) is False:
+        if os.path.exists(jsfile) is False:
             out.append(uu)
     ns = len(out)
     if ns == 0:
@@ -230,7 +228,7 @@ def studies_to_edit():
     out = []
     for uu in sulist:
         jsfile = REPORTDIR + "/" + uu + ".json"
-        if pp.exists(jsfile):
+        if os.path.exists(jsfile):
             """ Now load report data the file for this study """
             json_data = []
             with open(jsfile, "r") as infile:
@@ -262,7 +260,7 @@ def studies_to_sign():
     out = []
     for uu in sulist:
         jsfile = REPORTDIR + "/" + uu + ".json"
-        if pp.exists(jsfile):
+        if os.path.exists(jsfile):
             """ Now load report data the file for this study """
             json_data = []
             with open(jsfile, "r") as infile:
@@ -300,7 +298,7 @@ def studies_to_print():
     out = []
     for uu in sulist:
         jsfile = REPORTDIR + "/" + uu + ".json"
-        if pp.exists(jsfile):
+        if os.path.exists(jsfile):
             """ Now load report data the file for this study """
             json_data = []
             with open(jsfile, "r") as infile:
@@ -314,6 +312,86 @@ def studies_to_print():
         present_table("One Study ready for signing", out, None)
     else:
         present_table(str(ns) + " Studies ready for signing", out, None)
+
+def delete_report(uuid):
+    print("delete_report for " + str(uuid))
+    logger.info("delete_report for " + str(uuid))
+    jsfile = REPORTDIR + "/" + str(uuid) + ".json"
+    try:
+        f = open(jsfile, "r")
+    except FileNotFoundError:
+        print("file", jsfile, "not found")
+        logger.warning("file " + jsfile + " not found")
+        messagebox.showerror(title="Error", message="Report File not found")
+        return
+    except Exception as e:
+        print(f"exception: {e}")
+        messagebox.showerror(title="Error", message="File Error")
+        return
+    # Make sure it isn't currently being edited
+    lockfname = "/dev/shm/" + uuid + ".lock"
+    locket = open(lockfname, "a")
+    try:
+        fcntl.flock(locket.fileno(), fcntl.LOCK_NB + fcntl.LOCK_EX);
+    except OSError as e:
+        if e.errno == errno.EACCES or e.errno == errno.EAGAIN:
+            print(uuid, "already being edited")
+            messagebox.showerror("Error", "Study being edited")
+        else:
+            print(f"lock error {e}")
+            messagebox.showerror("Error", "Cannot access")
+        f.close()
+        locket.close()
+        return
+    os.unlink(jsfile)
+    f.close()
+    fcntl.flock(locket.fileno(), fcntl.LOCK_UN)
+    locket.close()
+
+def delete_button_add(uui, nr, col, row):
+    x = tk.Button(nr, text = 'Delete Report', width = 20, command = lambda u = uui : delete_report(u))
+    x.grid(sticky=tk.W, column=col, row=row)
+
+def studies_to_delete():
+    """
+    List studies that have been started but have not been signed and put
+    up a button to delete any reports in progess.
+
+    A study is in this state if there is a <UUID>.json in /code_dark/reports and
+    loading data from that json indicates that the study has not been signed.
+    """
+    response = requests.get(STUDYURL)
+    if response.status_code != 200:
+        messagebox.showerror("Cannot find any studies at all!")
+        return
+    sulist = response.json()
+
+    out = []
+    for uu in sulist:
+        jsfile = REPORTDIR + "/" + uu + ".json"
+        if os.path.exists(jsfile):
+            """ Now load report data the file for this study """
+            json_data = []
+            with open(jsfile, "r") as infile:
+                json_data = json.load(infile)
+            if not json_data["signed"]:
+                out.append(uu)
+    ns = len(out)
+    if ns == 0:
+        messagebox.showinfo("", NoStudies)
+        return
+    elif ns == 1:
+        present_table("One possible report to delete", out, delete_button_add)
+    else:
+        present_table(str(ns) + " possible reports to delete", out, delete_button_add)
+
+def all_studies():
+    response = requests.get(STUDYURL)
+    if response.status_code != 200:
+        messagebox.showerror(title="Error", message="Cannot find any studies at all!")
+        return
+    sulist = response.json()
+    present_table("All " + str(len(sulist)) + " Studies", sulist, None)
 
 """ Begin Main Code section """
 
@@ -333,7 +411,10 @@ btn.grid(sticky=tk.W+tk.N, row=7, column=0)
 btn = tk.Button(root, text=StudiesToPrint, command=studies_to_print)
 btn.grid(sticky=tk.W+tk.N, row=8, column=0)
 
-btn = tk.Button(root, text=ListAllStudies, command=all_studies)
+btn = tk.Button(root, text=DeleteUnsigned, command=studies_to_delete)
 btn.grid(sticky=tk.W+tk.N, row=9, column=0)
+
+btn = tk.Button(root, text=ListAllStudies, command=all_studies)
+btn.grid(sticky=tk.W+tk.N, row=10, column=0)
 
 root.mainloop()

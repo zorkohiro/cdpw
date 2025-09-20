@@ -169,7 +169,7 @@ except:
 lockfname = "/dev/shm/" + uuid + ".lock"
 lockit = open(lockfname, "a")
 try:
-    fcntl.lockf(lockit.fileno(), fcntl.LOCK_NB + fcntl.LOCK_EX);
+    fcntl.flock(lockit.fileno(), fcntl.LOCK_NB + fcntl.LOCK_EX);
 except:
     print("uuid", uuid, "already being edited")
     messagebox.showerror("Error", "Study already being edited")
