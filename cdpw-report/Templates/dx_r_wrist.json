@@ -11,6 +11,7 @@
   "signed": false,
   "signer": "",
   "signtime" : "",
+  "printed": false,
   "template": "dx_r_wrist",
   "history": {
     "patient_age": "",

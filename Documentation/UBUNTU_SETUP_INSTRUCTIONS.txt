@@ -2,7 +2,7 @@ Sat Aug  9 12:33:20 PM PDT 2025
 
 0. Required Hardware and Environment
 
-Get a  8GB USB flash drive to install the ubuntu install image on.
+Get a  8GB USB flash drive to put the ubuntu install image on.
 
 Get a 16GB USB Key to become the target of the install. You
 can certainly user a larger USB Key for the target of the install-
@@ -14,60 +14,99 @@ steps- but note that some careful steps need to be followed so as to
 not make randomly different base images due to the aggressive attempts
 by the ubuntu installer to update the latest sets of images.
 
-1. Copy Ubuntu 24.04.2 from the iso image, e.g.:
+1. Copy Ubuntu 24.04.3 from the iso image, e.g.:
 
- https://nnenix.mm.fcix.net/ubuntu-releases/24.04.2/ubuntu-24.04.2-desktop-amd64.iso
- sha256sum: d7fe3d6a0419667d2f8eff12796996328daa2d4f90cd9f87aa9371b362f987bf
+ https://releases.ubuntu.com/noble/ubuntu-24.04.3-desktop-amd64.iso
+ sha256sum: faabcf33ae53976d2b8207a001ff32f4e5daae013505ac7188c9ea63988f8328
 
-Create an install USB key from this with dd on a linux system or rufus on a Windows system.
-Boot it on any reasonable x86_64 system.
+Create the 8GB Install USB key from this with dd on a linux system or
+rufus on a Windows system.
 
-Select "Do not connect to the internet"
-Skip any 'update' installer questions.
+2. Create a Bootable Gold Image CDPW System
 
-Set the timezone you are in. If you booted
-up with an active internet connection it
-should have made a good guess already.
+Take the install key to any reasonable x86_64 system. Insert both it and the
+16GB USB Key you are going to use as the Gold image into the system.
 
-Select 'Saruman B Orthanc' as the name. Select 'orthanc' as the name of the system.
+Boot the install key (you'll have to hit F8 or F11 to get a 'boot from' menu
+to boot that install key).
+
+Once up, you should be able to start installation.
+
+
+Select 'Saruman B Orthanc' as the user name.
+Select 'orthanc' as the name of the system.
 Select 'orthanc' as the user, 'orthanc' as the password.
-Select the defaults and erase the whole disk and install it.
+
+Select the defaults and erase the whole disk and install to it.
+Make sure that is installing to the 16GB USB Gold Key
+
 Keep selection to require user password to log in.
 
-Reboot to installed USB key when the installation is done.
+Set the timezone you are in. If you booted up with an active internet connection it
+should have made a good guess already.
 
-2. Make sure code_dark USB storage key is available
+When the installation is done, reboot to gold master USB key. During the reboot
+process it will ask you to remove the installation USB key.
 
-Attach CODE_DARK USB storage key (and unlock it if its an Apricon USB encrypted drive)
-after it appears the system is almost up. See CDW_DATA_KEY_CREATION_INSTRUCTIONS.txt
-as to how to create this device.
+2. Upgrade the kernel
 
-Reboot when done.
+#
+# Upgrade kernel with updated amdgpu driver.
+#
+Upgrade the kernel packages to get the amdgpu driver fixes for multiple monitors.
+See the build instructions under kernel. This should already have been done
+for you on another system.
 
-3. Install our user level packages
+The modules you are interested in capturing out of the entire build will be something like:
 
-After we come up, do
+linux-image-unsigned-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
+linux-modules-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
+linux-modules-extra-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
+
+Fetch the updated kernel and drivers that have been already built for you like so:
+
+ mkdir -p /dev/shm/kupdate
+ cd /dev/shm/kupdate
+ wget https://feralsw.com/cdpw/1020_upgrade.tar
+ tar xf 1020_upgrade.tar
+ sudo apt install -y /dev/shm/kupdate/*.deb
+
+Reboot after they have installed. This should get you into a system
+with fixes to support the special Barco adapters used at Kaiser under Windows.
+
+3. Install our CDPW packages
+
+After we come up with the new kernel and driver, do
 
  sudo apt update
 
-This will refresh our package lists but not actually install anything.
+This will refresh our package lists and make sure we have an up to
+date network IP address for the Ubuntu package repositories.
 
-Then install base othanc:
+Fetch our latest set of installable packages with this command:
 
- sudo apt install -y orthanc
+ cd /var/tmp
+ wget https://feralsw.com/cdpw/cdpw-latest.tar
+ rm -f *.deb
+ tar -xf cdpw-latest.tar
+ sudo apt install -y /var/tmp/*.deb
 
-Then fetch the latest kp-report package via:
+Ignore and dismiss all alert boxes that may show up before things finish.
 
- cd /tmp
- wget https://feralsw.com/cdw/kp-report-latest.deb
- sudo apt install -y /tmp/kp-report-latest.deb
+As you continue along delete any popups asking to install updates.
 
-Ignore and dismiss all alert boxes that will then show up before things
-finish. As you continue along delete any popups asking to install updates.
+Find where code_dark_configurator and code_dark_study_tool icons got put onto the desktop.
+Do a pull right menu over them if they have a little red 'x' and select the "Allow Launch"
+option. This is an unfortunate aspect of Gnome3 that doesn't allow one to do this
+programmatically at installation time.
 
+------------------------------------------
+The following changes are more for making this a system that will be less distracting.
+They are optional at this point.
+------------------------------------------
 4. System Control panel changes
 
-Go to system settings.
+Go to system settings under the system menu.
 
 Go to Ubuntu Desktop and shrink the taskbar icons and place the taskbar
 on the bottom of the screen. Disable Home Folder on desktop.
@@ -124,48 +163,16 @@ For browser.sessionstore.max_resumed_crashes- set to 0.
 Enter http://localhost:8042 in chrome and bookmark it. You should
 have connected with the running orthanc server.
 
-6. Upgrade kernel
-
-#
-# Upgrade kernel with updated amdgpu driver.
-#
-
-Upgrade the kernel packages to get the amdgpu driver fixes for multiple monitors.
-See build instructions under kernel.
-
-The modules you are interested in capturing out of the entire build will be something like:
-
-linux-modules-6.8.0-62-generic_6.8.0-62.1020_amd64.deb
-linux-image-unsigned-6.8.0-62-generic_6.8.0-62.1020_amd64.deb
-
-Fetch the updated kernel and drivers:
-
- mkdir -p /tmp/kupdate
- cd /tmp/kupdate
- wget https://feralsw.com/cdw/1010_upgrade.tar
- tar xf 1010_upgrade.tar
- sudo apt install -y /tmp/kupdate/*.deb
-
-Get them onto the USB key you are building in /tmp and
-do 'sudo install linux-*.deb' on them and reboot.
-
 6. Install gdm-settings and set up new login screen with label
 
-Get a Kconsole
+Get a Kconsole up and issue:
 
 sudo apt install gdm-settings libglib2.0-dev-bin
 
 Look under the Apps panel for the GDM-SETTINGS icon and fire it up.
 
-Under Login Screen add /usr/lib/kp-report/code_dark_label_*.gif as the image.
+Under Login Screen add /usr/lib/cdpw/code_dark_label_*.gif as the image.
 You'll have to use ls to see what the latest label is.
 
-Under Appearance change type to image and add /usr/lib/kp-report/KaiserRedSmall.png as the image.
+Under Appearance change type to image and add /usr/lib/cdpw/KaiserRedSmall.png as the image.
 Hit the apply Button. You will likely have to enter the password for user orthanc.
-
-7. ICON Cleanup
-
-Find where code_dark_configurator and code_dark_study_tool icons got put onto the desktop.
-Do a pull right menu over it and select the "Allow Launch" over it if needed.
-
-XXX Still trying to figure out how to get the icons to be on the primary display

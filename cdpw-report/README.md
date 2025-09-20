@@ -1,4 +1,4 @@
-# kp-report
+# cdpw-report
 
 Kaiser Permanente Report Writer plugin for Orthanc
 ==================================================

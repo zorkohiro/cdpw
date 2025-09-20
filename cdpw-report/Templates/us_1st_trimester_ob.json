@@ -11,6 +11,7 @@
   "signed": false,
   "signer": "",
   "signtime" : "",
+  "printed": false,
   "template": "us_1st_trimester_ob",
   "history": {
     "patient_age": "",

@@ -11,7 +11,7 @@ Does it boot correctly to the USB key when you have the USB key inserted?
 If it does not, you may have to enter the BIOS to change configurations
 to be able to boot the USB key, either automatically or being able
 to hit escape and boot if from a boot menu. This is not necessarily
-a test of kp-report- this is a test of correct hardware configuration.
+a test of cdpw- this is a test of correct hardware configuration.
 
 Booting correctly means booting and being presented with a login screen.
 You should be able to log in with user orthanc, password orthanc.

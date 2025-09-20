@@ -11,6 +11,7 @@
   "signed": false,
   "signer": "",
   "signtime" : "",
+  "printed": false,
   "template": "dx_lumbar_spine",
   "history": {
     "patient_age": "",

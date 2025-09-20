@@ -11,6 +11,7 @@
   "signed": false,
   "signer": "",
   "signtime" : "",
+  "printed": false,
   "template": "mr_l_hip_woc",
   "history": {
     "patient_age": "",

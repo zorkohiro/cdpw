@@ -24,7 +24,7 @@ CannotReview = "Cannot Open"
 StudiesToReview = "Studies To Begin Reviewing"
 StudiesToEdit = "Studies to Continue Reviewing"
 StudiesToSign = "Studies ready to sign"
-StudiesToPrint = "Signed studies ready to Print"
+StudiesToPrint = "Signed studies ready to print"
 DeleteUnsigned = "Delete started but unsigned reports"
 ListAllStudies = "List All Studies"
 
@@ -283,11 +283,7 @@ def studies_to_print():
 
     A study is in this state if there is a <UUID>.json in /code_dark/reports and
     loading data from that json indicates that the study has been signed
-    but not printed
-
-    XXX printed database entry not yet implemented- that also means that we have
-    XXX to open the json file for writing. In general we probably need locking
-    XXX to not compete with rptgen
+    but not printed.
     """
     response = requests.get(STUDYURL)
     if response.status_code != 200:
@@ -303,15 +299,21 @@ def studies_to_print():
             json_data = []
             with open(jsfile, "r") as infile:
                 json_data = json.load(infile)
-            if json_data["signed"]: # and not printed
-                out.append(uu)
+            if json_data["signed"]:
+                # Handle an older database which doesn't have the printed key
+                try:
+                    if not json_data["printed"]:
+                        out.append(uu)
+                except:
+                    # If we don't have the printed key we'll assume it hasn't been printed
+                    out.append(uu)
     ns = len(out)
     if ns == 0:
         messagebox.showinfo("", NoStudies)
     elif ns == 1:
-        present_table("One Study ready for signing", out, None)
+        present_table("One signed study ready for printing", out, None)
     else:
-        present_table(str(ns) + " Studies ready for signing", out, None)
+        present_table(str(ns) + " studies ready for printing", out, None)
 
 def delete_report(uuid):
     print("delete_report for " + str(uuid))

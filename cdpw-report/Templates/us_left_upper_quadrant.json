@@ -11,6 +11,7 @@
   "signed": false,
   "signer": "",
   "signtime" : "",
+  "printed": false,
   "template": "us_left_upper_quadrant",
   "history": {
     "patient_age": "",

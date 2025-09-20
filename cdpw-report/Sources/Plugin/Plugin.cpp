@@ -34,7 +34,7 @@
 #include <ctype.h>
 
 #define ORTHANC_PLUGIN_NAME "report"
-#define TEMPLATES_DIR       "/usr/lib/kp-report/Templates"
+#define TEMPLATES_DIR       "/usr/lib/cdpw/Templates"
 #define EDITOR              "/usr/bin/spawn_editor"
 
 /*#sizeof (emsstatic OrthancPluginContext* context = NULL;*/
@@ -253,8 +253,8 @@ extern "C"
     }
 
     OrthancPlugins::SetDescription(ORTHANC_PLUGIN_NAME, "Add support for Study Report Writing in Orthanc.");
-    OrthancPlugins::RegisterRestCallback<fetch_templates>("/kp-report/templates/([^/]*)", true /* thread safe */);
-    OrthancPlugins::RegisterRestCallback<create_report>("/kp-report/create", true /* thread safe */);
+    OrthancPlugins::RegisterRestCallback<fetch_templates>("/cdpw/templates/([^/]*)", true /* thread safe */);
+    OrthancPlugins::RegisterRestCallback<create_report>("/cdpw/create", true /* thread safe */);
 
     {
       std::string explorer;

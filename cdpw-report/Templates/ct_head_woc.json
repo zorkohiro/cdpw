@@ -11,6 +11,7 @@
   "signed": false,
   "signer": "",
   "signtime" : "",
+  "printed": false,
   "template": "ct_head_woc",
   "history": {
     "patient_age": "",

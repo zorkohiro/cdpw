@@ -6,64 +6,22 @@ Release 1.1 Dev Changes
    in some items (like age of patient). Further items may be presented
    in a new header at the top as read-only information for the radiologist
 
-Release 1.0-Beta-1.0-1
+ - add a code dark study tool which is a way to see the list of studies still either
+   needing to begin or continue reviewing, see studies that need to be signed, and
+   see studies that need to be printed. You can also delete reports begun but not
+   yet signed.
 
- Trivial changes
+ - get icons back on the desktop for both code dark configurator and code dark study tool
 
- Replace login bottom banner with Beta 1.0 instead of Alpha 1.0
+ - change all the packaging around and build more. We no longer depend upon any orthanc
+   packages from ubuntu itself- we only depend upon things like libboost and dcmtk. This
+   also allows us to build newer pieces since we're getting them direct from Orthanc
+   mercurial
 
- Package changes to kp-report-1.0-Beta-1.0-1
+- Have a build cache for things we need to download
 
-Release 1.0-Alpha-1.0-5
+- Solve some of the build problems we've begun to have with OHIF- this requires running
+  passwordless sudo for part of that built (for cleaning note that git clean -xdf won't
+  clean, silently, files that have root permissions in root owned subdirectories).
 
- Document removing of automatic page recovery on system restart in firefox.
- This never works correctly and just clutters things up.
-
- Errata: This isn't completely working at this point so you will get
- on startup. The notes are correct but the image wasn't made correctly
- with this respect.
-
- Remove networking from configurator tool. We will have people use standard
- Gnome desktop tools for network configuration.
-
- Improve setup instructions to where to get the current latest kernel updates
- from feralsw.com.
-
- Further cleanups to get rid of the software update notifier.
-
-Release 1.0-Alpha-1.0-4
-
- Correct some more documentation.
-
-Release 1.0-Alpha-1.0-3
-
-Retrieve the lost entry to add code dark icon
-under applications now that we have not been
-able to figure out how to make it work under
-Desktop.
-
-Correct some documentation.
-
-Release 1.0-Alpha-1.0-2
-
-Switch release to new base installation with lock screen
-and different login screen with label.
-
-Fix code_dark_configurator networking setup.
-
-
-Don't make uuid a required argument to code_dark_rptgen
-until we actually will do something with it.
-
-Add RELEASE_NOTES to source. Do more installation/removal tweaks.
-
-Switch name from CDW (Code Dark Workstation) to CDPW (Code Dark PACS Workstation).
-
-Add some pictures for login screen and label underneath login.
-There is a kaiser.png which is red. Then there is a label generated
-with (imagemagick installed):
-
- convert -background lightblue -fill blue -font Bookman-Lightitalic -pointsize 48 -size 940x \
-  caption:'Code Dark PACS Workstation, Alpha 1.0' label-Bookman-Lightitalic-alpha1.0.gif
-
-Generated under ubuntu24.
+- Continue to update the documentation as we go along. We've managed to move on to Ubuntu 24.04.3.

@@ -25,7 +25,7 @@ function ChooseTemplate(callback, id)
 
   items.append('<li data-role="list-divider">Report Templates</li>');
   $.ajax({
-    url: '../kp-report/templates/' + $.mobile.pageData.uuid,
+    url: '../cdpw/templates/' + $.mobile.pageData.uuid,
     type: 'GET',
     dataType: 'json',
     async: false,
@@ -76,7 +76,7 @@ function ChooseTemplate(callback, id)
 function CreateReport(resourceId)
 {
   var b = $('<a>')
-    .attr('id', 'kp-report')
+    .attr('id', 'cdpw')
     .attr('data-role', 'button')
     .attr('href', '#')
     .attr('data-theme', 'b') // blue
@@ -106,7 +106,7 @@ function CreateReport(resourceId)
             }
             var pdata = studyid + ":" + template_choice;
             $.ajax({
-              url: '../kp-report/create',
+              url: '../cdpw/create',
               type: 'POST',
               dataType: 'text',
               data: pdata,
@@ -136,21 +136,21 @@ $('#study').live('pagebeforeshow', function() {
 });
 $('#patient').live('pagebeforeshow', function() {
   if ($.mobile.pageData) {
-    $('#' + 'kp-report').remove();
+    $('#' + 'cdpw').remove();
   }
 });
 $('#series').live('pagebeforeshow', function() {
   if ($.mobile.pageData) {
-    $('#' + 'kp-report').remove();
+    $('#' + 'cdpw').remove();
   }
 });
 $('#instance').live('pagebeforeshow', function() {
   if ($.mobile.pageData) {
-    $('#' + 'kp-report').remove();
+    $('#' + 'cdpw').remove();
   }
 });
 $('#lookup').live('pagebeforeshow', function() {
   if ($.mobile.pageData) {
-    $('#' + 'kp-report').remove();
+    $('#' + 'cdpw').remove();
   }
 });
