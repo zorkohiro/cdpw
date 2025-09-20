@@ -10,11 +10,13 @@ import json
 import requests
 import subprocess
 import argparse
+import logging
 
 """ Variables and Constants """
 REPORTDIR = "/code_dark/reports"
+LOG = "/code_dark/logs/study_tool.log"
 STUDYURL = "http://localhost:8042/studies"
-browser = "konqueror"
+browser = "firefox"
 NoStudies = "No such studies"
 NoStudiesPresent = "No studies present"
 CannotReview = "Cannot Open"
@@ -39,6 +41,10 @@ if args['fontsize']:
 if args['browser']:
     browser = int(args['browser'])
 
+logging.basicConfig(filename=LOG, filemode="a", encoding="utf-8", format="{asctime} - {levelname} - {message}",
+    style="{", datefmt="%m/%d/%Y %H:%M", level=logging.INFO)
+logger = logging.getLogger(__name__)
+logger.info("Code Dark Study Tool started")
 
 """ Button handlers """
 def show_dicom(uuid, js):
@@ -72,10 +78,10 @@ def present_table(title, ulist, button_creator):
         try:
             result = subprocess.run(["GetStudyDate", "-r", suuid], capture_output=True, text=True)
             if result.returncode != 0:
-                print("cannot get study date for" + suuid + ":", result.returnconde)
+                logger.warning("cannot get study date for" + suuid + ":", result.returnconde)
                 continue
         except subprocess.CalledProcessError as e:
-            print("Error getting study date for" + suuid + ":", e.output)
+            logger.error("Error getting study date for" + suuid + ":", e.output)
             continue
         dst = result.stdout.strip()
         sjsn = srsp.json()
@@ -148,15 +154,15 @@ def all_studies():
     present_table("All " + str(len(sulist)) + " Studies", sulist, None)
 
 def edit_report(uuid):
-    print("edit_report", uuid)
+    logger.info("edit_report", uuid)
     result = subprocess.run(["code_dark_rptgen", "-j", "/code_dark/reports/" + str(uuid) + ".json" ], capture_output=True, text=True)
     if result.returncode != 0:
         messagebox.showerror(title="Error", message=CannotReview)
         if result.stderr != "":
-            print("stderr:", result.stderr)
+            logger.error("stderr:", result.stderr)
     else:
         if result.stdout:
-            print("stdout:", result.stdout)
+            logger.error("stdout:", result.stdout)
 
 def edit_button_add(uui, nr, col, row):
     x = tk.Button(nr, text = 'Edit Study Report', width = 20, command = lambda u = uui : edit_report(u))
@@ -167,10 +173,10 @@ def review_study(uuid):
     if result.returncode != 0:
         messagebox.showerror(title="Error", message=CannotReview)
         if result.stderr != "":
-            print("stderr:", result.stderr)
+            logger.error("stderr:", result.stderr)
     else:
         if result.stdout:
-            print("stdout:", result.stdout)
+            logger.error("stdout:", result.stdout)
 
 def review_button_add(uui, nr, col, row):
     x = tk.Button(nr, text = 'Begin Review', width = 12, command = lambda u = uui : review_study(u))
