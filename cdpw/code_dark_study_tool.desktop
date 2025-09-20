@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Code Dark Study Tool
+Comment=Code Dark Study Tool
+Exec=/usr/bin/code_dark_study_tool
+Icon=/usr/share/icons/Humanity/apps/16/accessories-text-editor.svg
+Terminal=false
+Type=Application
+

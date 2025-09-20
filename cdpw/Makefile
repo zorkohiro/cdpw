@@ -4,7 +4,7 @@
 MAJORV  ?= 1
 MINORV  ?= 0
 RLEASE  ?= 1
-BUILDV  ?= -6
+BUILDV  ?= -8
 BASE    := cdpw
 RELEASE := $(MAJORV).$(MINORV).$(RLEASE)$(BUILDV)
 PKGNAME := $(BASE)-$(RELEASE)
@@ -23,8 +23,10 @@ install:
 	install -D -m 644 configurator.json ${CDPW_LIB}/configurator.json
 	install -D -m 644 cdpw.json ${CDPW_LIB}/cdpw.json
 	install -D -m 755 code_dark_configurator.desktop ${INSTALL_ROOT}/usr/share/applications/code_dark_configurator.desktop
+	install -D -m 755 code_dark_study_tool.desktop ${INSTALL_ROOT}/usr/share/applications/code_dark_study_tool.desktop
 	install -D -m 644 dicom_aet_port.json ${CDPW_LIB}/dicom_aet_port.json
 	install -D -m 755 code_dark_configurator ${INSTALL_ROOT}/usr/bin/code_dark_configurator
+	install -D -m 755 code_dark_study_tool ${INSTALL_ROOT}/usr/bin/code_dark_study_tool
 	install -D -m 755 orthanc_checker ${INSTALL_ROOT}/usr/sbin/orthanc_checker
 	install -D -m 440 orthanc.sudo ${INSTALL_ROOT}/etc/sudoers.d/orthanc
 	mkdir -p -m 755 $(INSTALL_ROOT)/DEBIAN

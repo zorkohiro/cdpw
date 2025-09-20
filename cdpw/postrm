@@ -4,6 +4,7 @@ set -e
 case $1 in
 remove|purge)
  rm -f ~orthanc/Desktop/code_dark_configurator.desktop
+ rm -f ~orthanc/Desktop/code_dark_study_tool.desktop
  sed -i -e '/CODE_DARK/d' /etc/fstab
  systemctl daemon-reload
  ;;

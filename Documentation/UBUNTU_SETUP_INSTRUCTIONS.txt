@@ -165,7 +165,7 @@ Hit the apply Button. You will likely have to enter the password for user orthan
 
 7. ICON Cleanup
 
-Find where code_dark_configurator icon got put onto the desktop. Do a pull right menu over it
-and select the "Allow Launch" over it if needed.
+Find where code_dark_configurator and code_dark_study_tool icons got put onto the desktop.
+Do a pull right menu over it and select the "Allow Launch" over it if needed.
 
-XXX Still trying to figure out how to get the icon to be on the primary display
+XXX Still trying to figure out how to get the icons to be on the primary display
