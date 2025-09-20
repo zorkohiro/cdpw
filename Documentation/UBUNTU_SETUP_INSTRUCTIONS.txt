@@ -162,3 +162,10 @@ You'll have to use ls to see what the latest label is.
 
 Under Appearance change type to image and add /usr/lib/kp-report/KaiserRedSmall.png as the image.
 Hit the apply Button. You will likely have to enter the password for user orthanc.
+
+7. ICON Cleanup
+
+Find where code_dark_configurator icon got put onto the desktop. Do a pull right menu over it
+and select the "Allow Launch" over it if needed.
+
+XXX Still trying to figure out how to get the icon to be on the primary display
