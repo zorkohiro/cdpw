@@ -154,7 +154,13 @@ def all_studies():
     present_table("All " + str(len(sulist)) + " Studies", sulist, None)
 
 def edit_report(uuid):
-    logger.info("edit_report", uuid)
+    logger.info("edit_report for " + str(uuid))
+    try:
+        pffx = subprocess.Popen([browser, "http://localhost:8042/app/explorer.html#study?uuid=" + str(uuid)])
+    except Exception as e:
+        print(f"An error: {e}")
+        messagebox.showerror(title="Error", message="Could not invoke browser")
+        return
     result = subprocess.run(["code_dark_rptgen", "-j", "/code_dark/reports/" + str(uuid) + ".json" ], capture_output=True, text=True)
     if result.returncode != 0:
         messagebox.showerror(title="Error", message=CannotReview)
