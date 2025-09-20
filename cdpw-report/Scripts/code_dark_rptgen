@@ -36,7 +36,8 @@ import datetime
 import json
 import textwrap
 import argparse
-from os import path as p
+import os
+import fcntl
 
 #################################################################################################
 #
@@ -102,7 +103,7 @@ parser.add_argument("-f", "--fontsize", help="Font Size (default 12)")
 args = vars(parser.parse_args())
 
 jsonfile=args['json']
-reportfl=report_dir + '/' + p.basename(jsonfile.replace(".json", ".txt"))
+reportfl=report_dir + '/' + os.path.basename(jsonfile.replace(".json", ".txt"))
 
 if args['report_dir']:
     report_dir = args['report_dir']
@@ -161,6 +162,18 @@ try:
         json_data[HI][PA] = json_data["yrold"]
 except:
     pass
+
+#
+# Check to see if the file is already being edited
+#
+lockfname = "/dev/shm/" + uuid + ".lock"
+lockit = open(lockfname, "a")
+try:
+    fcntl.lockf(lockit.fileno(), fcntl.LOCK_NB + fcntl.LOCK_EX);
+except:
+    print("uuid", uuid, "already being edited")
+    messagebox.showerror("Error", "Study already being edited")
+    os.exit(0)
 
 #
 # Structure of JSON data
