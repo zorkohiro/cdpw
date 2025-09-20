@@ -173,7 +173,7 @@ try:
 except:
     print("uuid", uuid, "already being edited")
     messagebox.showerror("Error", "Study already being edited")
-    os.exit(0)
+    os.Exit(0)
 
 #
 # Structure of JSON data
