@@ -1,5 +1,5 @@
- Alpha 1.1 Notes, version 1
- Sat Sep 20 02:12:45 PM PDT 2025
+ 1.1 Beta Notes, version 1
+ Sun Nov 23 02:35:08 PM PST 2025
 
 This is the source repository for building cdpw which is
 the add on software to an Ubuntu 24.04 based system that
@@ -14,10 +14,11 @@ This source tree can be built under Ubuntu 24.04 and a
 bootable USB key can be made from it. Instructions
 for making the key is also under Documentation.
 
-Code DARK PACS Workstation (cdpw) requires an additional USB storage device
-which is a secure APRICORN device which has a key pad to unlock. This
-is for patient data storage. That needs to be formatted a specific way.
-Note that for debugging purposes any USB key with the correct formatting
-will do. Instructions are in Documentation/CDW-DATA-KEY-CREATION-INSTRUCTIONS.txt.
+Code DARK PACS Workstation (cdpw) requires an additional USB
+storage device which is a secure APRICORN device which has a key
+pad to unlock. This is for patient data storage. That needs to be
+formatted a specific way.  Note that for debugging purposes any
+USB key with the correct formatting will do. Instructions are in
+Documentation/CDW-DATA-KEY-CREATION-INSTRUCTIONS.txt.
 
 For build instructions- see the file called 'BUILD' in this directory.

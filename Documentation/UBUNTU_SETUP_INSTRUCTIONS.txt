@@ -1,4 +1,4 @@
-Sat Aug  9 12:33:20 PM PDT 2025
+Sun Nov 23 02:29:11 PM PST 2025
 
 0. Required Hardware and Environment
 
@@ -171,7 +171,7 @@ sudo apt install gdm-settings libglib2.0-dev-bin
 
 Look under the Apps panel for the GDM-SETTINGS icon and fire it up.
 
-Under Login Screen add /usr/lib/cdpw/code_dark_label_*.gif as the image.
+Under Login Screen add /usr/lib/cdpw/code_dark_label_nv.gif as the image.
 You'll have to use ls to see what the latest label is.
 
 Under Appearance change type to image and add /usr/lib/cdpw/KaiserRedSmall.png as the image.

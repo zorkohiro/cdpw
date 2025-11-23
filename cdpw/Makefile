@@ -4,7 +4,7 @@
 MAJORV  ?= 1
 MINORV  ?= 0
 RLEASE  ?= 1
-BUILDV  ?= -9
+BUILDV  ?= -1
 BASE    := cdpw
 RELEASE := $(MAJORV).$(MINORV).$(RLEASE)$(BUILDV)
 PKGNAME := $(BASE)-$(RELEASE)
@@ -23,7 +23,7 @@ install:
 	install -D -m 644 configurator.json ${CDPW_LIB}/configurator.json
 	install -D -m 644 cdpw.json ${CDPW_LIB}/cdpw.json
 	install -D -m 644 dicom_aet_port.json ${CDPW_LIB}/dicom_aet_port.json
-	install -D -m 644 images/code_dark_label_dev_1.1.gif $(CDPW_LIB)/code_dark_label_dev_1.1.gif
+	install -D -m 644 images/code_dark_label_nv.gif $(CDPW_LIB)/code_dark_label_nv.gif
 	install -D -m 644 images/KaiserRedSmall.png $(CDPW_LIB)/KaiserRedSmall.png
 	install -D -m 755 code_dark_configurator.desktop ${INSTALL_ROOT}/usr/share/applications/code_dark_configurator.desktop
 	install -D -m 755 code_dark_study_tool.desktop ${INSTALL_ROOT}/usr/share/applications/code_dark_study_tool.desktop
