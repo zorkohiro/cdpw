@@ -1,0 +1,30 @@
+Mon Nov 24 01:57:06 PM PST 2025
+Version 1.0
+
+There is a set of sample studies collected from the internet available
+for test purposes after you have created a gold master and copied to
+a working system key where you also have CDPW secure data storage.
+
+This allows you to kick the tires before going live with studies
+from a live clinical setting.
+
+1. Fetch
+
+cd /tmp
+curl https://feralsw.com/cdpw/TestDataSet.tar.gz
+
+2. Unpack
+
+mkdir /tmp/data
+cd /tmp/data
+tar xf /tmp/TestDataSet.tar.gz
+
+3. Load into orthanc
+
+cd /tmp/data
+for i in *; do curl -X POST http://localhost:8042/instances --data-binary @${i}; done
+
+4. Clean up
+
+cd
+rm -rf /tmp/TestDataSet.tar.gz /tmp/data

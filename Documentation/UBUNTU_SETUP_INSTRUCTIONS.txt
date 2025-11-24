@@ -1,4 +1,4 @@
-Sun Nov 23 02:29:11 PM PST 2025
+Sun Nov 23 05:49:59 PM PST 2025
 
 0. Required Hardware and Environment
 
@@ -32,6 +32,12 @@ to boot that install key).
 
 Once up, you should be able to start installation.
 
+Do *not* update to a newer installer.
+
+Set "Do not use the internet"- in fact, disable the wired connection or
+unplug the wired cable. if you don't, some random newer kernel gets installed
+which could make the kernel upgrade step mentioned below difficult.
+
 
 Select 'Saruman B Orthanc' as the user name.
 Select 'orthanc' as the name of the system.
@@ -42,11 +48,12 @@ Make sure that is installing to the 16GB USB Gold Key
 
 Keep selection to require user password to log in.
 
-Set the timezone you are in. If you booted up with an active internet connection it
-should have made a good guess already.
+Set the timezone you are in (typically going to be Los Angeles).
 
 When the installation is done, reboot to gold master USB key. During the reboot
 process it will ask you to remove the installation USB key.
+
+Do not forget to plug back in your network cable.
 
 2. Upgrade the kernel
 
@@ -59,17 +66,20 @@ for you on another system.
 
 The modules you are interested in capturing out of the entire build will be something like:
 
-linux-image-unsigned-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
-linux-modules-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
-linux-modules-extra-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
+linux-image-unsigned-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
+linux-modules-extra-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
+linux-modules-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
 
 Fetch the updated kernel and drivers that have been already built for you like so:
 
- mkdir -p /dev/shm/kupdate
- cd /dev/shm/kupdate
- wget https://feralsw.com/cdpw/1020_upgrade.tar
- tar xf 1020_upgrade.tar
- sudo apt install -y /dev/shm/kupdate/*.deb
+ rm -rf /var/tmp/kupdate
+ mkdir -p /var/tmp/kupdate
+ cd /var/tmp/kupdate
+ wget https://feralsw.com/cdpw/1030_upgrade.tar
+ tar xf 1030_upgrade.tar
+ sudo apt install -y /var/tmp/kupdate/*.deb
+ cd /var/tmp
+ rm -rf /var/tmp/kupdate
 
 Reboot after they have installed. This should get you into a system
 with fixes to support the special Barco adapters used at Kaiser under Windows.
@@ -82,14 +92,17 @@ After we come up with the new kernel and driver, do
 
 This will refresh our package lists and make sure we have an up to
 date network IP address for the Ubuntu package repositories.
+Do *not* then respond to any pop-up asking to upgrade packages.
 
-Fetch our latest set of installable packages with this command:
+Fetch the latest set of installable cdpw use packages with this command:
 
- cd /var/tmp
+ rm -rf /var/tmp/packages
+ cd /var/tmp/packages
  wget https://feralsw.com/cdpw/cdpw-latest.tar
- rm -f *.deb
- tar -xf cdpw-latest.tar
- sudo apt install -y /var/tmp/*.deb
+ tar xf cdpw-latest.tar
+ sudo apt install -y /var/tmp/packages/*.deb
+ cd ..
+ rm -rf packages
 
 Ignore and dismiss all alert boxes that may show up before things finish.
 
@@ -171,8 +184,9 @@ sudo apt install gdm-settings libglib2.0-dev-bin
 
 Look under the Apps panel for the GDM-SETTINGS icon and fire it up.
 
-Under Login Screen add /usr/lib/cdpw/code_dark_label_nv.gif as the image.
+Under Login Screen add /usr/share/cdpw/code_dark_label_nv.gif as the image.
 You'll have to use ls to see what the latest label is.
 
-Under Appearance change type to image and add /usr/lib/cdpw/KaiserRedSmall.png as the image.
-Hit the apply Button. You will likely have to enter the password for user orthanc.
+Under Appearance/Background change type to image and add
+/usr/lib/cdpw/KaiserRedSmall.png as the image.  Hit the apply Button. You
+will likely have to enter the password for user orthanc.
