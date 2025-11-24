@@ -35,17 +35,14 @@ This should get you a list of versions of which the current version you are runn
 under is closely related to. Pick one that is, based upon the number *after* the -
 as the one you'll settle on.
 
-Example- say you are running under Ubuntu 24.04.3. You are likely to have
-6.14.0-29-generic as the version, and the flavor will be hwe, e.g.:
+Example- say you are running under Ubuntu 24.04.3. You are likely to have something like
+6.14.0-27-generic as the version:
 
- Ubuntu-hwe-6.14-6.14.0-29.29_24.04.1
+ orthanc@orthanc: $ uname -r
+ 6.14.0-27-generic
+ orthanc@orthanc: $
 
-Find the running version via uname -r:
-
-  mjacob@orthanc > uname -r
-  6.14.0-29-generic
-
-SEarch for similar branches with:
+So, search for similar branches with on the build machine in the checked out noble branch:
 
   mjacob@orthanc > git tag -l |grep Ubuntu |grep 6.14.0
   Ubuntu-hwe-6.14-6.14.0-15.15_24.04.1
@@ -59,17 +56,41 @@ SEarch for similar branches with:
   Ubuntu-hwe-6.14-6.14.0-28.28_24.04.1
   Ubuntu-hwe-6.14-6.14.0-29.29_24.04.1
   Ubuntu-hwe-6.14-6.14.0-32.32_24.04.1
+  Ubuntu-hwe-6.14-6.14.0-33.33_24.04.1
+  Ubuntu-hwe-6.14-6.14.0-34.34_24.04.1
+  Ubuntu-hwe-6.14-6.14.0-35.35_24.04.1
+  Ubuntu-hwe-6.14-6.14.0-36.36_24.04.1
+  Ubuntu-hwe-6.14-6.14.0-37.37_24.04.1
 
-The latest tag is therefore Ubuntu-hwe-6.14-6.14.0-32.32_24.04.1.
+The latest tag is therefore Ubuntu-hwe-6.14-6.14.0-37.37_24.04.1, 10 tags higher
+than what a non-networked install of Ubuntu 24.04.03 has.
+
+So, anything after 27 is good, but doing something like (which is what
+my most recent build cache has) of:
 
   git checkout -b code_dark Ubuntu-hwe-6.14-6.14.0-32.32_24.04.1
-  
-Update the amdgpu driver with our patch:
+
+works fine also.
+
+After the checkout, update the amdgpu driver with our patch:
 
   patch -p1 < ../amdgpu_drv.c.diff
   git commit -am'add support for additional Barco adapters'
 
 (obviously look for failure to patch correctly!).
+
+Edit the changelog under debian.<version>, e.g. debian.hwe-6.14/changelog
+so as to make a distinct ABI to make this different from the standard
+release. Here is an example diff:
+
+index 1ff980a1987c..a964fd32bbac 100644
+--- a/debian.hwe-6.14/changelog
++++ b/debian.hwe-6.14/changelog
+@@ -1,4 +1,4 @@
+-linux-hwe-6.14 (6.14.0-32.32~24.04.1) noble; urgency=medium
++linux-hwe-6.14 (6.14.0-1030.32~24.04.1) noble; urgency=medium
+
+* noble/linux-hwe-6.14: 6.14.0-32.32~24.04.1 -proposed tracker (LP: #2120124)
 
 Now you can just build more or less as documented, but here's
 a cheat sheet:
@@ -81,39 +102,42 @@ a cheat sheet:
   fakeroot debian/rules binary
 
 Go out for lunch and to the gym- even on a fast system with an
-SSD, it'll take over an hour.
+SSD, it'll take a few hours.
 
 When it completes, the directory above will have all of the requisite
 packages. In the example case:
 
   mjacob@orthanc > ls -1 ../*.deb
-  ../linux-buildinfo-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
-  ../linux-cloud-tools-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
-  ../linux-headers-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
-  ../linux-hwe-6.14-cloud-tools-6.14.0-32_6.14.0-32.32~24.04.1_amd64.deb
-  ../linux-hwe-6.14-headers-6.14.0-32_6.14.0-32.32~24.04.1_all.deb
-  ../linux-hwe-6.14-tools-6.14.0-32_6.14.0-32.32~24.04.1_amd64.deb
-  ../linux-image-unsigned-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
-  ../linux-lib-rust-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
-  ../linux-modules-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
-  ../linux-modules-extra-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
-  ../linux-modules-ipu6-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
-  ../linux-modules-ipu7-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
-  ../linux-modules-iwlwifi-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
-  ../linux-modules-usbio-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
-  ../linux-modules-vision-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
-  ../linux-tools-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
+  ../linux-buildinfo-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
+  ../linux-cloud-tools-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
+  ../linux-headers-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
+  ../linux-hwe-6.14-cloud-tools-6.14.0-1030_6.14.0-1030.32~24.04.1_amd64.deb
+  ../linux-hwe-6.14-headers-6.14.0-1030_6.14.0-1030.32~24.04.1_all.deb
+  ../linux-hwe-6.14-tools-6.14.0-1030_6.14.0-1030.32~24.04.1_amd64.deb
+  ../linux-image-unsigned-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
+  ../linux-lib-rust-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
+  ../linux-modules-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
+  ../linux-modules-extra-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
+  ../linux-modules-ipu6-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
+  ../linux-modules-ipu7-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
+  ../linux-modules-iwlwifi-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
+  ../linux-modules-usbio-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
+  ../linux-modules-vision-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
+  ../linux-tools-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
 
 You only really need 3:
 
-  linux-image-unsigned-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
-  linux-modules-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
-  linux-modules-extra-6.14.0-32-generic_6.14.0-32.32~24.04.1_amd64.deb
+  linux-image-unsigned-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
+  linux-modules-extra-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
+  linux-modules-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
+
+Put this into a tarball and when you are creating a gold master, you'll do
+the following:
 
 Clean /var/tmp:
   sudo rm -f /var/tmp/linux*.deb
 
-And copy these packages to /var/tmp and do:
+Extra from your tarball those packages to /var/tmp and do:
 
   sudo apt install /var/tmp/linux*.deb
 
