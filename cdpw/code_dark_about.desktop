@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=About Code Dark
+Comment=About Code Dark Panel
+Exec=/usr/bin/about_code_dark
+Icon=/usr/share/icons/Humanity/apps/16/system-user.svg
+Terminal=false
+Type=Application
+

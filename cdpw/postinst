@@ -14,7 +14,8 @@ systemctl enable cdpw_data_present.service
 systemctl restart cdpw_data_present.service
 
 #
-# Install Desktop entries for both menu and actual Desktop
+# Install Desktop entries
 #
 install -D -m 755 -o orthanc /usr/share/applications/code_dark_configurator.desktop ~orthanc/Desktop
 install -D -m 755 -o orthanc /usr/share/applications/code_dark_study_tool.desktop ~orthanc/Desktop
+install -D -m 755 -o orthanc /usr/share/applications/code_dark_about.desktop ~orthanc/Desktop

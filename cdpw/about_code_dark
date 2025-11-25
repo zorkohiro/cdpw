@@ -1,0 +1,26 @@
+#!/usr/bin/python3
+#
+# Program to put up a window with the current Code Dark Version
+# and possibly any Copyright messages.
+#
+
+import tkinter as tk
+
+""" Variables and Constants """
+VERSION = "/usr/share/cdpw/cdpw_version.txt"
+
+with open(VERSION) as file:
+    line = file.readline().rstrip()
+
+print(line)
+root=tk.Tk()
+root.title("About Code Dark")
+root.minsize(width=100, height=20)
+
+wl = "Code Dark PACS Workstation software version is " + line
+lwl = len(wl)
+T = tk.Text(root, height = 1, width = lwl+1)
+T.pack()
+T.insert(tk.END, "Code Dark PACS Workstation software version is " + line)
+
+root.mainloop()
