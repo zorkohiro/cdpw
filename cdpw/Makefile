@@ -4,7 +4,7 @@
 MAJORV  ?= 1
 MINORV  ?= 1
 RLEASE  ?= 1
-BUILDV  ?= -3
+BUILDV  ?= -4
 BASE    := cdpw
 RELEASE := $(MAJORV).$(MINORV).$(RLEASE)$(BUILDV)
 PKGNAME := $(BASE)-$(RELEASE)
@@ -12,7 +12,7 @@ PKGNAME := $(BASE)-$(RELEASE)
 # LEVEL is syntactic suger. It is $(RELEASE) which must be unique.
 # When it's truly a release, LEVEL should be null.
 #
-LEVEL   := Beta
+LEVEL   := Beta2
 
 ARTIFACTS ?= ../artifacts
 
