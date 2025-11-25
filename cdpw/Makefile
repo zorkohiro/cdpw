@@ -4,7 +4,7 @@
 MAJORV  ?= 1
 MINORV  ?= 1
 RLEASE  ?= 1
-BUILDV  ?= -2
+BUILDV  ?= -3
 BASE    := cdpw
 RELEASE := $(MAJORV).$(MINORV).$(RLEASE)$(BUILDV)
 PKGNAME := $(BASE)-$(RELEASE)
@@ -27,7 +27,7 @@ install:
 	install -D -m 640 cdpw.service ${SYSTEMD}/cdpw.service
 	install -D -m 644 configurator.json ${CDPW_LIB}/configurator.json
 	rm -f ${CDPW_LIB}/cdpw_version.txt
-	echo $(RELEASE) ${LEVEL| > ${CDPW_LIB}/cdpw_version.txt
+	echo $(RELEASE) $(LEVEL) > ${CDPW_LIB}/cdpw_version.txt
 	install -D -m 644 cdpw.json ${CDPW_LIB}/cdpw.json
 	install -D -m 644 dicom_aet_port.json ${CDPW_LIB}/dicom_aet_port.json
 	install -D -m 644 images/code_dark_label_nv.gif $(CDPW_LIB)/code_dark_label_nv.gif
