@@ -224,3 +224,10 @@ Under Appearance/Background change type to image and add
 
 Hit the apply Button when done here to persist the changes.
 You will likely have to enter the password for user orthanc.
+
+8. Stop delay waiting for networking to come online during boot
+
+In a Kconsole, do:
+
+sudo systemctl disable systemd-networkd-wait-online.service
+sudo systemctl mask systemd-networkd-wait-online.service
