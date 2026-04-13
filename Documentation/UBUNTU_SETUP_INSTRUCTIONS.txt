@@ -1,61 +1,80 @@
-Sun Nov 23 05:49:59 PM PST 2025
+Mon Apr 13 11:57:40 AM PDT 2026
 
 0. Required Hardware and Environment
 
-Get a  8GB USB flash drive to put the ubuntu install image on.
+Get a USB flash drive of at least 16GB to put the ubuntu install image on.
 
-Get a 16GB USB Key to become the target of the install. You
-can certainly user a larger USB Key for the target of the install-
-but this just makes it more painful when copying the gold master
-to multiple keys for distribution.
+Get a USB flash drive of at lesat 32GB to become the target of the install.
 
-You will need to be connected to the internet to perform the following
-steps- but note that some careful steps need to be followed so as to
-not make randomly different base images due to the aggressive attempts
-by the ubuntu installer to update the latest sets of images.
+You can certainly user an even larger USB Key for the target of the install-
+but this just makes it more painful when copying the gold master to multiple keys
+for distribution. The effective size requirements are an overgenerous ~17GB
+currently.
 
-1. Copy Ubuntu 24.04.3 from the iso image, e.g.:
+You will need to be connected to the internet to perform the following steps.
 
- https://releases.ubuntu.com/noble/ubuntu-24.04.3-desktop-amd64.iso
- sha256sum: faabcf33ae53976d2b8207a001ff32f4e5daae013505ac7188c9ea63988f8328
+1. Copy Ubuntu 24.04.4 live server from the iso image to the USB install image from
+an ubuntu mirror, e.g.:
 
-Create the 8GB Install USB key from this with dd on a linux system or
-rufus on a Windows system.
+ https://mirror.fcix.net/ubuntu-releases/24.04.4/ubuntu-24.04.4-live-server-amd64.iso
+ sha256sum: e907d92eeec9df64163a7e454cbc8d7755e8ddc7ed42f99dbc80c40f1a138433
+
+If the above URL does not work (and over time this is likely to happen),
+a cached version may be found under: https://feralsw.com/cdpw/isos.
+
+Create the Install USB key from this with dd on a linux system or Rufus on a Windows system.
 
 2. Create a Bootable Gold Image CDPW System
 
-Take the install key to any reasonable x86_64 system. Insert both it and the
-16GB USB Key you are going to use as the Gold image into the system.
+Take the install key to any reasonable recent x86_64 system and insert it. Make sure it is
+enabled for UEFI booting (not Legacy boot).
 
-Boot the install key (you'll have to hit F8 or F11 to get a 'boot from' menu
-to boot that install key).
+Power and and boot the install key (you'll have to hit F8 or F11 to get a 'boot from' menu
+to boot that install key- this is vendor and even model specific). It will be a UEFI boot.
 
-Once up, you should be able to start installation.
+Once up, the installation starts automatically. It is a curses/text based install- not
+a GUI based installer.
 
-Do *not* update to a newer installer.
+The first step prior to continuing with the installation which is waiting for input
+at the first step is to insert the USB which will become the target of the install
+(the new Gold Master).
 
-Set "Do not use the internet"- in fact, disable the wired connection or
-unplug the wired cable. if you don't, some random newer kernel gets installed
-which could make the kernel upgrade step mentioned below difficult.
+You'll have to play around with navigating this installer or read documentation on
+the Ubuntu Canonical website but it's pretty uncomplicated and nearly always you
+can take the default answer.
 
+As you navigate through the install, here are a couple of notes to guide you where
+the answer needs to be supplied or the default is not desired.
 
-Select 'Saruman B Orthanc' as the user name.
-Select 'orthanc' as the name of the system.
-Select 'orthanc' as the user, 'orthanc' as the password.
+ + Do not update to a new installer (as offered by the installer)
 
-Select the defaults and erase the whole disk and install to it.
-Make sure that is installing to the 16GB USB Gold Key
+ + Setting up the target installation media is tricky and you need to get it right:
+   o Don't pick "default" installation target. There are steps (in the future) that will
+     not be able to be accomplshed if you do that.
+   o Select an alternate disk and go through the edit steps there to accomplish the following:
+     = Select the USB device that is to be the Gold Master as the "Boot device"
+     = Create a 16G new partition on the otherwise blank Gold Master- if there are old partitions
+       on that device because you are reusing something old, delete them all first.
+     = Create a 16GB partition on the install target and leave it "unformatted".
+     = Create a volume group on top of this partition
+     = Create a logical volume of 12GB on top of this voluem group. This gets marked as to be
+       created with an ext4 filesystem and mounted on /.
+     = The installer will automatically create a UEFI boot partition for you.
 
-Keep selection to require user password to log in.
+  + User creation:
 
-Set the timezone you are in (typically going to be Los Angeles).
+    Select 'Saruman B Orthanc' as the user name.
+    Select 'orthanc' as the name of the system.
+    Select 'orthanc' as the user, 'orthanc' as the password.
 
-When the installation is done, reboot to gold master USB key. During the reboot
-process it will ask you to remove the installation USB key.
+When the installation is done, reboot to gold master USB key.
+During the reboot process it will ask you to remove the installation USB key.
 
-Do not forget to plug back in your network cable.
+It will come up with a standard text based linux screen (i.e., just a text
+"login: " message. You can log in with orthanc/orthanc.
 
-2. Upgrade the kernel
+3. Upgrade the kernel to the one with admgpu fixes for Barco adapters.
+
 
 #
 # Upgrade kernel with updated amdgpu driver.
@@ -83,18 +102,34 @@ Fetch the updated kernel and drivers that have been already built for you like s
 
 Reboot after they have installed. This should get you into a system
 with fixes to support the special Barco adapters used at Kaiser under Windows.
+Use 'uname -r' after a reboot and logging in. The kernel major version should be 6.14
+instead of the standard 6.8 for Ubuntu 24.04 LTS.
 
-3. Install our CDPW packages
+4. Install a ubuntu desktop (graphics environment)
 
-After we come up with the new kernel and driver, do
+After rebooting and logging in, become super-user
+with
 
- sudo apt update
+  sudo su -
 
-This will refresh our package lists and make sure we have an up to
-date network IP address for the Ubuntu package repositories.
-Do *not* then respond to any pop-up asking to upgrade packages.
+which will ask you for a password (orthanc's password).
 
-Fetch the latest set of installable cdpw use packages with this command:
+Do the following:
+
+   + apt update -y
+   + apt install -y software-properties-common
+   + apt install -y ubuntu-desktop-minimal
+
+Go out and get a cup of coffee or lunch since about 900 packages
+will have to be downloaded and installed.
+
+When done, reboot. You should be presented with an ubuntu
+graphical login screen.
+
+
+5. Install our CDPW packages
+
+Fetch the latest set of installable cdpw user packages with this command:
 
  rm -rf /var/tmp/packages
  cd /var/tmp/packages
@@ -104,20 +139,20 @@ Fetch the latest set of installable cdpw use packages with this command:
  cd ..
  rm -rf packages
 
-Ignore and dismiss all alert boxes that may show up before things finish.
+Ignore and dismiss all alert boxes or popups that may show up during this.
 
-As you continue along delete any popups asking to install updates.
-
-Find where code_dark_configurator and code_dark_study_tool icons got put onto the desktop.
-Do a pull right menu over them if they have a little red 'x' and select the "Allow Launch"
-option. This is an unfortunate aspect of Gnome3 that doesn't allow one to do this
-programmatically at installation time.
+Find where code_dark_configurator and code_dark_study_tool and 'about code dark' icons
+been put onto the desktop. Do a pull right menu over them if they have a little red 'x'
+and select the "Allow Launch" option. This is an unfortunate aspect of Gnome3 that doesn't
+allow one to do this programmatically at installation time.
 
 ------------------------------------------
 The following changes are more for making this a system that will be less distracting.
-They are optional at this point.
+They are optional at this point. You can used Code Dark with both the study tool
+or directly via Firefox connected to http://localhost:8042 perfectly acceptably
+at this poing.
 ------------------------------------------
-4. System Control panel changes
+6. System Control panel changes
 
 Go to system settings under the system menu.
 
@@ -134,9 +169,6 @@ Search for Privacy & Security
 	+ Automatic Screen Lock delay 1 minute
 	+ Lock Screen notifications ON
 	+ Lock Screen on Suspend ON
-
- Set under Diagnostics:
-	+ Send error reports to Canonical to NEVER
 
 Fire up a Kconsole and pin it to the task bar
 
@@ -158,7 +190,7 @@ sudo apt remove --purge -y unattended-upgrades
 sudo apt remove --purge -y update-notifier
 
 
-5. Configure the installed firefox
+6. Configure the installed firefox
 
 Remove crap buttons from bookmark bar
 Settings/General
@@ -176,7 +208,7 @@ For browser.sessionstore.max_resumed_crashes- set to 0.
 Enter http://localhost:8042 in chrome and bookmark it. You should
 have connected with the running orthanc server.
 
-6. Install gdm-settings and set up new login screen with label
+7. Install gdm-settings and set up new login screen with a Kaiser label
 
 Get a Kconsole up and issue:
 
@@ -188,5 +220,7 @@ Under Login Screen add /usr/share/cdpw/code_dark_label_nv.gif as the image.
 You'll have to use ls to see what the latest label is.
 
 Under Appearance/Background change type to image and add
-/usr/lib/cdpw/KaiserRedSmall.png as the image.  Hit the apply Button. You
-will likely have to enter the password for user orthanc.
+/usr/lib/cdpw/KaiserRedSmall.png as the image.
+
+Hit the apply Button when done here to persist the changes.
+You will likely have to enter the password for user orthanc.

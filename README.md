@@ -1,5 +1,5 @@
- 1.1 Beta Notes, version 1
- Sun Nov 23 02:35:08 PM PST 2025
+ 1.1 Beta Notes, version 2
+ Fri Apr 10 05:06:20 AM PDT 2026
 
 This is the source repository for building cdpw which is
 the add on software to an Ubuntu 24.04 based system that
@@ -10,7 +10,7 @@ Documentation over what Code Dark is may be found under
 the Documentation directory or other places as noted
 below.
 
-This source tree can be built under Ubuntu 24.04 and a
+This source tree must be built under Ubuntu 24.04 and a
 bootable USB key can be made from it. Instructions
 for making the key is also under Documentation.
 
