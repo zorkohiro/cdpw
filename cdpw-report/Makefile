@@ -2,7 +2,7 @@
 # Build our plugin to Orthanc
 #
 MAJORV  ?= 1
-MINORV  ?= 3
+MINORV  ?= 4
 RLEASE  ?= 0
 BUILDV	?= -1
 BASE    := cdpw-report

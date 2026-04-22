@@ -1,15 +1,21 @@
 #!/bin/bash
 #
-# Spawn the editor on the study UUID with the template passed, e.g.:
+# Spawn the editor on a study UUID, e,g,:
 #
-#  spawn_editor template_name uuid
+#  spawn_editor uuid
 #
- #
- # This horrible stuff allows us to spawn an X application via
- # a callout from a C++ program has no X support information
- # since it is invoked vis systemd. This mutter nonsense
- # is for gnome3 under Ubuntu 24.04 vanilla Canonical.
- #
+# It there is no existing json in the report directory, this is
+# this is the first time for this study, so invoke the tool that
+# will help select the template to start from.
+#
+
+#
+# This horrible stuff allows us to spawn an X application via
+# a callout from a C++ program which has no X environment
+# information since it is invoked via systemd.
+#
+# This mutter nonsense is for gnome3 under Ubuntu 24.04.
+#
 XDG_RUNTIME_DIR=/run/user/$UID
 if [[ -d ${XDG_RUNTIME_DIR} ]]; then
  XAUTHORITY=$(ls ${XDG_RUNTIME_DIR}/.mutter* 2>/dev/null)
@@ -21,32 +27,38 @@ if [[ -d ${XDG_RUNTIME_DIR} ]]; then
   unset XDG_RUNTIME_DIR
  fi
 fi
-if [[ -z "${XDG_RUNTIME_DIR}" && -f $HOME/.Xauthority ]]; then
- # This is all a hack for using a tightvnc window with Xfce
- export DISPLAY=:1
- export XAUTHORITY=$HOME/.Xauthority
-fi
-export PATH=/usr/local/bin:/usr/bin:/usr/sbin
+
+#
+#
+export PATH=/usr/bin:/usr/sbin
 TPD=/usr/lib/cdpw/Templates
 CDB=/code_dark
 RPT=${CDB}/reports
 LOG=${CDB}/logs/spawn_editor.log
 
-echo $* on `date` >> $LOG 2>&1
-if [[ $# -ne 2 ]]; then
- echo "usage: $(basename $0) template orthanc-uuid" >> $LOG
+echo "=================================" >> ${LOG}
+echo spawn_editor $* on `date` >> $LOG 2>&1
+if [[ $# -ne 1 ]]; then
+ echo "usage: $(basename $0) orthanc-uuid" >> $LOG
  exit 1
 fi
-tpt=$1
-uui=$2
+uui=$1
 mkdir -p ${RPT} >> $LOG 2>&1
-inp="${TPD}/${tpt}.json"
 fnm="${RPT}/${uui}.json"
 prg=code_dark_rptgen
+tpp=code_dark_select_template
 
 if [[ ! -f "${fnm}" ]]; then
+ # First time. Select a template with a python graphical tool
+ type ${tpp}
+ if [[ $? -ne 0 ]]; then
+  echo ${tpp} does not exist in our path >> $LOG
+  exit 1
+ fi
+ tpt=$(${tpp} $uui)
+ inp="${TPD}/${tpt}"
  if [[ ! -f ${inp} ]]; then
-  echo ${inp} does not exist >> $LOG
+  echo "${inp} does not exist- perhaps ${tpp} failed" >> $LOG
   exit 1
  fi
  #
@@ -75,16 +87,24 @@ if [[ ! -f "${fnm}" ]]; then
    yro=
   fi
  fi
- sed \
-  -e "s/\"uuid.*$/\"uuid\" : \"${uui}\",/"               \
-  -e "s/\"date.*$/\"date\" : \"${sdt}\",/"               \
-  -e "s/\"description.*$/\"description\" : \"${dsc}\",/" \
-  -e "s/\"mrn.*$/\"mrn\" : \"${mrn}\",/"                 \
-  -e "s/\"session.*$/\"session\" : \"${ssn}\",/"         \
-  -e "s/\"studyid.*$/\"studyid\" : \"${sid}\",/"         \
-  -e "s/\"doctor.*$/\"doctor\" : \"${rqp}\",/"           \
-  -e "s/\"yrold.*$/\"yrold\" : \"${yro}\",/"           \
-  $inp > "$fnm" 2>> $LOG
+ echo running jq \
+	".uuid = \"$uui\"" ${inp} '|' \
+	jq ".date = \"$sdt\""        '|' \
+	jq ".study_description = \"$dsc\"" '|' \
+	jq ".mrn = \"$mrn\""         '|' \
+	jq ".session = \"$ssn\""     '|' \
+	jq ".studyid = \"$sid\""     '|' \
+	jq ".doctor = \"$rqp\""      '|' \
+	jq ".yrold = \"$yro\"" >> ${LOG}
+ (jq \
+	".uuid = \"$uui\"" ${inp}          |
+	jq ".date = \"$sdt\""              |
+	jq ".study_description = \"$dsc\"" |
+	jq ".mrn = \"$mrn\""               |
+	jq ".session = \"$ssn\""           |
+	jq ".studyid = \"$sid\""           |
+	jq ".doctor = \"$rqp\""            |
+	jq ".yrold = \"$yro\"" > "${fnm}") 2>&1 >> ${LOG}
  if [[ $? -ne 0 ]]; then
   echo unable to create "$fnm" from $inp >> $LOG
   rm -f "${fnm}"

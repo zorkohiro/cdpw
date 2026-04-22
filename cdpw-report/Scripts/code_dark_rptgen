@@ -705,8 +705,7 @@ def print_report():
         result = subprocess.run(["enscript", "-n", "2", "-B", reportfl ], capture_output=True, text=True)
         if result.returncode != 0:
             tk.messagebox.showerror("Error", "Subprocess Error", result.stderr)
-        else:
-            if json_data["signed"]:
+        elif json_data["signed"]:
                 json_data["printed"] = True
     except subprocess.CalledProcessError as e:
         tk.messagebox.showerror("Error", "Process Error", e.output)

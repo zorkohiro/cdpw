@@ -16,63 +16,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-function ChooseTemplate(callback, id)
-{
-  var clickedTemplate = '';
-  var items = $('<ul>')
-    .attr('data-divider-theme', 'd')
-    .attr('data-role', 'listview');
-
-  items.append('<li data-role="list-divider">Report Templates</li>');
-  $.ajax({
-    url: '../cdpw/templates/' + $.mobile.pageData.uuid,
-    type: 'GET',
-    dataType: 'json',
-    async: false,
-    cache: false,
-    success: function(templates) {
-      console.log('GET callback returned: ' + templates);
-      var name, item;
-      if (templates.length > 0) {
-        for (var i = 0; i < templates.length; i++) {
-          name = templates[i];
-          let item = $('<li>')
-            .html('<a href="#" rel="close">' + name + '</a>')
-            .attr('name', name)
-            .click(function() { 
-              clickedTemplate = $(this).attr('name');
-            });
-          items.append(item);
-          console.log("adding attr " + name);
-        }
-      }
-      // Launch the dialog
-      $(document).simpledialog2({
-        mode: 'blank',
-        animate: false,
-        headerText: 'Choose Report Template',
-        headerClose: true,
-        forceInput: false,
-        width: '100%',
-        blankContent: items,
-        callbackClose: function() {
-          var timer;
-          function WaitForDialogToClose() {
-            if (!$('#dialog').is(':visible')) {
-              clearInterval(timer);
-              callback(clickedTemplate);
-            }
-          }
-          timer = setInterval(WaitForDialogToClose, 100);
-        }
-      });
-    },
-    error: function(xhr, status, error) {
-      console.log("failed to run GET, status: " + status + " error: " + error);
-    }
-  });
-}
-
 function CreateReport(resourceId)
 {
   var b = $('<a>')
@@ -99,28 +42,21 @@ function CreateReport(resourceId)
       }
     }).done(function(){
       if (studyid) {
-        ChooseTemplate(function(template_choice) {
-            if (template_choice == '') {
-              console.log("back from ChooseTemplate with no choice");
-              return;
+        $.ajax({
+          url: '../cdpw/create',
+          type: 'POST',
+          dataType: 'text',
+          data: studyid,
+          async: false,
+          success: function(job) {
+          },
+          error: function(xhr, status, error) {
+            if (xhr.status == 500) {
+              alert(xhr.responseText);
+            } else {
+              alert("failed to run POST, status: " + xhr.status);
             }
-            var pdata = studyid + ":" + template_choice;
-            $.ajax({
-              url: '../cdpw/create',
-              type: 'POST',
-              dataType: 'text',
-              data: pdata,
-              async: false,
-              success: function(job) {
-              },
-              error: function(xhr, status, error) {
-                if (xhr.status == 500) {
-                  alert(xhr.responseText);
-                } else {
-                  alert("failed to run POST, status: " + xhr.status);
-                }
-              }
-            });
+          }
         });
       }
     });

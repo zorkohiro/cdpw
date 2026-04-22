@@ -1,0 +1,250 @@
+#!/usr/bin/python3
+"""
+Program to select a template json file based upon the uuid passed.
+"""
+
+#################################################################################################
+#
+#  WITHOUT ANY WARRANTY; without even the implied warranty of
+#  Copyright (C) 2026 Kaiser Permanente
+#
+#  This program is free software: you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License as
+#  published by the Free Software Foundation, either version 3 of the
+#  License, or (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful, but
+#  WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+#  General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+
+
+#################################################################################################
+#
+# Imports
+#
+import tkinter as tk
+from tkinter import ttk
+import requests
+import re
+import os
+import sys
+
+#################################################################################################
+#
+# Variables
+#
+
+#################################################################################################
+#
+# Constants and shorthands
+#
+TMPLDIR   = "/usr/lib/cdpw/Templates"
+STUDYURL  = "http://localhost:8042/studies"
+SERIESURL = "http://localhost:8042/series"
+CTEMPL = "Choose a Template"
+
+#
+# We only have one argument- the UUID for the study.
+#
+try:
+    uuid = sys.argv[1]
+except:
+    print("unable to retrieve uuid argument from command line arguments")
+    exit(1)
+
+#
+# Check to see if the uuid references a valid study- fetch it into a json object.
+#
+study = requests.get(STUDYURL + "/" + uuid)
+if study.status_code != 200:
+    print("study", uuid, "does not seem to be known by Orthanc")
+    exit(1)
+study_json = study.json()
+
+#
+# Fetch the series entry
+#
+modality = ""
+try:
+    se_uuid = study_json['Series'][0]
+    series = requests.get(SERIESURL + "/" + se_uuid)
+    if series.status_code == 200:
+        sj = series.json()
+        mdt = sj["MainDicomTags"]
+        modality = mdt["Modality"]
+except:
+    pass
+
+if not modality:
+    # With no specified modality, we can only use the generic study
+    print(TMPLDIR + "/" + "generic.json")
+    exit(0)
+
+#
+# Get this list of template files available
+#
+template_list = [f for f in os.listdir(TMPLDIR) if os.path.isfile(os.path.join(TMPLDIR, f)) and f.endswith('.json') and f.startswith(modality.lower() + "_")]
+
+#
+# If this is a modality for which we do not have any templates, it's the generic template for us
+#
+if not template_list:
+    print(TMPLDIR + "/" + "generic.json")
+    exit(0)
+
+#
+# Find the name of the "generic" entry- it should be lower case MODALITY + _ + generic.json
+#
+ge = False
+for le in template_list:
+    if le.endswith("_generic.json"):
+        ge = True
+        break
+#
+# Now that we have a list of templates for this modality, we need to provide
+# some pretty print values to substitute for the modality code and expand
+# the template names into something prettier to read.
+#
+
+#
+# Modality table from DICOM
+#
+modalities = {
+    "CR" : "Computed Radiography",
+    "CT" : "Computed Tomography",
+    "MR" : "Magnetic Resonance",
+    "NM" : "Nuclear Medicine",
+    "US" : "Ultrasound",
+    "OT" : "Other",
+    "BI" : "Biomagnetic imaging",
+    "DG" : "Diaphanography",
+    "ES" : "Endoscopy",
+    "LS" : "Laser surface scan",
+    "PT" : "Positron emission tomography (PET)",
+    "RG" : "Radiographic imaging (conventional film/screen)",
+    "TG" : "Thermography",
+    "XA" : "X-Ray Angiography",
+    "RF" : "Radio Fluoroscopy",
+    "RTIMAGE" : "Radiotherapy Image ",
+    "RTDOSE" : "Radiotherapy Dose",
+    "RTSTRUCT" : "Radiotherapy Structure Set ",
+    "RTPLAN" : "Radiotherapy Plan",
+    "RTRECORD" : "RT Treatment Record",
+    "HC" : "Hard Copy",
+    "DX" : "Digital Radiography",
+    "MG" : "Mammography",
+    "IO" : "Intra-oral Radiography",
+    "PX" : "Panoramic X-Ray",
+    "GM" : "General Microscopy",
+    "SM" : "Slide Microscopy",
+    "XC" : "External-camera Photography",
+    "PR" : "Presentation State",
+    "AU" : "Audio ",
+    "ECG" : "Electrocardiography",
+    "EPS" : "Cardiac Electrophysiology",
+    "HD" : "Hemodynamic Waveform",
+    "SR" : "Structured Report Document",
+    "IVUS" : "Intravascular Ultrasound",
+    "OP" : "Ophthalmic Photography",
+    "SMR" : "Stereometric Relationship",
+    "AR" : "Autorefraction ",
+    "KER" : "Keratometry",
+    "VA" : "Visual Acuity",
+    "SRF" : "Subjective Refraction",
+    "OCT" : "Optical Coherence Tomography (non-Ophthalmic)",
+    "LEN" : "Lensometry",
+    "OPV" : "Ophthalmic Visual Field",
+    "OPM" : "Ophthalmic Mapping",
+    "OAM" : "Ophthalmic Axial Measurements ",
+    "RESP" : "Respiratory Waveform",
+    "KO" : "Key Object Selection",
+    "SEG" : "Segmentation",
+    "REG" : "Registration",
+    "OPT" : "Ophthalmic Tomography",
+    "BDUS" : "Bone Densitometry (ultrasound)",
+    "BMD" : "Bone Densitometry (X-Ray)",
+    "DOC" : "Document",
+    "FID" : "Fiducials",
+    "PLAN" : "Plan",
+    "IOL" : "Intraocular Lens Data",
+    "IVOCT" : "Intravascular Optical Coherence Tomography",
+    "SC" : "Secondary Capture modality for diagnostic use"
+}
+modality_text = modalities.get(modality)
+
+#
+# Fetch the study description to assist template selection
+#
+study_description = ""
+try:
+    mdt = study_json["MainDicomTags"]
+    try:
+        study_description = mdt["StudyDescription"]
+    except:
+        pass
+except:
+    pass
+
+#
+# Construct a "Friendly" list from template_list
+#
+friendly_list = []
+for le in template_list:
+    le = le[3:]
+    le = le.replace("_bl", "_Bilateral")
+    le = le.replace("angio", "Angiogram")
+    le = le.replace("ang", "Angiogram")
+    le = le.replace("abd", "Abdomen")
+    le = le.replace("pulm", "Pulmonary")
+    le = le.replace("_l_", "_Left_")
+    le = le.replace("_r_", "_Right_")
+    le = le.replace("_woc", "_Without Contrast")
+    le = le.replace("_wc", "_With Contrast")
+    le = le.replace("_", " ")
+    le = le.replace(".json", "")
+    le = le.title()
+    friendly_list.append(le)
+
+#
+# Construct a root window with a title saying what Modality the study 
+# is and present a choice list of available templates.
+#
+root = tk.Tk()
+root.geometry("500x100")
+if modality_text:
+    root.title(modality_text + " (" + modality + ") " + "Templates")
+else:
+    root.title(modality + " Templates")
+
+def select():
+    sel = cb.get()
+    idx = cb.current()
+    root.destroy()
+    if idx >= 0:
+        print(template_list[idx])
+    exit(0)
+
+# Label to show study description
+if study_description:
+    desclab = tk.Label(root, text="Study Description: " + study_description)
+    desclab.pack()
+
+# Combobox  
+cb = ttk.Combobox(root, values=friendly_list, state="readonly", width="40")
+if ge:
+    cb.set("Generic")
+cb.pack()
+
+
+# Button to display selection  
+tk.Button(root, text="Finalize Selection", command=select).pack()
+
+# Drop into mainloop
+root.mainloop()
+
+exit(0)

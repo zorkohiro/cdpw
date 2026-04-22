@@ -17,6 +17,7 @@ import logging
 REPORTDIR = "/code_dark/reports"
 LOG = "/code_dark/logs/study_tool.log"
 STUDYURL = "http://localhost:8042/studies"
+THIS_STUDY_URL_PREFIX = "http://localhost:8042/app/explorer.html#study?uuid="
 browser = "firefox"
 NoStudies = "No such studies"
 NoStudiesPresent = "No studies present"
@@ -150,37 +151,27 @@ def present_table(title, ulist, button_creator):
 def edit_report(uuid):
     print("edit_report for " + str(uuid))
     logger.info("edit_report for " + str(uuid))
-    try:
-        pffx = subprocess.Popen([browser, "http://localhost:8042/app/explorer.html#study?uuid=" + str(uuid)])
-    except Exception as e:
-        print(f"An error: {e}")
-        messagebox.showerror(title="Error", message="Could not invoke browser")
-        return
-    print("spawned browser with pffx", pffx)
-    result = subprocess.run(["code_dark_rptgen", "-j", "/code_dark/reports/" + str(uuid) + ".json" ], capture_output=True, text=True)
-    if result.returncode != 0:
-        messagebox.showerror(title="Error", message=CannotReview)
-        if result.stderr != "":
-            logger.error("stderr:", result.stderr)
-    else:
-        print("returned from code_dark_rptgen")
-        if result.stdout:
-            logger.error("stdout:", result.stdout)
+    print("spawning browser")
+    logger.info("spawning browser")
+    os.spawnlp(os.P_NOWAIT, browser, browser, THIS_STUDY_URL_PREFIX + str(uuid))
+    print("spawning code_dark_rptgen")
+    logger.info("spawning code_dark_rptgen")
+    os.spawnlp(os.P_NOWAIT, "code_dark_rptgen", "code_dark_rptgen", "-j", REPORTDIR + "/" + str(uuid) + ".json")
     print("leaving edit_report")
+    logger.info("leaving edit_report")
 
 def edit_button_add(uui, nr, col, row):
     x = tk.Button(nr, text = 'Edit Study Report', width = 20, command = lambda u = uui : edit_report(u))
     x.grid(sticky=tk.W, column=col, row=row)
 
 def review_study(uuid):
-    result = subprocess.run([browser, "http://localhost:8042/app/explorer.html#study?uuid=" + str(uuid)], capture_output=True, text=True)
-    if result.returncode != 0:
-        messagebox.showerror(title="Error", message=CannotReview)
-        if result.stderr != "":
-            logger.error("stderr:", result.stderr)
-    else:
-        if result.stdout:
-            logger.error("stdout:", result.stdout)
+    print("review_study for " + str(uuid))
+    logger.info("review_study for " + str(uuid))
+    print("spawning browser")
+    logger.info("spawning browser")
+    os.spawnlp(os.P_NOWAIT, browser, browser, THIS_STUDY_URL_PREFIX + str(uuid))
+    print("levaing review_study", result)
+    logger.info("levaing review_study", result)
 
 def review_button_add(uui, nr, col, row):
     x = tk.Button(nr, text = 'Begin Review', width = 12, command = lambda u = uui : review_study(u))
