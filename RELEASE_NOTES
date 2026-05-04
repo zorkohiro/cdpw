@@ -1,3 +1,20 @@
+Release 1.1-2
+
+ - Make the system not wait for the network to come up during boot.
+ - Tweak documentation
+ - Move to 24.04.04 server live image as base image to start from
+   since this allows for better partitioning flexibility.
+ - Move code_dark report template selection from JS/C++ code
+   and instead have a python3/tk tool for selection.
+ - Make code_dark_study_tool not wait for either a forked browser
+   or code_dark_rptgen. Otherwise the tool hangs waiting for the
+   spawned entities to exit. This will allow the system to get
+   multiple browsers going- and multiple code_dark_rptgen instances
+   (but editing the same report at the same time is disallowed)- but
+   the risk of that seems relatively small.
+ - Fix spawn_editor to use jq to fill in initial info when creating
+   a report from the template.
+
 Release 1.1 Dev Changes
 
  - use Orthanc study UUID for filename- none of this mrn/session stuff
