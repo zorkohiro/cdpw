@@ -1,5 +1,5 @@
- 1.1 Beta Notes, version 2
- Fri Apr 10 05:06:20 AM PDT 2026
+ 1.1 Beta Notes, build #3
+ Tue May  5 08:59:37 AM PDT 2026
 
 This is the source repository for building cdpw which is
 the add on software to an Ubuntu 24.04 based system that

@@ -18,6 +18,13 @@ REPORTDIR = "/code_dark/reports"
 LOG = "/code_dark/logs/study_tool.log"
 STUDYURL = "http://localhost:8042/studies"
 THIS_STUDY_URL_PREFIX = "http://localhost:8042/app/explorer.html#study?uuid="
+PATIENT_COL = 0
+MRN_COL = 1
+SESSION_NUMBER_COL = 2
+STUDY_DESCRIPTION_COL = 3
+STUDY_DATE_COL = 4
+LAST_DICOM_DATA_COL = STUDY_DATE_COL
+
 browser = "firefox"
 NoStudies = "No such studies"
 NoStudiesPresent = "No studies present"
@@ -103,16 +110,23 @@ def present_table(title, ulist, button_creator):
 
         if header == False:
             x = tk.Entry(nr, font=(fontfamily,fontsize,'bold'))
-            x.grid(row=rowvar, column=0)
+            x.grid(row=rowvar, column=PATIENT_COL)
             x.insert(tk.END, "Patient Name")
+
             x = tk.Entry(nr, font=(fontfamily,fontsize,'bold'))
-            x.grid(row=rowvar, column=1)
+            x.grid(row=rowvar, column=MRN_COL)
             x.insert(tk.END, "MRN")
+
             x = tk.Entry(nr, font=(fontfamily,fontsize,'bold'))
-            x.grid(row=rowvar, column=2)
+            x.grid(row=rowvar, column=SESSION_NUMBER_COL)
             x.insert(tk.END, "Session Number")
-            x = tk.Entry(nr, width=32, font=("Courier",fontsize,'bold'))
-            x.grid(row=rowvar, column=3)
+
+            x = tk.Entry(nr, width=20, font=(fontfamily,fontsize,'bold'))
+            x.grid(row=rowvar, column=STUDY_DESCRIPTION_COL)
+            x.insert(tk.END, "Study Description")
+
+            x = tk.Entry(nr, width=30, font=(fontfamily,fontsize,'bold'))
+            x.grid(row=rowvar, column=STUDY_DATE_COL)
             x.insert(tk.END, "Study Date")
 
             """ XXX Need a "state" column here of where we are with this study """
@@ -122,27 +136,38 @@ def present_table(title, ulist, button_creator):
 
         """ Constant study related columns """
         x = tk.Entry(nr,font=(fontfamily,fontsize))
-        x.grid(row=rowvar, column=0)
+        x.grid(row=rowvar, column=PATIENT_COL)
         x.insert(tk.END, patient["PatientName"])
 
         x = tk.Entry(nr,font=(fontfamily,fontsize))
-        x.grid(row=rowvar, column=1)
+        x.grid(row=rowvar, column=MRN_COL)
         x.insert(tk.END, patient["PatientID"])
 
         x = tk.Entry(nr,font=(fontfamily,fontsize))
-        x.grid(row=rowvar, column=2)
+        x.grid(row=rowvar, column=SESSION_NUMBER_COL)
         x.insert(tk.END, maindcm["AccessionNumber"])
 
-        x = tk.Entry(nr, width=32,font=("Courier",fontsize))
-        x.grid(row=rowvar, column=3)
+        try:
+            sdesc = maindcm["StudyDescription"]
+        except:
+            sdesc = ""
+
+        x = tk.Entry(nr, width=20, font=(fontfamily,fontsize))
+        x.grid(row=rowvar, column=STUDY_DESCRIPTION_COL)
+        x.insert(tk.END, sdesc)
+
+        x = tk.Entry(nr, width=30, font=(fontfamily,fontsize))
+        x.grid(row=rowvar, column=STUDY_DATE_COL)
         x.insert(tk.END, dst)
 
         """ Action buttons """
+        col = LAST_DICOM_DATA_COL + 1
         x = tk.Button(nr, text = 'Show DICOM', width = 10, command = lambda u = suuid, j = sjsn : show_dicom(u, j))
-        x.grid(sticky=tk.W, column=4, row=rowvar)
+        x.grid(sticky=tk.W, column=col, row=rowvar)
+        col = col + 1
 
         if button_creator != None:
-            button_creator(suuid, nr, 5, rowvar)
+            button_creator(suuid, nr, col, rowvar)
 
         rowvar = rowvar + 1
 

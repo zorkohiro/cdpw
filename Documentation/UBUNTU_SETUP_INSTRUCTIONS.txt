@@ -1,4 +1,4 @@
-Mon Apr 13 11:57:40 AM PDT 2026
+Mon May  4 01:49:38 PM PDT 2026
 
 0. Required Hardware and Environment
 
@@ -190,23 +190,20 @@ sudo apt remove --purge -y unattended-upgrades
 sudo apt remove --purge -y update-notifier
 
 
-6. Configure the installed firefox
+6. Remove installed firefox and replace with chromium and configure it
 
-Remove crap buttons from bookmark bar
-Settings/General
- Unclick "Open links in new tabs instead of new windows"
-Settings/Home
- Set both Homepage and new tabs as blank page
- Uncheck Shortcuts Recommended Stories 
+Get a Konsole started- make sure you are sudo'd to root.
 
-Enter about:config in address bar
-Say yes to continuing and taking the risk
-In the search bar enter sessionstore.
-For browser.sessionstore.resume_from_crash- set to false.
-For browser.sessionstore.max_resumed_crashes- set to 0.
+Issue: snap remove --purge firefox
+Issue: snap install chromium
 
-Enter http://localhost:8042 in chrome and bookmark it. You should
-have connected with the running orthanc server.
+Fire up chromium (you will have to find it via searching via the round ring apps selector at the bottom right)
+Pin it to the dash. Open up settings and:
+
+  turn off tab group stuff under Appearance
+  Under startup have it default at startup to open the page http://localhost:8042
+
+Enter http://localhost:8042 in chrome and bookmark it.
 
 7. Install gdm-settings and set up new login screen with a Kaiser label
 
@@ -216,8 +213,8 @@ sudo apt install gdm-settings libglib2.0-dev-bin
 
 Look under the Apps panel for the GDM-SETTINGS icon and fire it up.
 
-Under Login Screen add /usr/share/cdpw/code_dark_label_nv.gif as the image.
-You'll have to use ls to see what the latest label is.
+Under Login Screen add /usr/share/cdpw/code_dark_label.gif
+as the image.
 
 Under Appearance/Background change type to image and add
 /usr/lib/cdpw/KaiserRedSmall.png as the image.

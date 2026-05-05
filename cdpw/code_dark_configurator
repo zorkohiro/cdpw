@@ -66,53 +66,7 @@ except:
 """ Data handlers """
 def save_n_exit():
     """ Non-json configuration items """
-    """ Validate Entered Time, if any """
-    newtime = time_entry.get()
-    if newtime != orig_time:
-        if len(newtime) != 10:
-            messagebox.showerror("Error", "Wrong Length for Time String")
-            time_entry.set(orig_time)
-            return
-        try:
-            mon = int(newtime[0:2])
-            day = int(newtime[2:4])
-            hr = int(newtime[4:6])
-            minute = int(newtime[6:8])
-            yr = int(newtime[8:10])
-        except:
-            messagebox.showerror("Error", "non-integer entries")
-            time_entry.set(orig_time)
-            return
-        if mon < 1 or mon > 12:
-            messagebox.showerror("Error", "bad month value")
-            time_entry.set(orig_time)
-            return
-        if day < 1 or day > 31:
-            messagebox.showerror("Error", "bad day value")
-            time_entry.set(orig_time)
-            return
-        if hr < 0 or hr > 23:
-            messagebox.showerror("Error", "bad hour value")
-            time_entry.set(orig_time)
-            return
-        if minute < 0 or minute >= 60:
-            messagebox.showerror("Error", "bad minute value")
-            return
-        if yr < 25 or yr > 99:
-            messagebox.showerror("Error", "bad year value")
-            time_entry.set(orig_time)
-            return
-        try:
-            result = subprocess.run(["/usr/bin/sudo", "-n", "/usr/bin/date", newtime], capture_output=True, text=True)
-            if result.returncode != 0:
-                messagebox.showerror("Error", "Setting new time: " + result.stderr)
-                time_entry.set(orig_time)
-                return
-        except subprocess.CalledProcessError as e:
-            messagebox.showerror("Error", "Invoking process to set new time: " + e.output)
-            time_entry.set(orig_time)
-            return
-        messagebox.showinfo("Changed", "System date and/or time has been changed.")
+    """ None any more """
     """ Changed configuration items """
     aetp_changed = False
     port = int(port_entry.get())
@@ -212,14 +166,6 @@ rowvar = rowvar + 1
 rowvar = add_label("============================================================", rowvar, 0)
 rowvar = rowvar + 1
 
-rowvar = add_section_label("SYSTEM TIME", rowvar)
-now = datetime.datetime.now()
-orig_time = now.strftime("%m%d%H%M%y")
-time_entry, rowvar = add_label_entry("Set New Time (MMDDhhmmYY)", orig_time, rowvar, 10)
-rowvar = add_label("(MM = month, DD = day, hh = hour, mm = minute, YY = year)", rowvar, 0)
-rowvar = rowvar + 1
-rowvar = add_label("============================================================", rowvar, 0)
-
 rowvar = add_section_label("DICOM PARAMETERS", rowvar)
 port_entry, rowvar = add_label_entry("Listening Port", aetp_data[PT], rowvar, 16)
 aet_entry, rowvar = add_label_entry("AET", aetp_data[AE], rowvar, 16)
@@ -227,7 +173,7 @@ rowvar = rowvar + 1
 rowvar = add_label("============================================================", rowvar, 0)
 
 rowvar = add_section_label("AUTHORIZED RADIOLOGISTS", rowvar)
-rowvar = add_label("Edit List (this is a comma separated list)", rowvar, 0)
+rowvar = add_label("Edit List (this is a comma separated list so do not use any commas in names)", rowvar, 0)
 plist = json_data[PH]
 pbox, rowvar = add_box(', '.join(plist), rowvar)
 
