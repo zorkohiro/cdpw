@@ -3,8 +3,8 @@
 #
 MAJORV  ?= 1
 MINORV  ?= 1
-RLEASE  ?= 3
-BUILDV  ?= -2
+RLEASE  ?= 4
+BUILDV  ?= -1
 BASE    := cdpw
 RELEASE := $(MAJORV).$(MINORV).$(RLEASE)$(BUILDV)
 PKGNAME := $(BASE)-$(RELEASE)
@@ -12,7 +12,7 @@ PKGNAME := $(BASE)-$(RELEASE)
 # LEVEL is syntactic suger. It is $(RELEASE) which must be unique.
 # When it's truly a release, LEVEL should be null.
 #
-LEVEL   := Beta2
+LEVEL   := Beta3
 
 ARTIFACTS ?= ../artifacts
 
@@ -40,6 +40,7 @@ install:
 	install -D -m 755 about_code_dark ${INSTALL_ROOT}/usr/bin/about_code_dark
 	install -D -m 755 orthanc_checker ${INSTALL_ROOT}/usr/sbin/orthanc_checker
 	install -D -m 440 orthanc.sudo ${INSTALL_ROOT}/etc/sudoers.d/orthanc
+	install -D -m 444 overlayroot.local.conf ${INSTALL_ROOT}/etc
 	mkdir -p -m 755 $(INSTALL_ROOT)/DEBIAN
 	sed -e "s,%VERSION%,$(RELEASE)," control > $(INSTALL_ROOT)/DEBIAN/control
 	cp copyright preinst postinst prerm postrm ${INSTALL_ROOT}/DEBIAN
