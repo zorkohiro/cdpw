@@ -4,7 +4,7 @@
 MAJORV  ?= 1
 MINORV  ?= 1
 RLEASE  ?= 4
-BUILDV  ?= -1
+BUILDV  ?= -overlayroot-3
 BASE    := cdpw
 RELEASE := $(MAJORV).$(MINORV).$(RLEASE)$(BUILDV)
 PKGNAME := $(BASE)-$(RELEASE)

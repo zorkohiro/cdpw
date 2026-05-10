@@ -25,7 +25,7 @@ STUDY_DESCRIPTION_COL = 3
 STUDY_DATE_COL = 4
 LAST_DICOM_DATA_COL = STUDY_DATE_COL
 
-browser = "firefox"
+browser = "chromium"
 NoStudies = "No such studies"
 NoStudiesPresent = "No studies present"
 CannotReview = "Cannot Open"
@@ -43,13 +43,10 @@ fontfamily = "Times"
 # Process command line arguments if any
 #
 parser = argparse.ArgumentParser(description="Code Dark Report Entry Package")
-parser.add_argument("-b", "--browser", help="which web browser to user")
 parser.add_argument("-f", "--fontsize", help="Font Size (default 12)")
 args = vars(parser.parse_args())
 if args['fontsize']:
     fontsize = int(args['fontsize'])
-if args['browser']:
-    browser = int(args['browser'])
 
 logging.basicConfig(filename=LOG, filemode="a", encoding="utf-8", format="{asctime} - {levelname} - {message}",
     style="{", datefmt="%m/%d/%Y %H:%M", level=logging.INFO)
@@ -176,9 +173,9 @@ def present_table(title, ulist, button_creator):
 def edit_report(uuid):
     print("edit_report for " + str(uuid))
     logger.info("edit_report for " + str(uuid))
-    print("spawning browser")
-    logger.info("spawning browser")
-    os.spawnlp(os.P_NOWAIT, browser, browser, THIS_STUDY_URL_PREFIX + str(uuid))
+    print("spawning browser + " " + THIS_STUDY_URL_PREFIX + str(uuid))
+    logger.info("spawning browser" + " " + THIS_STUDY_URL_PREFIX + str(uuid))
+    os.spawnlp(os.P_NOWAIT, browser, browser, "--new-window", THIS_STUDY_URL_PREFIX + str(uuid))
     print("spawning code_dark_rptgen")
     logger.info("spawning code_dark_rptgen")
     os.spawnlp(os.P_NOWAIT, "code_dark_rptgen", "code_dark_rptgen", "-j", REPORTDIR + "/" + str(uuid) + ".json")
@@ -193,8 +190,8 @@ def review_study(uuid):
     print("review_study for " + str(uuid))
     logger.info("review_study for " + str(uuid))
     print("spawning browser")
-    logger.info("spawning browser")
-    os.spawnlp(os.P_NOWAIT, browser, browser, THIS_STUDY_URL_PREFIX + str(uuid))
+    logger.info("spawning browser" + " " + THIS_STUDY_URL_PREFIX + str(uuid))
+    os.spawnlp(os.P_NOWAIT, browser, browser, "--new-window", THIS_STUDY_URL_PREFIX + str(uuid))
     print("levaing review_study", result)
     logger.info("levaing review_study", result)
 
