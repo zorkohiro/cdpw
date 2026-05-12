@@ -33,6 +33,7 @@ import requests
 import re
 import os
 import sys
+import logging
 
 #################################################################################################
 #
@@ -47,6 +48,12 @@ TMPLDIR   = "/usr/lib/cdpw/Templates"
 STUDYURL  = "http://localhost:8042/studies"
 SERIESURL = "http://localhost:8042/series"
 CTEMPL = "Choose a Template"
+LOG = "/code_dark/logs/template_select_tool.log"
+
+logging.basicConfig(filename=LOG, filemode="a", encoding="utf-8", format="{asctime} - {levelname} - {message}",
+    style="{", datefmt="%m/%d/%Y %H:%M", level=logging.INFO)
+logger = logging.getLogger(__name__)
+logger.info("Code Dark Study Select Template started")
 
 #
 # We only have one argument- the UUID for the study.
@@ -54,7 +61,7 @@ CTEMPL = "Choose a Template"
 try:
     uuid = sys.argv[1]
 except:
-    print("unable to retrieve uuid argument from command line arguments")
+    logger.info("unable to retrieve uuid argument from command line arguments")
     exit(1)
 
 #
@@ -62,7 +69,7 @@ except:
 #
 study = requests.get(STUDYURL + "/" + uuid)
 if study.status_code != 200:
-    print("study", uuid, "does not seem to be known by Orthanc")
+    logger.info("study", uuid, "does not seem to be known by Orthanc")
     exit(1)
 study_json = study.json()
 
@@ -82,8 +89,11 @@ except:
 
 if not modality:
     # With no specified modality, we can only use the generic study
-    print(TMPLDIR + "/" + "generic.json")
+    logger.info("no modality for study " + str(uuid))
+    print("generic.json")
     exit(0)
+
+logger.info("modality for study " + str(uuid) + " is " + modality)
 
 #
 # Get this list of template files available
@@ -94,7 +104,8 @@ template_list = [f for f in os.listdir(TMPLDIR) if os.path.isfile(os.path.join(T
 # If this is a modality for which we do not have any templates, it's the generic template for us
 #
 if not template_list:
-    print(TMPLDIR + "/" + "generic.json")
+    logger.info("no template list for study " + str(uuid))
+    print("generic.json")
     exit(0)
 
 #
@@ -227,6 +238,7 @@ def select():
     root.destroy()
     if idx >= 0:
         print(template_list[idx])
+        logger.info("print out selected template for " + str(uuid))
     exit(0)
 
 # Label to show study description

@@ -173,7 +173,7 @@ def present_table(title, ulist, button_creator):
 def edit_report(uuid):
     print("edit_report for " + str(uuid))
     logger.info("edit_report for " + str(uuid))
-    print("spawning browser + " " + THIS_STUDY_URL_PREFIX + str(uuid))
+    print("spawning browser" + " " + THIS_STUDY_URL_PREFIX + str(uuid))
     logger.info("spawning browser" + " " + THIS_STUDY_URL_PREFIX + str(uuid))
     os.spawnlp(os.P_NOWAIT, browser, browser, "--new-window", THIS_STUDY_URL_PREFIX + str(uuid))
     print("spawning code_dark_rptgen")
@@ -192,8 +192,8 @@ def review_study(uuid):
     print("spawning browser")
     logger.info("spawning browser" + " " + THIS_STUDY_URL_PREFIX + str(uuid))
     os.spawnlp(os.P_NOWAIT, browser, browser, "--new-window", THIS_STUDY_URL_PREFIX + str(uuid))
-    print("levaing review_study", result)
-    logger.info("levaing review_study", result)
+    print("leaving review_study")
+    logger.info("leaving review_study")
 
 def review_button_add(uui, nr, col, row):
     x = tk.Button(nr, text = 'Begin Review', width = 12, command = lambda u = uui : review_study(u))
