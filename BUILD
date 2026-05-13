@@ -1,6 +1,6 @@
 HOW tO BUILD
 
-1. Install and run on Ubuntu 24.04. Set up as some
+1. Install and run on Debian 13. Set up as some
 non-orthanc name as the build user, Your favorite
 login name is fine.
 
@@ -48,5 +48,4 @@ docker run hello-world
 5. At this directory level, issue the command 'make'
 
 The packages needed for installation on a prepared USB key
-running Ubuntu 24.04 will end up in the created artifacts
-directory.
+running Debian 13 will end up in the created artifacts directory.

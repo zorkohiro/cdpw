@@ -3,10 +3,8 @@
 #
 
 all:
-	$(MAKE) -C cdpw-report install
-	$(MAKE) -C cdpw-ohif install
-	$(MAKE) -C cdpw-dicomweb install
-	$(MAKE) -C cdpw-orthanc install
+	mkdir -p artifacts
+	sudo $(MAKE) -C cdpw-ohif install
 	$(MAKE) -C cdpw install
 	cd artifacts && rel=`cat RELEASE` && tar cf ../cdpw-$$rel.tar *.deb
 

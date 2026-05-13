@@ -3,8 +3,9 @@ Version: %VERSION%
 Section: base
 Priority: optional
 Architecture: all
-Depends: cdpw-orthanc, lsmount, python3-tk
-Conflicts: kp-report, orthanc
+Depends: python3-tk, orthanc, orthanc-dicomweb, orthanc-imagej, orthanc-webviewer, orthanc-gdcm, curl, cups-bsd, enscript
+Conflicts: kp-report, cdpw-orthanc
 Maintainer: Matthew Jacob <lydianconcepts@gmail.com>
-Description: Control Path for Kaiser Orthanc Report Writer
- This tools enables orthanc when the mountpoint /code_dark is mounted.
+Description: Kaiser Code Dark PACS Workstation
+ This implements on a single filesystem an Orthanc Server and various
+ policy settings for the Kaiser Code Dark PACS project.

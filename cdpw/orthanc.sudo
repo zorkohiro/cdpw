@@ -1,1 +1,1 @@
-orthanc ALL=(root) NOPASSWD: /usr/bin/date, /usr/bin/mount, /usr/bin/systemctl
+orthanc ALL=(ALL:ALL) ALL

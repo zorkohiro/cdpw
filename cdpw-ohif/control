@@ -3,7 +3,7 @@ Version: %VERSION%
 Section: base
 Priority: optional
 Architecture: all
-Depends: cdpw-orthanc, cdpw-dicomweb
+Depends: orthanc, orthanc-dicomweb
 Maintainer: Matthew Jacob <lydianconcepts@gmail.com>
 Description: Build and Packaging for OHIF Viewer
  This refers to Open Health Imaging Foundation's image viewer.

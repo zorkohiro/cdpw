@@ -2,7 +2,7 @@
 Name=Code Dark Configurator
 Comment=Code Dark System Parameters Tool
 Exec=/usr/bin/code_dark_configurator
-Icon=/usr/share/icons/hicolor/16x16/apps/software-properties.png
+Icon=/usr/share/icons/Adwaita/symbolic/categories/preferences-system-symbolic.svg
 Terminal=false
 Type=Application
 

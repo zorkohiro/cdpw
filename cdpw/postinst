@@ -8,14 +8,19 @@ chown root:root /etc/sudoers.d/orthanc
 chmod 600 /etc/sudoers.d/orthanc
 
 #
-# Enable cdpw_configure service and start
-#
-systemctl enable cdpw_data_present.service
-systemctl restart cdpw_data_present.service
-
-#
 # Install Desktop entries
 #
 install -D -m 755 -o orthanc /usr/share/applications/code_dark_configurator.desktop ~orthanc/Desktop
 install -D -m 755 -o orthanc /usr/share/applications/code_dark_study_tool.desktop ~orthanc/Desktop
 install -D -m 755 -o orthanc /usr/share/applications/code_dark_about.desktop ~orthanc/Desktop
+
+#
+# Make sure initial config file setup has been completed
+#
+for subdir in config/orthanc reports logs; do mkdir -p /code_dark/$subdir; done
+if [ ! -f /code_dark/config/configurator.json ]; then
+ cp /usr/share/cdpw/configurator.json /code_dark/config
+ cp /usr/share/cdpw/cdpw.json /code_dark/config/orthanc
+ cp /usr/share/cdpw/dicom_aet_port.json /code_dark/config/orthanc
+ chown -R orthanc:orthanc /code_dark
+fi

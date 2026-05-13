@@ -1,0 +1,35 @@
+#!/bin/bash
+
+if [[ -z $1 ]]; then
+ echo "Usage: $0 input-text-file"
+ exit 1
+fi
+txtinput=$1
+if [[ ! -f $1 ]]; then
+ echo "$0: input file $1 not found"
+ exit 1
+fi
+
+# Do we have a default destination?
+dflt_dest=$(lpstat -d 2>/dev/null)
+al=$(echo $dflt_dest|sed 's/:.*$//')
+if [[ "$al" == "system default destination" ]]; then
+ dest=$(echo $dflt_dest|awk ' { print $NF }')
+elif [[ "${dflt_dest}" == "no system default destination" ]]; then
+ # We do not have a default destination
+ # See if we can generate one
+ dests=$(lpstat -a|grep accepting|sed 's/ .*$//')
+ ndests=$(echo $dests | wc -l)
+ if [[ $ndests != 1 ]]; then
+  echo "$0: cannot figure out what the default printer is (if any). Please configure a default printer"
+  exit 1
+ fi
+ dest=$dests
+fi
+if [[ -z $dest ]]; then
+ echo "cannot figure out what printer to send the report to. Please configure a default printer"
+ exit 1
+fi
+enscript -n 2 -B -P $dest $txtinput
+exit $?
+

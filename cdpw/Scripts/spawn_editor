@@ -9,29 +9,8 @@
 # will help select the template to start from.
 #
 
-#
-# This horrible stuff allows us to spawn an X application via
-# a callout from a C++ program which has no X environment
-# information since it is invoked via systemd.
-#
-# This mutter nonsense is for gnome3 under Ubuntu 24.04.
-#
-XDG_RUNTIME_DIR=/run/user/$UID
-if [[ -d ${XDG_RUNTIME_DIR} ]]; then
- XAUTHORITY=$(ls ${XDG_RUNTIME_DIR}/.mutter* 2>/dev/null)
- if [[ -n "${XAUTHORITY}" ]]; then
-  export XAUTHORITY
-  export XDG_RUNTIME_DIR
-  export DISPLAY=:0
- else
-  unset XDG_RUNTIME_DIR
- fi
-fi
-
-#
-#
 export PATH=/usr/bin:/usr/sbin
-TPD=/usr/lib/cdpw/Templates
+TPD=/usr/share/cdpw/Templates
 CDB=/code_dark
 RPT=${CDB}/reports
 LOG=${CDB}/logs/spawn_editor.log
