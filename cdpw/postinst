@@ -24,3 +24,12 @@ if [ ! -f /code_dark/config/configurator.json ]; then
  cp /usr/share/cdpw/dicom_aet_port.json /code_dark/config/orthanc
  chown -R orthanc:orthanc /code_dark
 fi
+
+#
+# Install AET port parameters in orthanc's config directory if not already there
+# and make sure that the original in the main config is removed.
+#
+if [ ! -f /etc/orthanc/dicome_aet_port.json ]; then
+ cp /usr/share/cdpw/dicom_aet_port.json /etc/orthanc
+ sed -i -e '/  "DicomAet/d' -e '/  "DicomPort/d' /etc/orthanc/orthanc.json 
+fi

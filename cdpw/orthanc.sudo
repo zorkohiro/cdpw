@@ -1,1 +1,1 @@
-orthanc ALL=(ALL:ALL) ALL
+orthanc ALL=(ALL:ALL) ALL, NOPASSWD: /usr/bin/systemctl
