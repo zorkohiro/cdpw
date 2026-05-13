@@ -1,0 +1,177 @@
+Tue May 12 08:31:19 AM PDT 2026
+
+0. Required Hardware and Environment
+
+Get a USB flash drive of at least 8GB to put the debian 13 install image on.
+
+Get a USB flash drive of at lesat 32GB to become the target of the install.
+
+You can certainly user an even larger USB Key for the target of the install-
+but this just makes it more painful when copying the gold master to multiple keys
+for distribution. The effective size requirements are an overgenerous ~17GB
+currently.
+
+You will need to be connected to the internet to perform the following steps.
+
+1. Copy Debian 13 iso image to the USB install image from any debian mirror.
+
+Create the Install USB key from this with dd on a linux system or Rufus on a Windows system.
+
+2. Create a Bootable Gold Image CDPW System
+
+Take the install key to any reasonable recent x86_64 system and insert it. Make sure it is
+enabled for UEFI booting (not Legacy boot). It would be ideal to remove any main boot
+device from this system- makes life easier and avoids trashing your internal system. You
+can step around this but you have been warned.
+
+Power and and boot the install key (you'll have to hit whatever key that system needs
+to ceate a one time boot menuto boot that install key- this is vendor and even model specific.
+It needs to be a UEFI boot.
+
+Once booted, start the graphical installer.
+
+The first step prior to continuing with the installation which is waiting for input
+at the first step is to insert the USB which will become the target of the install
+(the new Gold Master).
+
+You'll have to play around with navigating this installer but the first few steps
+are basic keyboard and network configuration questions. Any asks for firmware for,
+say, wifi, you can say no to (for now). It is not stricly necessary to have
+networking up to perform this setup.
+
+Next it will ask for a root password to be set- use 'orthanc'.
+Next it will ask for a normal user's name- use 'Saruman B Orthanc'
+Next it will ask for the login id- use 'orthanc' and password 'orthanc'.
+
+Then it will spin you to the disk partitioning menu. You'll select 'manual'
+for partitioning. It will then print out a list of devices. Find the
+target disk device- presumably it will be the only one in the 32G or whatever
+size range you have the USB. That is, an internal drive is likely 250GB or
+larger and the installer is like 8GB.
+
+Fiddle around with the installation to make sure that there is a front sided
+partition of ~1GB as the ESP efi boot partition (this should actually show
+up mostly automatically).
+
+Create a second partition 16GB in size, ext4, create it, mount on '/' (root filesystem).
+
+Say yes, yes. Say no to 'you forgot a swap partition, go back?", Say yes to write things
+out.
+
+Installation should then proceed automatically for quite some time.
+
+The 'tasksel' selection should show up- Desktop Debian, Gnome, standard utilities.
+
+Then it will ask about installing a boot block (this only happens if you've left
+your original internal drive(s) in place in this machine). Do *not* say, yes update
+the primary boot device with grub - this will replace the boot stuff on the original
+internal device which is probably not what you want. You want to figure out which
+sd device the target Gold Master is and say you want things installed on that in
+the window after this.
+
+When the installation is done, reboot to gold master USB key.
+
+It will come up with a standard graphical login screen for user orthanc.
+You can log in with orthanc/orthanc.
+
+3. Get the fixed amdgpu module and install it on our system
+
+Follow instructions from https://kernel-team.pages.debian.net/kernel-handbook/ch-common-tasks.html#s-common-official for
+rebuilding packages, with the following changes:
+
+ 1. After you extract the source, apply the amdgpu_drv.c patch
+ 2. Front the changelog with:
+
+	linux (6.12.2030-1~exp1) experimental; urgency=medium
+
+	  * Patches to amdgpu driver for Barco adapters:
+	  [ Matthew Jacob ]
+	  * Manually apply update to recognize 2 nominally windows only Barco adapters
+         -- Matthew Jacob <lydianconcepts@gmail.com>  Mon, 11 May 2026 12:54:02 +0800
+
+The build will fail 1st as expected as control is created. The build will not complete
+all the way but the linux-image .deb will have been created. You can then install
+this.
+
+4. Install our CDPW packages
+
+Fetch the latest set of installable cdpw user packages with this command:
+
+ rm -rf /var/tmp/packages
+ cd /var/tmp/packages
+ wget https://feralsw.com/cdpw/cdpw-latest.tar
+ tar xf cdpw-latest.tar
+ su - (supply password)
+ apt install -y /var/tmp/packages/*.deb
+ cd ..
+ rm -rf packages
+
+Find where code_dark_configurator and code_dark_study_tool and 'about code dark' icons
+been put onto the desktop. Do a pull right menu over them if they have a little red 'x'
+and select the "Allow Launch" option. This is an unfortunate aspect of Gnome3 that doesn't
+allow one to do this programmatically at installation time.
+
+------------------------------------------
+The following changes are more for making this a system that will be less distracting.
+They are optional at this point. You can used Code Dark with both the study tool
+or directly via Firefox connected to http://localhost:8042 perfectly acceptably
+at this poing.
+------------------------------------------
+5. Fire up and configure FireFox
+
+6. Get a bottom task bar and clean it up
+
+Fire up firefox and go to https://extensions.gnome.org/extension/2087/desktop-icons-ng-ding
+and install that. 
+
+sudo apt install gir1.2-gnomedesktop-3.0 may be needed after installing - or it may be
+present and an autoremove on our part nuked it. XXXX this is the GIRI missing alert
+
+
+This then should all of a sudden create a bar across the bottom of the screen which you
+can then clean up. 
+
+Fire up a Kconsole and pin it to the task bar.
+
+7. System Panel changes
+
+as well as clean up background
+
+Fire up the system changes icon
+
+Search for Date & Time and disable automatic date and time.
+
+Search for Privacy & Security
+ Set under Screen Lock:
+	+ 10 minutes blank screen delay
+	+ Automatic Screen Lock ON
+	+ Automatic Screen Lock delay 1 minute
+	+ Lock Screen notifications ON
+	+ Lock Screen on Suspend ON
+
+
+#
+# Disable automatic updates && upgrades
+#
+sudo dpkg-reconfigure -plow unattended-upgrades
+sudo systemctl disable apt-daily.timer
+sudo systemctl disable apt-daily-upgrade.timer
+sudo apt remove --purge -y unattended-upgrades
+sudo apt remove --purge -y update-notifier
+
+
+8. Set up login screen to have the right login logo
+
+Get a Kconsole up and and copy /usr/share/cdpw/KaiserRedSmall.png
+to /usr/share/images/vendor-logos.
+
+Edit /etc/gdm3/greeter.dconf-defaults and change
+
+ logo='/usr/share/images/vendor-logos/logo-text-version-64.png'
+
+to
+
+ logo='/usr/share/images/vendor-logos/KaiserRedSmall.png'
+
+Then issue: dpkg-reconfigure gdm3
+

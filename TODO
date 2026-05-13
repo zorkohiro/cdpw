@@ -1,6 +1,0 @@
-Fix code_dark_rptgen to be on top of a scrollable canvas so that we don't end up
-with a report template that is taller than any available monitor (unlikely)
-
-Make bootable key a caspar based self expanding to use all of a USB after first boot.
-
-Make root read-only with overalayfs and have an option to reset the system.
