@@ -79,8 +79,8 @@ You can log in with orthanc/orthanc.
 Follow instructions from https://kernel-team.pages.debian.net/kernel-handbook/ch-common-tasks.html#s-common-official for
 rebuilding packages, with the following changes:
 
- 1. After you extract the source, apply the amdgpu_drv.c patch
- 2. Front the changelog with:
+ A. After you extract the source, apply the amdgpu_drv.c patch
+ B. Front the changelog with:
 
 	linux (6.12.2030-1~exp1) experimental; urgency=medium
 
@@ -119,45 +119,25 @@ at this poing.
 ------------------------------------------
 5. Fire up and configure FireFox
 
-6. Get a bottom task bar and clean it up
+6. Get icons on the desktop and a bottom task bar and clean things up
 
 Fire up firefox and go to https://extensions.gnome.org/extension/2087/desktop-icons-ng-ding
-and install that. 
+and install that.  sudo apt install gir1.2-gnomedesktop-3.0 after this.
 
-sudo apt install gir1.2-gnomedesktop-3.0 may be needed after installing - or it may be
-present and an autoremove on our part nuked it. XXXX this is the GIRI missing alert
-
+Go to https://extensions.gnome.org/extension/1160/dash-to-panel and install that.
 
 This then should all of a sudden create a bar across the bottom of the screen which you
 can then clean up. 
 
 Fire up a Kconsole and pin it to the task bar.
 
-7. System Panel changes
+Use gnome-tweaks to enable maximize/minimize buttons
 
-as well as clean up background
+7. Clean up background + other desktop
 
-Fire up the system changes icon
-
-Search for Date & Time and disable automatic date and time.
-
-Search for Privacy & Security
- Set under Screen Lock:
-	+ 10 minutes blank screen delay
-	+ Automatic Screen Lock ON
-	+ Automatic Screen Lock delay 1 minute
-	+ Lock Screen notifications ON
-	+ Lock Screen on Suspend ON
-
-
-#
-# Disable automatic updates && upgrades
-#
-sudo dpkg-reconfigure -plow unattended-upgrades
-sudo systemctl disable apt-daily.timer
-sudo systemctl disable apt-daily-upgrade.timer
-sudo apt remove --purge -y unattended-upgrades
-sudo apt remove --purge -y update-notifier
+Pull right on desktop and select half light gray/half dark gray appearance
+You will need to pull right over the icons on the desktop to click 'allow launching' since that has to be manually done.
+Set 'Keep arranged' from pull right over desktop.
 
 
 8. Set up login screen to have the right login logo
@@ -172,6 +152,11 @@ Edit /etc/gdm3/greeter.dconf-defaults and change
 to
 
  logo='/usr/share/images/vendor-logos/KaiserRedSmall.png'
+
+uncomment and change text on:
+
+banner-message-enable=true
+banner-message-text='Code Dark PACS Workstation Release 2.0'
 
 Then issue: dpkg-reconfigure gdm3
 
