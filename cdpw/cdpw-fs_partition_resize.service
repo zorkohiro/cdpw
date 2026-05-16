@@ -1,0 +1,14 @@
+[Unit]
+Description=CDPW Add Swap and Resize Partition Sercice
+DefaultDependencies=no
+After=systemd-fsck-root.service systemd-tmpfiles-setup-dev-early.service systemd-sysctl.service systemd-udev-trigger.service
+Wants=local-fs-pre.target
+Before=local-fs-pre.target systemd-remount-fs.service
+
+[Service]
+Type=oneshot
+StandardOutput=journal+console
+ExecStart=/var/lib/cdpw/add_swap_and_partition_resize.sh
+
+[Install]
+WantedBy=local-fs.target

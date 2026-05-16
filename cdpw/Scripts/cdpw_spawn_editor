@@ -2,7 +2,7 @@
 #
 # Spawn the editor on a study UUID, e,g,:
 #
-#  spawn_editor uuid
+#  cdpw_spawn_editor uuid
 #
 # It there is no existing json in the report directory, this is
 # this is the first time for this study, so invoke the tool that
@@ -13,10 +13,10 @@ export PATH=/usr/bin:/usr/sbin
 TPD=/usr/share/cdpw/Templates
 CDB=/code_dark
 RPT=${CDB}/reports
-LOG=${CDB}/logs/spawn_editor.log
+LOG=${CDB}/logs/cdpw_spawn_editor.log
 
 echo "=================================" >> ${LOG}
-echo spawn_editor $* on `date` >> $LOG 2>&1
+echo cdpw_spawn_editor $* on `date` >> $LOG 2>&1
 if [[ $# -ne 1 ]]; then
  echo "usage: $(basename $0) orthanc-uuid" >> $LOG
  exit 1

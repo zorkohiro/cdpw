@@ -191,7 +191,7 @@ except:
 # 1. Housekeeping items
 #   
 # Items marked with '*' come from the DICOM object and are interpolated
-# into the json data at first edit by spawn_editor.
+# into the json data before first edit by cdpw_spawn_editor.
 #
 #  "version"              : This api's version # (2)
 #  "mrn"                  : Medical Record Number*

@@ -48,4 +48,6 @@ docker run hello-world
 5. At this directory level, issue the command 'make'
 
 The packages needed for installation on a prepared USB key
-running Debian 13 will end up in the created artifacts directory.
+running Debian 13 will end up in the created artifacts directory,
+but for convenience will then be placed as a tarball in
+the top directory.

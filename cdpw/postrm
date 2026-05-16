@@ -6,9 +6,6 @@ remove|purge)
  rm -f ~orthanc/Desktop/code_dark_configurator.desktop
  rm -f ~orthanc/Desktop/code_dark_study_tool.desktop
  rm -f ~orthanc/Desktop/code_dark_about.desktop
- if [ $1 = "purge" ]; then
-  rm -rf /code_dark
- fi
  ;;
 esac
 

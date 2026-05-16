@@ -28,7 +28,7 @@ Power and and boot the install key (you'll have to hit whatever key that system 
 to ceate a one time boot menuto boot that install key- this is vendor and even model specific.
 It needs to be a UEFI boot.
 
-Once booted, start the graphical installer.
+Once booted, select the graphical installer.
 
 The first step prior to continuing with the installation which is waiting for input
 at the first step is to insert the USB which will become the target of the install
@@ -53,10 +53,10 @@ Fiddle around with the installation to make sure that there is a front sided
 partition of ~1GB as the ESP efi boot partition (this should actually show
 up mostly automatically).
 
-Create a second partition 16GB in size, ext4, create it, mount on '/' (root filesystem).
-
-Say yes, yes. Say no to 'you forgot a swap partition, go back?", Say yes to write things
-out.
+Create a second partition 16GB in size, ext4, create it, mount on '/' (root filesystem). Select done with this partition.
+Create a third partition 2GB in size, swap. Select done with this partition.
+Create a fourth partition 2GB in size, ext4, creat it and mount on /code_dark. Select done with this partition.
+Select done with partitioning.
 
 Installation should then proceed automatically for quite some time.
 
@@ -74,7 +74,46 @@ When the installation is done, reboot to gold master USB key.
 It will come up with a standard graphical login screen for user orthanc.
 You can log in with orthanc/orthanc.
 
-3. Get the fixed amdgpu module and install it on our system
+3. Fire up and configure FireFox
+
+Find and fire up Firefox. Go to Settings.
+
+Under General uncheck 'Open links in tabs instead of new windows'..
+
+Under Home:
+  + Homepage and new windows: http://localhost:8042
+  + New tabs: Blank page
+  + uncheck all of Home content
+
+Enter about:config in URL bar, say yes, search for 'resume' and set browser.sessionstore.resume_from_crash to false.
+
+
+4. Get icons on the desktop and a bottom task bar and clean things up
+
+Fire up firefox and go to https://extensions.gnome.org/extension/2087/desktop-icons-ng-ding
+and install that.  sudo apt install gir1.2-gnomedesktop-3.0 after this.
+
+Go to https://extensions.gnome.org/extension/1160/dash-to-panel and install that.
+
+This then should all of a sudden create a bar across the bottom of the screen which you
+can then clean up. 
+
+Fire up a Kconsole and pin it to the task bar.
+
+Fire up 'Settings' and pin to the task bar.
+
+Remove other crap from the bottom bar.
+
+Use gnome-tweaks to enable maximize/minimize buttons on windows.
+
+5. Clean up background + other desktop
+
+Pull right on desktop and select half light gray/half dark gray appearance
+You will need to pull right over the icons on the desktop to click 'allow launching' since that has to be manually done.
+Set 'Keep arranged' from pull right over desktop.
+
+
+6. Get the fixed amdgpu module kernel and install it on our system
 
 Follow instructions from https://kernel-team.pages.debian.net/kernel-handbook/ch-common-tasks.html#s-common-official for
 rebuilding packages, with the following changes:
@@ -93,7 +132,42 @@ The build will fail 1st as expected as control is created. The build will not co
 all the way but the linux-image .deb will have been created. You can then install
 this.
 
-4. Install our CDPW packages
+7. Prepare for and install our CDPW packages
+
+We want to make sure we are prepared for our usage of orthanc. Get into a Konsole, su - to root.
+
+Inssue the commands:
+
+   apt install -y orthanc
+   systemctl stop orthanc
+   mkdir -p /code_dark/{config,database,logs/orthanc,reports}
+   mv /etc/orthanc /code_dark/config
+ 
+Create the file /code_dark/config/orthanc/dicom_aet_port.json with the contents:
+
+     {
+       "DicomAet" : "ORTHANC",
+       "DicomPort" : 4242
+     }
+  
+Issue the commands:
+
+	sed -i -e '/  "DicomAet/d' -e '/  "DicomPort/d' /code_dark/config/orthanc/orthanc.json
+   	chown -R orthanc:orthanc /code_dark
+
+Edit the file /usr/lib/systemd/system/orthanc.service so that the ExecStart line says:
+
+           ExecStart=/usr/sbin/Orthanc --logdir=/code_dark/logs/orthanc /code_dark/config/orthanc
+
+Issue the commands:
+
+           systemctl daemon-reload
+           systemctl start orthanc
+           systemctl status orthanc
+
+The last should show orthanc now correctly running (with config and data moved under /code_dark).
+
+8. Install our cdpw packages
 
 Fetch the latest set of installable cdpw user packages with this command:
 
@@ -107,40 +181,12 @@ Fetch the latest set of installable cdpw user packages with this command:
  rm -rf packages
 
 Find where code_dark_configurator and code_dark_study_tool and 'about code dark' icons
-been put onto the desktop. Do a pull right menu over them if they have a little red 'x'
-and select the "Allow Launch" option. This is an unfortunate aspect of Gnome3 that doesn't
-allow one to do this programmatically at installation time.
-
-------------------------------------------
-The following changes are more for making this a system that will be less distracting.
-They are optional at this point. You can used Code Dark with both the study tool
-or directly via Firefox connected to http://localhost:8042 perfectly acceptably
-at this poing.
-------------------------------------------
-5. Fire up and configure FireFox
-
-6. Get icons on the desktop and a bottom task bar and clean things up
-
-Fire up firefox and go to https://extensions.gnome.org/extension/2087/desktop-icons-ng-ding
-and install that.  sudo apt install gir1.2-gnomedesktop-3.0 after this.
-
-Go to https://extensions.gnome.org/extension/1160/dash-to-panel and install that.
-
-This then should all of a sudden create a bar across the bottom of the screen which you
-can then clean up. 
-
-Fire up a Kconsole and pin it to the task bar.
-
-Use gnome-tweaks to enable maximize/minimize buttons
-
-7. Clean up background + other desktop
-
-Pull right on desktop and select half light gray/half dark gray appearance
-You will need to pull right over the icons on the desktop to click 'allow launching' since that has to be manually done.
-Set 'Keep arranged' from pull right over desktop.
+been put onto the desktop. Do a pull right menu over them and select the "Allow Launch" option.
+This is an unfortunate aspect of Gnome3 that doesn't allow one to do this programmatically
+at installation time.
 
 
-8. Set up login screen to have the right login logo
+9. Set up login screen to have the right login logo
 
 Get a Kconsole up and and copy /usr/share/cdpw/KaiserRedSmall.png
 to /usr/share/images/vendor-logos.

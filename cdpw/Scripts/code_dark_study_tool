@@ -26,7 +26,7 @@ STUDY_DATE_COL = 4
 LAST_DICOM_DATA_COL = STUDY_DATE_COL
 
 browser = "firefox"
-spawn_editor = "spawn_editor"
+spawn_editor = "cdpw_spawn_editor"
 NoStudies = "No such studies"
 NoStudiesPresent = "No studies present"
 CannotReview = "Cannot Open"
@@ -193,7 +193,7 @@ def review_study(uuid):
     log_n_print("begin review of " + str(uuid))
     log_n_print("spawning browser")
     os.spawnlp(os.P_NOWAIT, browser, browser, THIS_STUDY_URL_PREFIX + str(uuid))
-    log_n_print("spawning spawn_editor")
+    log_n_print("spawning " + spawn_editor)
     os.spawnlp(os.P_NOWAIT, spawn_editor, spawn_editor, str(uuid))
     log_n_print("leaving review_study")
 
