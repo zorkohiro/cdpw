@@ -1,53 +1,18 @@
-HOW tO BUILD
+HOW TO BUILD
 
-1. Install and run on Debian 13. Set up as some
+1. Install and build on Debian 13. Set up as some
 non-orthanc name as the build user, Your favorite
 login name is fine.
 
-2. Make a password-less sudo for the whoever is the build user.
+2. Install these packages with apt:
 
-This is unfortunately now required for building the OHIF
-plugin for orthanc.
-
-3. Install these packages with apt:
-
-	build-essential
-	cmake
-	libboost-all-dev
-	libcharls-dev
-	libcurl4-openssl-dev
-	libdcmtk-dev
-	libgtest-dev
-	libjpeg-dev
-	libjsoncpp-dev
-	liblua5.3-dev
-	libpng-dev
-	libpugixml-dev
-	libsqlite3-dev
-	libssl-dev
-	libwrap0-dev
-	locales
-	mercurial
-	orthanc-dev
-	patch
-	protobuf-compiler
-	unzip
-	uuid-dev
-	zlib1g-dev
-
-4. Set up docker for users to run
-
-Install docker, such that you as a normal user can run docker.
-
-sudo apt install -y curl apt-transport-https ca-certificates software-properties-common
-sudo apt install -y docker.io
-sudo usermod -aG docker $USER
-<reboot>
-docker run hello-world
+	build-essential dpkg
 
 5. At this directory level, issue the command 'make'
 
-The packages needed for installation on a prepared USB key
-running Debian 13 will end up in the created artifacts directory,
-but for convenience will then be placed as a tarball in
-the top directory.
+The package needed for installation on a prepared USB
+key will end up at the root of this tree. There
+may be additional packages described that are built
+in separate repositories for installating to the
+USB key as well.
+

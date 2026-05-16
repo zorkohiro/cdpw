@@ -1,3 +1,10 @@
+Release Debian 2.0 Dev1
+
+Move cdpw-ohif into a separate repository - build it separate.
+It is an important but not *dependent* package for us. This
+means we can flatten the build here to just the scriptage
+and dependency graphs.
+
 Release Debian 2.0 Dev0
 
 Debian 13, one piece of media approach. No waiting for CODE_DARK

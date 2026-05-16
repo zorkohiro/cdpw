@@ -4,7 +4,7 @@
 MAJORV  ?= 2
 MINORV  ?= 0
 RLEASE  ?= 0
-BUILDV  ?= -deb13-5
+BUILDV  ?= -deb13-6
 BASE    := cdpw
 RELEASE := $(MAJORV).$(MINORV).$(RLEASE)$(BUILDV)
 PKGNAME := $(BASE)-$(RELEASE)
@@ -14,7 +14,7 @@ PKGNAME := $(BASE)-$(RELEASE)
 #
 LEVEL   := Dev0
 
-ARTIFACTS ?= ../artifacts
+ARTIFACTS ?= ..
 
 INSTALL_ROOT = $(CURDIR)/$(PKGNAME)
 CDPW_LIB = $(INSTALL_ROOT)/usr/share/$(BASE)
