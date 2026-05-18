@@ -1,0 +1,16 @@
+#
+# Check for the Orthanc patient data and configs and
+# log structure being populated and the right ownership
+# under /code_dark.
+#
+[Unit]
+Description=CDPW Orthanc Config Setup Service
+After=fs_partition_resize.service
+Before=orthanc.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/share/cdpw/cdpw_config_setup.sh
+
+[Install]
+WantedBy=multi-user.target

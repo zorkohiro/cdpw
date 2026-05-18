@@ -1,0 +1,12 @@
+[Unit]
+Description=CDPW Resize Partition Service
+DefaultDependencies=no
+After=network.target
+Before=orthanc.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/share/cdpw/fs_partition_resize.sh
+
+[Install]
+WantedBy=multi-user.target

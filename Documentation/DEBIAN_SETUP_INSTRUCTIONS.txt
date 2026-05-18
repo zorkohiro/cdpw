@@ -1,4 +1,9 @@
-Tue May 12 08:31:19 AM PDT 2026
+Sun 17 May 09:21:06 PDT 2026
+
+Note that there are two variants of images we can build. One is with
+an integral code_dark data filesystem on the same volume as what
+we boot from and another that will have an external volume that
+stores patient data.
 
 0. Required Hardware and Environment
 
@@ -53,9 +58,9 @@ Fiddle around with the installation to make sure that there is a front sided
 partition of ~1GB as the ESP efi boot partition (this should actually show
 up mostly automatically).
 
-Create a second partition 16GB in size, ext4, create it, mount on '/' (root filesystem). Select done with this partition.
-Create a third partition 2GB in size, swap. Select done with this partition.
-Create a fourth partition 2GB in size, ext4, creat it and mount on /code_dark. Select done with this partition.
+Create a second partition 16GB in size, type ext4, create it, have it mount on '/' (root filesystem). Select done with this partition.
+Create a third partition 2GB in size, type swap. Select done with this partition.
+
 Select done with partitioning.
 
 Installation should then proceed automatically for quite some time.
@@ -87,11 +92,10 @@ Under Home:
 
 Enter about:config in URL bar, say yes, search for 'resume' and set browser.sessionstore.resume_from_crash to false.
 
-
 4. Get icons on the desktop and a bottom task bar and clean things up
 
 Fire up firefox and go to https://extensions.gnome.org/extension/2087/desktop-icons-ng-ding
-and install that.  sudo apt install gir1.2-gnomedesktop-3.0 after this.
+and install that. In an Konsole as root, then: apt install gir1.2-gnomedesktop-3.0 after this.
 
 Go to https://extensions.gnome.org/extension/1160/dash-to-panel and install that.
 
@@ -115,76 +119,82 @@ Set 'Keep arranged' from pull right over desktop.
 
 6. Get the fixed amdgpu module kernel and install it on our system
 
-Follow instructions from https://kernel-team.pages.debian.net/kernel-handbook/ch-common-tasks.html#s-common-official for
-rebuilding packages, with the following changes:
+Follow instructions from kernel-changes for building.
 
- A. After you extract the source, apply the amdgpu_drv.c patch
- B. Front the changelog with:
+Use firefox or whatever to download the image file, put it in /tmp, su to root
+and apt install it. Remove via apt all the other linux images. Using
+'dpkg -l linux-*|grep ^ii' is a good way of finding them.
 
-	linux (6.12.2030-1~exp1) experimental; urgency=medium
+Reboot to confirm the new kernel works.
 
-	  * Patches to amdgpu driver for Barco adapters:
-	  [ Matthew Jacob ]
-	  * Manually apply update to recognize 2 nominally windows only Barco adapters
-         -- Matthew Jacob <lydianconcepts@gmail.com>  Mon, 11 May 2026 12:54:02 +0800
+7. Prepare for CDPW packages
 
-The build will fail 1st as expected as control is created. The build will not complete
-all the way but the linux-image .deb will have been created. You can then install
-this.
+There are two ways to go forward here depending upon whether you want the patient data
+on the same volume as the boot key or on a second device.
 
-7. Prepare for and install our CDPW packages
+For both cases, do the following
 
-We want to make sure we are prepared for our usage of orthanc. Get into a Konsole, su - to root.
+ + Get into a Konsole, su to root
+ + mkdir /code_dark
+ + echo '#LABEL=CODE_DARK /code_dark auto defaults 0 2' >> /etc/fstab
 
-Inssue the commands:
+For the case of patient data on the same boot key:
 
-   apt install -y orthanc
-   systemctl stop orthanc
-   mkdir -p /code_dark/{config,database,logs/orthanc,reports}
-   mv /etc/orthanc /code_dark/config
- 
-Create the file /code_dark/config/orthanc/dicom_aet_port.json with the contents:
+ + Determine root device via 'df /' - the device + part number is in the 1st column.
+   The root device is without the number (e.g., /dev/sda1 - root device is /dev/sda)
+ + Issue the command: echo 'size=2G,type=linux' | sfdisk --append --no-reread --no-tell-kernel /dev/XXX
+   (where XXX is the root device)
+ + Reboot so you come up with a fresh partition table
+ + Get back into a Konsole and su to root
+ + Use fdisk to find the device name of the last Linux partition (which you just added)
+ + Issue: mkfs.ext4 -L CODE_DARK /dev/XXX (e.g., /dev/sda4)
+ + Edit /etc/fstab and remove the '#' in front of the LABEL line
+ + Issue: systemctl daemon-reload
+ + Issue: mount /code_dark - df should show /code_dark mounted
 
-     {
-       "DicomAet" : "ORTHANC",
-       "DicomPort" : 4242
-     }
-  
-Issue the commands:
+For the case of patient data on a separate device:
 
-	sed -i -e '/  "DicomAet/d' -e '/  "DicomPort/d' /code_dark/config/orthanc/orthanc.json
-   	chown -R orthanc:orthanc /code_dark
+ + Make sure a device created with the mkfs.ext4 listed above gets attached to the system
+ + Issue: mkdir /code_dark; echo 'LABEL=CODE_DARK /code_dark ext4 defaults 0 2' >> /etc/fstab
+ + Issue: systemctl daemon-reload
+ + Issue: mount /code_dark - df should show /code_dark mounted
 
-Edit the file /usr/lib/systemd/system/orthanc.service so that the ExecStart line says:
-
-           ExecStart=/usr/sbin/Orthanc --logdir=/code_dark/logs/orthanc /code_dark/config/orthanc
-
-Issue the commands:
-
-           systemctl daemon-reload
-           systemctl start orthanc
-           systemctl status orthanc
-
-The last should show orthanc now correctly running (with config and data moved under /code_dark).
+ Note that this can just be a temporary data device- another USB key for example. The CDPW
+ packages will ensure that the mounted device is correctly populated for usage with orthanc
+ and cdpw.
 
 8. Install our cdpw packages
 
-Fetch the latest set of installable cdpw user packages with this command:
+Fetch the latest set of installable cdpw packages with firefox at https://feralsw.com/cdpw-
+you want both cdpw-2*.deb and cdpw-ohif*.deb. After fetching them to Download, use Kconsole
+to move them to /tmp, su to root, and install them via apt.
 
- rm -rf /var/tmp/packages
- cd /var/tmp/packages
- wget https://feralsw.com/cdpw/cdpw-latest.tar
- tar xf cdpw-latest.tar
- su - (supply password)
- apt install -y /var/tmp/packages/*.deb
- cd ..
- rm -rf packages
+ + Use firefox and go to: https://feralsw.com/cdpw
+ + Download the latest cdpw-*.deb and cdpw-ohif*.deb packages
+ + Open a Konsole, su to root
+ + Issue: rm -rf /var/tmp/packages
+ + Issue: mkdir -p /var/tmp/packages
+ + Issue: mv ~orthanc/Downloads/cdpw-*.deb /var/tmp/packages
+ + Issue: apt install -y /var/tmp/packages/*.deb
+ + Issue: rm -rf /var/tmp/packages
+ + Issue: systemctl stop orthanc
+ + Edit the file /usr/lib/systemd/system/orthanc.service so that the ExecStart line says:
+
+  ExecStart=/usr/sbin/Orthanc --logdir=/code_dark/logs/orthanc /code_dark/config/orthanc
+
+Now...
 
 Find where code_dark_configurator and code_dark_study_tool and 'about code dark' icons
 been put onto the desktop. Do a pull right menu over them and select the "Allow Launch" option.
 This is an unfortunate aspect of Gnome3 that doesn't allow one to do this programmatically
 at installation time.
 
+Issue, as root, in a Konsole:
+
+  touch /noresize
+
+This inhibits the partition resizing. This allows you to do some validation
+of this created image first.
 
 9. Set up login screen to have the right login logo
 
@@ -206,3 +216,28 @@ banner-message-text='Code Dark PACS Workstation Release 2.0'
 
 Then issue: dpkg-reconfigure gdm3
 
+10. Reboot
+
+Log in as orthanc, get a Konsole up and issue 'systemctl status orthanc'. You should see orthanc running without errors.
+Do 'ls /code_dark'- you should see:
+
+config database logs lost+found reports
+
+You have successfully created a key.
+
+If you have /code_dark mounted on the same volume as this boot key,
+remove /noresize. The next reboot will resize the code_dark partition
+and filesystem to the rest of the available space on the disk.
+
+If you are planning to use this key, you can then reboot. If you
+are planning this to be a gold file image to create keys from,
+halt the system and take this key to a linux system and plug it
+in. Find out which sd device it is and use the following command
+to bring in a copyable image:
+
+dd if=/dev/sdX of=CDW_BOOT_IMAGE.img bs=1M count=20480 status=progress
+
+The CDW_BOOT_IMAGE.img can then be written back out to other keys.
+If this is a volumn with /code_dark on the same volume, the 1st
+boot will resize that partiont to the length of the device you
+have written to.

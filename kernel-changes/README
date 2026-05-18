@@ -1,80 +1,74 @@
 This is a change to the amdgpu driver to add some Barco adapter support.
 
-You need to build separate kernel packages, per this URL:
+You need to build a separate kernel package, per this URL:
 
-https://canonical-kteam-docs.readthedocs-hosted.com/en/public/how-to/build-kernel.html
+https://kernel-team.pages.debian.net/kernel-handbook/ch-common-tasks.html#s-common-official
 
-and use them to upgrade the CODE_DARK image we build.
+and use it to upgrade the CODE_DARK bootable image we create.
 
 This cannot be easily automated.
 
 The amdgpu.c driver file gets the patch applied from the tree.
-the build binary step.
 
-Follow the instructions from the web page for getting all of the pre-requisite
-packages installed (Installed required packages), but do not build the source
-for the current running version.
+Here is, in short, the steps needed to be taken under Debian 13.
 
-The best way I've found to build this since the instructions are less than
-clear and fundamentally incorrect in some ways, is to clone the current
-leading edge of the noble (24.04) kernel development and build from that.
-This will get you a definite better/newer version to boot and get you out
-of trying to install the same revision on a single kernel revisions system
-which is definitely not recommended (the instructions for adding a version
-to the kernel build for the kernel source for the existing kernel version
-do not, in fact, work at this time).
+1. Update to the latest (sudo apt update; sudo apt upgrade -y). Reboot
+if the kernel was updated.
 
-Follow these steps in this kernel subdirectory:
+2. Find a build directory- next to where you have this tree checked out is good.
+Go there.
 
-  git clone git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/noble
-  cd noble
-  git tag -l | grep Ubuntu | \
-   grep <the end of the output of 'uname -r', i.e. trimming the '-' on forward>
+3. Issue these commands:
 
-This should get you a list of versions of which the current version you are running
-under is closely related to. Pick one that is, based upon the number *after* the -
-as the one you'll settle on.
+    sudo apt-get install build-essential
+    sudo apt-get build-dep linux
+    apt-get source linux
+    cd linux-*
+    export MAKEFLAGS=-j$(nproc)
+    export DEB_BUILD_PROFILES='pkg.linux.nokerneldbg pkg.linux.nokerneldbginfo'
 
-Example- say you are running under Ubuntu 24.04.3. You are likely to have something like
-6.14.0-27-generic as the version:
+4. Modify changelog.
 
- orthanc@orthanc: $ uname -r
- 6.14.0-27-generic
- orthanc@orthanc: $
+Edit debian/changelog and stick this clause at the top (enclosed between ++++):
 
-So, search for similar branches with on the build machine in the checked out noble branch:
+++++
+linux (6.12.2030-1~exp1) experimental; urgency=medium
 
-  mjacob@orthanc > git tag -l |grep Ubuntu |grep 6.14.0
-  Ubuntu-hwe-6.14-6.14.0-15.15_24.04.1
-  Ubuntu-hwe-6.14-6.14.0-22.22_24.04.1
-  Ubuntu-hwe-6.14-6.14.0-23.23_24.04.1
-  Ubuntu-hwe-6.14-6.14.0-24.24_24.04.1
-  Ubuntu-hwe-6.14-6.14.0-24.24_24.04.2
-  Ubuntu-hwe-6.14-6.14.0-24.24_24.04.3
-  Ubuntu-hwe-6.14-6.14.0-25.25_24.04.1
-  Ubuntu-hwe-6.14-6.14.0-27.27_24.04.1
-  Ubuntu-hwe-6.14-6.14.0-28.28_24.04.1
-  Ubuntu-hwe-6.14-6.14.0-29.29_24.04.1
-  Ubuntu-hwe-6.14-6.14.0-32.32_24.04.1
-  Ubuntu-hwe-6.14-6.14.0-33.33_24.04.1
-  Ubuntu-hwe-6.14-6.14.0-34.34_24.04.1
-  Ubuntu-hwe-6.14-6.14.0-35.35_24.04.1
-  Ubuntu-hwe-6.14-6.14.0-36.36_24.04.1
-  Ubuntu-hwe-6.14-6.14.0-37.37_24.04.1
+* Patches to amdgpu driver for Barco adapters:
+[ Matthew Jacob ]
+* Manually apply update to recognize 2 nominally windows only Barco adapters
 
-The latest tag is therefore Ubuntu-hwe-6.14-6.14.0-37.37_24.04.1, 10 tags higher
-than what a non-networked install of Ubuntu 24.04.03 has.
+-- Matthew Jacob <lydianconcepts@gmail.com>  Mon, 11 May 2026 12:54:02 +0800
+++++
 
-So, anything after 27 is good, but doing something like (which is what
-my most recent build cache has) of:
+Change the name/email address for you. Probably to make sure you are higher
+than other packages, change 2030-1 to 2031-1 or something.
 
-  git checkout -b code_dark Ubuntu-hwe-6.14-6.14.0-32.32_24.04.1
+5. Patch the amd gpu driver (assuming we are a peer tree to cdpw):
 
-works fine also.
+ patch -p1 < ../../cdpw/kernel-changes/amdgpu_drv.c.diff
 
-After the checkout, update the amdgpu driver with our patch:
+If this fails, you'll have to figure out how to modify things.
 
-  patch -p1 < ../amdgpu_drv.c.diff
+6. Build
+
+ dpkg-buildpackage -B -nc -uc
+
+This may fail once at first (telling you why it is, but you can ignore that).
+The last failure is known but you should still have
+
+  linux-image-6.12.XX+deb13-amd64-unsigned_6.12.XX-1_amd64.deb
+
+In the directory one above here. This is what you'll be installing on
+the USB key. The XX will change depending upon when you fork the
+source to rebuild the kernel.
+
+
+
+
+
+
+
   git commit -am'add support for additional Barco adapters'
 
 (obviously look for failure to patch correctly!).

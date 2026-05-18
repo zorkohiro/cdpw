@@ -13,3 +13,9 @@ chmod 600 /etc/sudoers.d/orthanc
 install -D -m 755 -o orthanc /usr/share/applications/code_dark_configurator.desktop ~orthanc/Desktop
 install -D -m 755 -o orthanc /usr/share/applications/code_dark_study_tool.desktop ~orthanc/Desktop
 install -D -m 755 -o orthanc /usr/share/applications/code_dark_about.desktop ~orthanc/Desktop
+
+#
+# Install services
+#
+systemctl enable fs_partition_resize.service
+systemctl enable cdpw_config_setup.service

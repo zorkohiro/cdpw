@@ -1,0 +1,13 @@
+#!/bin/sh
+
+case $1 in
+remove)
+ #
+ # Disable services
+ #
+ systemctl disable fs_partition_resize.service
+ systemctl disable cdpw_config_setup.service
+ ;;
+*)
+ ;;
+esac
