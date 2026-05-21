@@ -24,10 +24,9 @@ Create the Install USB key from this with dd on a linux system or Rufus on a Win
 
 2. Create a Bootable Gold Image CDPW System
 
-Take the install key to any reasonable recent x86_64 system and insert it. Make sure it is
-enabled for UEFI booting (not Legacy boot). It would be ideal to remove any main boot
-device from this system- makes life easier and avoids trashing your internal system. You
-can step around this but you have been warned.
+Take the install key to any reasonable recent x86_64 system and insert it. Remove all
+other active boot media (disks, M2 NVMe) from it so that the install key doesn't
+get confused. Make sure it is enabled for UEFI booting (not Legacy boot).
 
 Power and and boot the install key (you'll have to hit whatever key that system needs
 to ceate a one time boot menuto boot that install key- this is vendor and even model specific.
@@ -48,9 +47,11 @@ Next it will ask for a root password to be set- use 'orthanc'.
 Next it will ask for a normal user's name- use 'Saruman B Orthanc'
 Next it will ask for the login id- use 'orthanc' and password 'orthanc'.
 
-Then it will spin you to the disk partitioning menu. You'll select 'manual'
-for partitioning. It will then print out a list of devices. Find the
-target disk device- presumably it will be the only one in the 32G or whatever
+Then it will spin you to the disk partitioning menu. It may ask you about
+forcing UEFI (say yes).
+
+You'll select 'manual' for partitioning. It will then print out a list of devices.
+Find the target disk device- presumably it will be the only one in the 32G or whatever
 size range you have the USB. That is, an internal drive is likely 250GB or
 larger and the installer is like 8GB.
 
@@ -122,8 +123,13 @@ Set 'Keep arranged' from pull right over desktop.
 Follow instructions from kernel-changes for building.
 
 Use firefox or whatever to download the image file, put it in /tmp, su to root
-and apt install it. Remove via apt all the other linux images. Using
-'dpkg -l linux-*|grep ^ii' is a good way of finding them.
+and apt install it.
+
+Remove via apt all the other linux images. Using 'dpkg -l linux-*|grep ^ii' is a
+good way of finding them.
+
+Once done, make sure that GRUB_DISABLE_OS_PROBER is uncommented and set to true
+in /etc/default/grub. then issue 'update-grub'.
 
 Reboot to confirm the new kernel works.
 
