@@ -36,6 +36,9 @@ StudiesToSign = "Studies ready to sign"
 StudiesToPrint = "Signed studies ready to print"
 DeleteUnsigned = "Delete started but unsigned reports"
 ListAllStudies = "List All Studies"
+SubWindowActive = "Only one subordinate activity at a time allowed"
+
+subwindow_active = False
 
 fontsize = 12
 fontfamily = "Times"
@@ -174,7 +177,16 @@ def present_table(title, ulist, button_creator):
             button_creator(suuid, nr, col, rowvar)
 
         rowvar = rowvar + 1
-
+    nr.update()
+    w = nr.winfo_width()
+    h = nr.winfo_height()
+    x = 1
+    y = int((nr.winfo_screenheight() / 2) + (h / 2))
+    nr.geometry(f"{w}x{h}+{x}+{y}")
+    def on_close():
+        nr.destroy()
+        nr.quit()
+    nr.protocol("WM_DELETE_WINDOW", on_close)
     nr.mainloop()
 
 def edit_report(uuid):
@@ -208,6 +220,10 @@ def studies_to_review():
     A study is in this state if there is no <UUID>.json in /code_dark/reports.
     We have not looked at it at all.
     """
+    global subwindow_active
+    if subwindow_active:
+        messagebox.showerror(message=SubWindowActive)
+        return
     response = requests.get(STUDYURL)
     if response.status_code != 200:
         messagebox.showerror(message=NoStudiesPresent)
@@ -222,10 +238,15 @@ def studies_to_review():
     ns = len(out)
     if ns == 0:
         messagebox.showinfo("", NoStudies)
-    elif ns == 1:
-        present_table("One Study to begin reviewing", out, review_button_add)
     else:
-        present_table(str(ns) + " Studies to begin reviewing", out, review_button_add)
+        print("subwindow_active True")
+        subwindow_active = True
+        if ns == 1:
+            present_table("One Study to begin reviewing", out, review_button_add)
+        else:
+            present_table(str(ns) + " Studies to begin reviewing", out, review_button_add)
+        subwindow_active = False
+        print("subwindow_active False")
 
 def studies_to_edit():
     """
@@ -234,6 +255,10 @@ def studies_to_edit():
     A study is in this state if there is a <UUID>.json in /code_dark/reports and
     loading data from that json indicates that the study has not been signed.
     """
+    global subwindow_active
+    if subwindow_active:
+        messagebox.showerror(message=SubWindowActive)
+        return
     response = requests.get(STUDYURL)
     if response.status_code != 200:
         messagebox.showerror("Cannot find any studies at all!")
@@ -253,10 +278,13 @@ def studies_to_edit():
     ns = len(out)
     if ns == 0:
         messagebox.showinfo("", NoStudies)
-    elif ns == 1:
-        present_table("One Study to continue reviewing", out, edit_button_add)
     else:
-        present_table(str(ns) + " Studies to continue reviewing", out, edit_button_add)
+        subwindow_active = True
+        if ns == 1:
+            present_table("One Study to continue reviewing", out, edit_button_add)
+        else:
+            present_table(str(ns) + " Studies to continue reviewing", out, edit_button_add)
+        subwindow_active = False
 
 def studies_to_sign():
     """
@@ -266,6 +294,10 @@ def studies_to_sign():
     loading data from that json indicates that the study has met the criteria
     for being signed. The first criteria is that it isn't now signed!
     """
+    global subwindow_active
+    if subwindow_active:
+        messagebox.showerror(message=SubWindowActive)
+        return
     response = requests.get(STUDYURL)
     if response.status_code != 200:
         messagebox.showerror(message=NoStudiesPresent)
@@ -287,10 +319,13 @@ def studies_to_sign():
     ns = len(out)
     if ns == 0:
         messagebox.showinfo("", NoStudies)
-    elif ns == 1:
-        present_table("One Study ready for signing", out, None)
     else:
-        present_table(str(ns) + " Studies ready for signing", out, None)
+        subwindow_active = True
+        if ns == 1:
+            present_table("One Study ready for signing", out, None)
+        else:
+            present_table(str(ns) + " Studies ready for signing", out, None)
+        subwindow_active = False
 
 def studies_to_print():
     """
@@ -300,6 +335,10 @@ def studies_to_print():
     loading data from that json indicates that the study has been signed
     but not printed.
     """
+    global subwindow_active
+    if subwindow_active:
+        messagebox.showerror(message=SubWindowActive)
+        return
     response = requests.get(STUDYURL)
     if response.status_code != 200:
         messagebox.showerror(message=NoStudiesPresent)
@@ -325,10 +364,13 @@ def studies_to_print():
     ns = len(out)
     if ns == 0:
         messagebox.showinfo("", NoStudies)
-    elif ns == 1:
-        present_table("One signed study ready for printing", out, None)
     else:
-        present_table(str(ns) + " studies ready for printing", out, None)
+        subwindow_active = True
+        if ns == 1:
+            present_table("One signed study ready for printing", out, None)
+        else:
+            present_table(str(ns) + " studies ready for printing", out, None)
+        subwindow_active = False
 
 def delete_report(uuid):
     print("delete_report for " + str(uuid))
@@ -377,6 +419,10 @@ def studies_to_delete():
     A study is in this state if there is a <UUID>.json in /code_dark/reports and
     loading data from that json indicates that the study has not been signed.
     """
+    global subwindow_active
+    if subwindow_active:
+        messagebox.showerror(message=SubWindowActive)
+        return
     response = requests.get(STUDYURL)
     if response.status_code != 200:
         messagebox.showerror("Cannot find any studies at all!")
@@ -396,25 +442,35 @@ def studies_to_delete():
     ns = len(out)
     if ns == 0:
         messagebox.showinfo("", NoStudies)
-        return
-    elif ns == 1:
-        present_table("One possible report to delete", out, delete_button_add)
     else:
-        present_table(str(ns) + " possible reports to delete", out, delete_button_add)
+        subwindow_active = True
+        if ns == 1:
+            present_table("One possible report to delete", out, delete_button_add)
+        else:
+            present_table(str(ns) + " possible reports to delete", out, delete_button_add)
+        subwindow_active = False
 
 def all_studies():
+    global subwindow_active
+    if subwindow_active:
+        messagebox.showerror(message=SubWindowActive)
+        return
     response = requests.get(STUDYURL)
     if response.status_code != 200:
         messagebox.showerror(title="Error", message="Cannot find any studies at all!")
-        return
-    sulist = response.json()
-    present_table("All " + str(len(sulist)) + " Studies", sulist, None)
+    else:
+        sulist = response.json()
+        subwindow_active = True
+        present_table("All " + str(len(sulist)) + " Studies", sulist, None)
+        subwindow_active = False
 
 """ Begin Main Code section """
 
 root=tk.Tk()
 root.title("Code Dark Study Tool")
-root.minsize(width=300, height=150)
+root.attributes("-topmost", True)
+root.geometry("250x150+" + str(root.winfo_screenwidth()-250) + "+" + str(root.winfo_screenheight() - 150))
+root.minsize(width=250, height=150)
 
 btn = tk.Button(root, text=StudiesToReview, command=studies_to_review)
 btn.grid(sticky=tk.W+tk.N, row=5, column=0)
