@@ -3,9 +3,12 @@
 # Program to put up a set up of menus about selecting studies to operate on
 #
 
-import tkinter as tk
-from tkinter import messagebox
+import gi
+gi.require_version('Gtk', '4.0')
+gi.require_version('Adw', '1')
+from gi.repository import Gtk, Adw
 import os
+import sys
 import fcntl
 import json
 import requests
@@ -65,6 +68,7 @@ def log_n_print(s):
 
 """ Button handlers """
 def show_dicom(uuid, js):
+"""
     sw = tk.Tk()
     sw.title(uuid + " DICOM data")
     txt = tk.Text(sw, height=40, width=80)
@@ -73,8 +77,29 @@ def show_dicom(uuid, js):
     txt.pack(side=tk.LEFT)
     txt.insert(tk.END, json.dumps(js, indent=2))
     sw.mainloop()
+"""
+    print("Show Dicom")
 
 """ Study Table construction and presentation """
+
+class StudyTableWindow(Gtk.ApplicationWindow):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Things will go here
+        self.box1 = Gtk.Box()
+        self.set_child(self.box1)
+
+        grid = Gtk.Grid()
+        self.set_child(grid)
+
+class TableApp(Adw.Application):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.connect('activate', self.on_table_activate)
+
+    def on_table_activate(self, app):
+        self.win = TableWindow(application=app, title="ArgFoo")
+        self.win.present()
 #
 #
 # Present the passed array of studies as a table with the passed title
@@ -83,9 +108,7 @@ def show_dicom(uuid, js):
 #
 def present_table(title, ulist, button_creator):
     header = False
-    nr = tk.Tk()
-    nr.title(title)
-    rowvar = 1
+    app = TableApp(application_id="org.github.zorkohiro.cdpw.code_dark_study_tool.present_table")
 
     for suuid in ulist:
         srsp = requests.get(STUDYURL + "/" + suuid)
@@ -116,6 +139,7 @@ def present_table(title, ulist, button_creator):
                 maindcm[dk] = "<NIL>"
 
         if header == False:
+"""
             x = tk.Entry(nr, font=(fontfamily,fontsize,'bold'))
             x.grid(row=rowvar, column=PATIENT_COL)
             x.insert(tk.END, "Patient Name")
@@ -135,6 +159,7 @@ def present_table(title, ulist, button_creator):
             x = tk.Entry(nr, width=30, font=(fontfamily,fontsize,'bold'))
             x.grid(row=rowvar, column=STUDY_DATE_COL)
             x.insert(tk.END, "Study Date")
+"""
 
             """ XXX Need a "state" column here of where we are with this study """
 
@@ -177,17 +202,7 @@ def present_table(title, ulist, button_creator):
             button_creator(suuid, nr, col, rowvar)
 
         rowvar = rowvar + 1
-    nr.update()
-    w = nr.winfo_width()
-    h = nr.winfo_height()
-    x = 1
-    y = int((nr.winfo_screenheight() / 2) + (h / 2))
-    nr.geometry(f"{w}x{h}+{x}+{y}")
-    def on_close():
-        nr.destroy()
-        nr.quit()
-    nr.protocol("WM_DELETE_WINDOW", on_close)
-    nr.mainloop()
+    app.run("")
 
 def edit_report(uuid):
     log_n_print("edit_report for " + str(uuid))
@@ -466,28 +481,59 @@ def all_studies():
 
 """ Begin Main Code section """
 
-root=tk.Tk()
-root.title("Code Dark Study Tool")
-root.attributes("-topmost", True)
-root.geometry("250x150+" + str(root.winfo_screenwidth()-250) + "+" + str(root.winfo_screenheight() - 150))
-root.minsize(width=250, height=150)
+class MainWindow(Gtk.ApplicationWindow):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Things will go here
+        self.box1 = Gtk.Box()
+        self.set_child(self.box1)
 
-btn = tk.Button(root, text=StudiesToReview, command=studies_to_review)
-btn.grid(sticky=tk.W+tk.N, row=5, column=0)
+        grid = Gtk.Grid()
+        self.set_child(grid)
 
-btn = tk.Button(root, text=StudiesToEdit, command=studies_to_edit)
-btn.grid(sticky=tk.W+tk.N, row=6, column=0)
+        buttons = [
+            StudiesToReview, StudiesToEdit,
+            StudiesToSign, StudiesToPrint,
+            DeleteUnsigned, ListAllStudies
+        ]
+        line = 0
+        for button_name in buttons:
+            button = Gtk.Button(label=button_name)
+            button.set_hexpand(True)
+            button.connect('clicked', self.handler, button_name)
+            grid.attach(button, 0, line, 1, 1)
+            line = line + 1
 
-btn = tk.Button(root, text=StudiesToSign, command=studies_to_sign)
-btn.grid(sticky=tk.W+tk.N, row=7, column=0)
+        button = Gtk.Button(label="Quit")
+        grid.attach(button, 0, line, 1, 1)
+        button.connect('clicked', self.leave)
 
-btn = tk.Button(root, text=StudiesToPrint, command=studies_to_print)
-btn.grid(sticky=tk.W+tk.N, row=8, column=0)
+    def handler(self, button, arg):
+        if arg == StudiesToReview:
+           studies_to_review()
+        elif arg == StudiesToEdit:
+           studies_to_edit()
+        elif arg == StudiesToSign:
+           studies_to_sign()
+        elif arg == StudiesToPrint:
+           studies_to_print()
+        elif arg == DeleteUnsigned:
+           studies_to_delete()
+        elif arg == ListAllStudies:
+           all_studies()
 
-btn = tk.Button(root, text=DeleteUnsigned, command=studies_to_delete)
-btn.grid(sticky=tk.W+tk.N, row=9, column=0)
+    def leave(self, button):
+        sys.exit(0)
+        
 
-btn = tk.Button(root, text=ListAllStudies, command=all_studies)
-btn.grid(sticky=tk.W+tk.N, row=10, column=0)
+class MyApp(Adw.Application):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.connect('activate', self.on_activate)
 
-root.mainloop()
+    def on_activate(self, app):
+        self.win = MainWindow(application=app, title="Code Dark Study Tool")
+        self.win.present()
+
+app = MyApp(application_id="org.github.zorkohiro.cdpw.code_dark_study_tool.top")
+app.run(sys.argv)
