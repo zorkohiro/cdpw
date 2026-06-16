@@ -91,7 +91,12 @@ Under Home:
   + New tabs: Blank page
   + uncheck all of Home content
 
-Enter about:config in URL bar, say yes, search for 'resume' and set browser.sessionstore.resume_from_crash to false.
+Enter about:config in URL bar, say yes,
+
+Search for 'resume' and set browser.sessionstore.resume_from_crash to false and
+max_resumed_crashes to zero.
+
+Search on 'restore' and set browser.sessionstore.restore_on_demand to false'
 
 4. Get icons on the desktop and a bottom task bar and clean things up
 
@@ -115,23 +120,31 @@ Use gnome-tweaks to enable maximize/minimize buttons on windows.
 
 Pull right on desktop and select half light gray/half dark gray appearance
 You will need to pull right over the icons on the desktop to click 'allow launching' since that has to be manually done.
-Set 'Keep arranged' from pull right over desktop.
+Set 'Keep arranged' from pull right over desktop. You can turn off home and tash on dekstop.
 
 
-6. Get the fixed amdgpu module kernel and install it on our system
+6. Update and get the fixed amdgpu module unsigned kernel and install it on our system
+
+Get a Kconsole and do 'su -' (orthanc password). Do apt update and upgrade -y. This step will
+go away in the future when we settle on the correct subversion of Debian 13 to start and stay
+with.
+
+This is not the default kernel we boot. It's the kernel we use for Barco
+adapters- but it requires Secure Boot to be disabled on the system we boot
+from.
 
 Follow instructions from kernel-changes for building.
 
 Use firefox or whatever to download the image file, put it in /tmp, su to root
 and apt install it.
 
-Remove via apt all the other linux images. Using 'dpkg -l linux-*|grep ^ii' is a
+Remove via apt all but the latest linux images. Using 'dpkg -l linux-*|grep ^ii' is a
 good way of finding them.
 
 Once done, make sure that GRUB_DISABLE_OS_PROBER is uncommented and set to true
 in /etc/default/grub. then issue 'update-grub'.
 
-Reboot to confirm the new kernel works.
+Reboot to confirm the unsigned kernel is available under Advanced options.
 
 7. Prepare for CDPW packages
 
@@ -204,8 +217,8 @@ of this created image first.
 
 9. Set up login screen to have the right login logo
 
-Get a Kconsole up and and copy /usr/share/cdpw/KaiserRedSmall.png
-to /usr/share/images/vendor-logos.
+Get a Kconsole up and and issue:
+  cp /usr/share/cdpw/KaiserRedSmall.png /usr/share/images/vendor-logos.
 
 Edit /etc/gdm3/greeter.dconf-defaults and change
 

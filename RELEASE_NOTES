@@ -1,3 +1,11 @@
+Release Debian 2.0 Alpha1
+
+No cdpw changes as such. Debian now changes to just using the latest
+official kernel as the default. This allows us Z2 (Intel Graphics) and
+Nvidia and Barck 6700 cards.  Other Barco cards won't work, but we can
+avoid having to disable secure mode.  We still will keep the modified
+kernel as an alternate boot.
+
 Release Debian 2.0 Dev1
 
 Move cdpw-ohif into a separate repository - build it separate.
