@@ -12,7 +12,7 @@ PKGNAME := $(BASE)-$(RELEASE)
 # LEVEL is syntactic suger. It is $(RELEASE) which must be unique.
 # When it's truly a release, LEVEL should be null.
 #
-LEVEL   := Alpha1
+LEVEL   := GTK-Alpha1
 
 ARTIFACTS ?= ..
 
