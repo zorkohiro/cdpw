@@ -3,14 +3,14 @@
 # Program to configure some Code Dark workstation parameters.
 #
 
-import tkinter as tk
-from tkinter import messagebox
+import gi
+gi.require_version('Gtk', '4.0')
+from gi.repository import Gtk
 import argparse
 import datetime
 import json
 import subprocess
-from os import path
-
+import sys
 """
 We need to be able to configure the following items:
 
@@ -63,80 +63,6 @@ try:
 except:
     pass
 
-""" Data handlers """
-def save_n_exit():
-    """ Non-json configuration items """
-    """ None any more """
-    """ Changed configuration items """
-    aetp_changed = False
-    port = int(port_entry.get())
-    if aetp_data[PT] != port:
-        aetp_data[PT] = port
-        aetp_changed = True
-
-    aet = aet_entry.get()
-    if aetp_data[AE] != aet:
-        aetp_data[AE] = aet
-        aetp_changed = True
-
-    json_changed = False
-    pboxstr = pbox.get("1.0", "end-1c")
-    newp = [x.strip() for x in pboxstr.split(",")]
-    if json_data[PH] != newp:
-        json_data[PH] = newp
-        json_changed = True
-
-    if aetp_changed:
-        with open(aetpfile, "w") as ofile:
-            json.dump(aetp_data, ofile, indent=2)
-            print("", file=ofile)
-        messagebox.showinfo("Saved", "AET or DICOM Port changed- Orthanc will have to be restarted.")
-        try:
-            result = subprocess.run(["/usr/bin/sudo", "-n", "systemctl", "restart", "orthanc"], capture_output=True, text=True)
-            if result.returncode != 0:
-                messagebox.showerror("Error running Orthanc restart", result.stderr)
-        except subprocess.CalledProcessError as e:
-            messagebox.showerror("Error restarting Orthanc", e.output)
-
-    if json_changed:
-        with open(jsonfile, "w") as ofile:
-            json.dump(json_data, ofile, indent=2)
-            print("", file=ofile)
-        messagebox.showinfo("Saved", "Other config data has changed. Restart any currently open Report Writer sessions.")
-
-    exit(0)
-
-""" TK functions """
-
-def add_section_label(str, rv):
-    tlab = tk.Label(root, text=str, relief=tk.FLAT, font=(fontfamily, fontsize + 1))
-    tlab.grid(sticky=tk.N+tk.W, row=rv, column=0, columnspan=2, pady=(1,3))
-    return rv + 1
-
-def add_label(str, rv, col):
-    tlab = tk.Label(root, text=str, relief=tk.FLAT, font=(fontfamily, fontsize))
-    tlab.grid(sticky=tk.N+tk.W, row=rv, column=col, columnspan=2)
-    return rv + 1
-
-""" add an unlabeled box """
-def add_box(insert, row):
-    box = tk.Text(root, height=boxsize, width=50, font=fontstring)
-    box.insert(tk.END, insert)
-    box.grid(sticky=tk.EW, row=row, column=0, columnspan=2, pady=(0,10), padx=(0,9))
-    return box, row + boxsize
-
-""" Add an entry to the right of a label """
-def add_label_entry(label, ivalue, rv, w):
-    tlab = tk.Label(root, text=label, anchor=tk.W, justify="left", font=(fontfamily, fontsize))
-    tlab.grid(sticky=tk.W, row=rv, column=0)
-    tt_text = tk.StringVar()
-    tt_text.set(ivalue)
-    tt_entry = tk.Entry(root, textvariable=tt_text, width=w, justify="left", font=fontfamily + str(fontsize - 1))
-    tt_entry.grid(sticky=tk.W, row=rv, column=1)
-    return tt_text, rv + 1
-
-""" Begin Main Code section """
-
 #
 # Read in JSON saved data
 #
@@ -154,30 +80,154 @@ if version < 2:
     print("Version of JSON too low: ", version)
     exit(1)
 
-root=tk.Tk()
-cdf ="Code Dark Configurator"
-root.title("")
-headliner = tk.Label(root, text=cdf, font=(fontfamily, fontsize + 1))
-headliner.grid(sticky=tk.W + tk.N, row=rowvar, column=0)
-if cdw_version != "":
-    version = tk.Label(root, text="Code Dark Version: " + cdw_version, font=(fontfamily, fontsize + 1))
-    version.grid(sticky=tk.W + tk.N, row=rowvar, column=1)
-rowvar = rowvar + 1
-rowvar = add_label("============================================================", rowvar, 0)
-rowvar = rowvar + 1
+#root=tk.Tk()
+#cdf ="Code Dark Configurator"
+#root.title("")
+#headliner = tk.Label(root, text=cdf, font=(fontfamily, fontsize + 1))
+#headliner.grid(sticky=tk.W + tk.N, row=rowvar, column=0)
+#if cdw_version != "":
+#    version = tk.Label(root, text="Code Dark Version: " + cdw_version, font=(fontfamily, fontsize + 1))
+#    version.grid(sticky=tk.W + tk.N, row=rowvar, column=1)
+#rowvar = rowvar + 1
+#rowvar = add_label("============================================================", rowvar, 0)
+#rowvar = rowvar + 1
+#
+#rowvar = add_section_label("DICOM PARAMETERS", rowvar)
+#port_entry, rowvar = add_label_entry("Listening Port", aetp_data[PT], rowvar, 16)
+#aet_entry, rowvar = add_label_entry("AET", aetp_data[AE], rowvar, 16)
+#rowvar = rowvar + 1
+#rowvar = add_label("============================================================", rowvar, 0)
+#
+#rowvar = add_section_label("AUTHORIZED RADIOLOGISTS", rowvar)
+#rowvar = add_label("Edit List (this is a comma separated list so do not use any commas in names)", rowvar, 0)
+#plist = json_data[PH]
+#pbox, rowvar = add_box(', '.join(plist), rowvar)
+#
+#btn = tk.Button(root, text="Save and Exit", command=save_n_exit)
+#btn.grid(sticky=tk.W+tk.S, row=rowvar + 3, column=0)
 
-rowvar = add_section_label("DICOM PARAMETERS", rowvar)
-port_entry, rowvar = add_label_entry("Listening Port", aetp_data[PT], rowvar, 16)
-aet_entry, rowvar = add_label_entry("AET", aetp_data[AE], rowvar, 16)
-rowvar = rowvar + 1
-rowvar = add_label("============================================================", rowvar, 0)
+""" Begin Main Code section """
 
-rowvar = add_section_label("AUTHORIZED RADIOLOGISTS", rowvar)
-rowvar = add_label("Edit List (this is a comma separated list so do not use any commas in names)", rowvar, 0)
-plist = json_data[PH]
-pbox, rowvar = add_box(', '.join(plist), rowvar)
+class TopWindow(Gtk.ApplicationWindow):
+    def __init__(self, **kargs):
+        super().__init__(**kargs, title="TopWindow")
 
-btn = tk.Button(root, text="Save and Exit", command=save_n_exit)
-btn.grid(sticky=tk.W+tk.S, row=rowvar + 3, column=0)
+        self.set_title("Code Dark Configurator")
 
-root.mainloop()
+        topbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+        self.set_child(topbox)
+
+        """ DICOM parameters """
+        line = 0
+        frame = Gtk.Frame(label="DICOM PARAMETERS")
+        topbox.append(frame)
+        grid = Gtk.Grid()
+        frame.set_child(grid)
+
+        label = Gtk.Label(label="Listening Port")
+        label.props.xalign = 0.0
+        label.props.yalign = 0.5
+        grid.attach(label, 0, line, 1, 1)
+        self.pt_entry = Gtk.Entry(text=str(aetp_data[PT]))
+        grid.attach(self.pt_entry, 1, line, 1, 1)
+        line = line + 1
+
+        label = Gtk.Label(label="AET")
+        label.props.xalign = 0.0
+        label.props.yalign = 0.5
+        grid.attach(label, 0, line, 1, 1)
+        self.ae_entry = Gtk.Entry(text=aetp_data[AE])
+        grid.attach(self.ae_entry, 1, line, 1, 1)
+        line = line + 1
+
+        """ Authorized Physician List """
+        frame = Gtk.Frame(label="AUTHORIZED RADIOLOGISTS")
+        topbox.append(frame)
+        grid = Gtk.Grid()
+        frame.set_child(grid)
+
+        line = 1
+        label = Gtk.Label(label="Edit List (this is a comma separated list so do not use any commas in names)")
+        label.props.xalign = 0.0
+        label.props.yalign = 0.0
+        grid.attach(label, 0, line, 1, 1)
+        line = line + 1
+
+        # Create the Textbuffer and load with data
+        self.buffer = Gtk.TextBuffer()
+        plist = json_data[PH]
+        self.buffer.set_text(', '.join(plist))
+
+        # Create the TextView (displays the data)
+        self.textview = Gtk.TextView(buffer=self.buffer)
+        self.textview.set_wrap_mode(Gtk.WrapMode.WORD) # Enable text wrapping
+        self.textview.set_editable(True)
+        
+        # Add to ScrolledWindow for scrolling capability
+        scrolled_window = Gtk.ScrolledWindow()
+        scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
+        scrolled_window.set_has_frame(True)
+        scrolled_window.set_child(self.textview)
+        grid.attach(scrolled_window, 0, line, 1, 1)
+
+        """ Save and Quit button """
+        line = 0
+        frame = Gtk.Frame(label=None)
+        topbox.append(frame)
+        grid = Gtk.Grid()
+        frame.set_child(grid)
+
+        button = Gtk.Button(label="Save and Quit")
+        grid.attach(button, 0, line, 1, 1)
+        button.connect('clicked', self.save_n_exit)
+        line = line + 1
+
+    def save_n_exit(self, button):
+        """ Non-json configuration items """
+        """ None any more """
+        """ Changed configuration items """
+        aetp_changed = False
+        port = int(self.pt_entry.get_text())
+        if aetp_data[PT] != port:
+            aetp_data[PT] = port
+            aetp_changed = True
+
+        aet = self.ae_entry.get_text()
+        if aetp_data[AE] != aet:
+            aetp_data[AE] = aet
+            aetp_changed = True
+
+        json_changed = False
+        si = self.buffer.get_start_iter()
+        ei = self.buffer.get_end_iter()
+        pboxstr = self.buffer.get_text(si, ei, False)
+        newp = [x.strip() for x in pboxstr.split(",")]
+        if json_data[PH] != newp:
+            json_data[PH] = newp
+            json_changed = True
+
+        if aetp_changed:
+            with open(aetpfile, "w") as ofile:
+                json.dump(aetp_data, ofile, indent=2)
+                print("", file=ofile)
+            try:
+                result = subprocess.run(["/usr/bin/sudo", "-n", "systemctl", "restart", "orthanc"], capture_output=True, text=True)
+                if result.returncode != 0:
+                    print("Error Restarting Orthanc", result.stderr)
+            except subprocess.CalledProcessError as e:
+                print("Error restarting Orthanc", e.output)
+
+        if json_changed:
+            with open(jsonfile, "w") as ofile:
+                json.dump(json_data, ofile, indent=2)
+                print("", file=ofile)
+                print("Other configuration data has changed. Restart any currently open report editing sessions.")
+        exit(0)
+        
+def top_on_activate(app):
+    win = TopWindow(application=app) 
+    win.present()
+
+app = Gtk.Application(application_id="org.github.zorkohiro.cdpw.code_dark_study_tool.top")
+app.connect("activate", top_on_activate)
+app.run(None)
