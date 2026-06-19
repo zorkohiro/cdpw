@@ -92,7 +92,7 @@ def save_n_exit():
             print("", file=ofile)
         messagebox.showinfo("Saved", "AET or DICOM Port changed- Orthanc will have to be restarted.")
         try:
-            result = subprocess.run(["/usr/bin/sudo", "-n", "systemctl", "restart", "cdpw"], capture_output=True, text=True)
+            result = subprocess.run(["/usr/bin/sudo", "-n", "systemctl", "restart", "orthanc"], capture_output=True, text=True)
             if result.returncode != 0:
                 messagebox.showerror("Error running Orthanc restart", result.stderr)
         except subprocess.CalledProcessError as e:
