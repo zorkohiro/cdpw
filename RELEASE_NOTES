@@ -1,8 +1,13 @@
+Release Debian 2.0.1 Alpha1
+
+Fix a bug where code_dark_configurator restarts (attempts) cdpw, not
+orthanc. Hangover from when we had our own orthanc paackage.
+
 Release Debian 2.0 Alpha1
 
 No cdpw changes as such. Debian now changes to just using the latest
 official kernel as the default. This allows us Z2 (Intel Graphics) and
-Nvidia and Barck 6700 cards.  Other Barco cards won't work, but we can
+Nvidia and Barco 6700 cards.  Other Barco cards won't work, but we can
 avoid having to disable secure mode.  We still will keep the modified
 kernel as an alternate boot.
 
