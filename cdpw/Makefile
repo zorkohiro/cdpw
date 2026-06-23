@@ -4,7 +4,7 @@
 MAJORV  ?= 2
 MINORV  ?= 0
 RLEASE  ?= 1
-BUILDV  ?= -deb13-1
+BUILDV  ?= -deb13-2
 BASE    := cdpw
 RELEASE := $(MAJORV).$(MINORV).$(RLEASE)$(BUILDV)
 PKGNAME := $(BASE)-$(RELEASE)
