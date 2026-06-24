@@ -1,6 +1,3 @@
- 2.01 Dev1 Notes, build #6
- Sat 16 May 11:30:14 PDT 2026
-
 This is the source repository for building cdpw which is
 the add on software to a Debian 13 based system that
 will run Orthanc for the Code Dark PACS Workstation project
