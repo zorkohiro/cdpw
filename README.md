@@ -13,3 +13,6 @@ Instructions for making a bootable USB key
 key is also under the Documentation directory.
 
 For build instructions- see the file called 'BUILD' in this directory.
+
+You will also likely need our build of OHIF.
+See https://github.com/zorkohiro/cdpw-ohif.
