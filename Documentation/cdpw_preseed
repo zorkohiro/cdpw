@@ -1,0 +1,68 @@
+#_preseed_V1
+d-i debian-installer/locale string en_US.UTF-8
+d-i keyboard-configuration/xkb-keymap select us
+d-i netcfg/choose_interface select auto
+d-i netcfg/get_hostname string unassigned-hostname
+d-i netcfg/get_domain string unassigned-domain
+d-i netcfg/hostname string orthanc
+d-i hw-detect/load_firmware boolean true
+d-i mirror/country string manual
+d-i mirror/http/hostname string http.us.debian.org
+d-i mirror/http/directory string /debian
+d-i mirror/http/proxy string
+d-i passwd/root-login boolean false
+d-i passwd/user-fullname string Saruman B Orthanc
+d-i passwd/username string orthanc
+d-i passwd/user-password password orthanc
+d-i passwd/user-password-again password orthanc
+d-i clock-setup/utc boolean true
+d-i time/zone string US/Pacific
+d-i clock-setup/ntp boolean true
+d-i partman-auto/method string regular
+d-i partman-auto/expert_recipe string				\
+	boot-root ::						\
+		538 538 1075 free				\
+			$iflabel{ gpt }				\
+			$reusemethod{ }				\
+			method{ efi }				\
+			format{ }				\
+		.						\
+		1024 1536 2048 linux-swap			\
+			$primary { }				\
+			method{ swap } format{ }		\
+		.						\
+		8192 10240 12228 ext4				\
+			$primary { }				\
+			method{ format } format{ }              \
+			use_filesystem{ } filesystem{ ext4 }	\
+			mountpoint{ / }				\
+		.						\
+		1024 100000000000 -1 ext4			\
+			$primary { }				\
+		.
+d-i partman-auto/choose_recipe select atomic
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+d-i partman-efi/non_efi_system boolean true
+d-i partman-partitioning/choose_label select gpt
+d-i partman-partitioning/default_label string gpt
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+d-i partman/mount_style select label
+d-i apt-setup/cdrom/set-first boolean false
+d-i apt-setup/non-free-firmware boolean true
+d-i apt-setup/non-free boolean true
+d-i apt-setup/contrib boolean true
+d-i apt-setup/disable-cdrom-entries boolean true
+d-i tasksel/first multiselect standard, openssh-server, gnome-desktop
+d-i pkgsel/upgrade select safe-upgrade
+d-i grub-installer/only_debian boolean true
+d-i grub-installer/with_other_os boolean true
+d-i grub-installer/bootdev  string default
+d-i finish-install/reboot_in_progress note
+d-i debian-installer/exit/poweroff boolean true
+d-i preseed/late_command string echo "deb http://deb.debian.org/debian trixie main contrib non-free non-free-firmware" >> /target/etc/apt/sources.list

@@ -1,3 +1,11 @@
+Release Debian 2.0.2 Alpha2 Build 3
+
+No functional changes to packages. Instead, redo Debian 13
+setup instructions to use a preseed automated install for
+the bulk of the installation work. Also, fix fs resizing-
+we are sometimes getting no available space because the
+GPT label needs to be rewritten first.
+
 Release Debian 2.0.1 Alpha1
 
 Fix a bug where code_dark_configurator restarts (attempts) cdpw, not

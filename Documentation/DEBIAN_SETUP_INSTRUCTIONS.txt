@@ -1,4 +1,4 @@
-Sun 17 May 09:21:06 PDT 2026
+Wed 12 Aug 13:21:11 PDT 2026
 
 Note that there are two variants of images we can build. One is with
 an integral code_dark data filesystem on the same volume as what
@@ -9,76 +9,61 @@ stores patient data.
 
 Get a USB flash drive of at least 8GB to put the debian 13 install image on.
 
-Get a USB flash drive of at lesat 32GB to become the target of the install.
+Get a USB flash drive of at least 16GB to become the target of the install.
 
-You can certainly user an even larger USB Key for the target of the install-
-but this just makes it more painful when copying the gold master to multiple keys
-for distribution. The effective size requirements are an overgenerous ~17GB
-currently.
+ You can certainly use a larger USB Key for the target of the install- but
+ this just makes it more painful when copying the gold master to multiple keys
+ for distribution. The effective size requirements are an overgenerous ~8GB
+ currently (not including patient data storage).
 
-You will need to be connected to the internet to perform the following steps.
+Get a recent x86_64 system that is both UEFI and Secure Boot enabled
+to use for creating the Gold image.
 
-1. Copy Debian 13 iso image to the USB install image from any debian mirror.
+ Make your life less painful by opening up the system and disconnecting any
+ internal storage devices (unplug sata/sata-flash or remove any NVMe cards).
+ Remove or disconnect all other active boot media (disks, M2 NVMe) from inside
+ it so that the install key doesn't get confused. Make sure it is enabled for
+ UEFI booting (not Legacy boot). Make sure Secure Boot is enabled. If it needs
+ to have USB enabled for booting, please enable it.
+
+You will need this sytem to be on a LAN with a DHCP server and to be
+connected to the internet and be able to access https://feralsw.com/cdpw
+to perform the following steps.
+
+1. Copy Debian 13.6.0 full iso image (debian-13.6.0-amd64-DVD-1.iso) to the USB
+install image from any debian mirror. This image may be found at:
+
+	https://feralsw.com/cdpw/debian/debian-13.6.0-amd64-DVD-1.iso
 
 Create the Install USB key from this with dd on a linux system or Rufus on a Windows system.
 
-2. Create a Bootable Gold Image CDPW System
+2. Create a Bootable Initial Gold Image CDPW System
 
-Take the install key to any reasonable recent x86_64 system and insert it. Remove all
-other active boot media (disks, M2 NVMe) from it so that the install key doesn't
-get confused. Make sure it is enabled for UEFI booting (not Legacy boot).
+Take the install key to x86_64 system and insert it.
 
-Power and and boot the install key (you'll have to hit whatever key that system needs
-to ceate a one time boot menuto boot that install key- this is vendor and even model specific.
-It needs to be a UEFI boot.
+Power on and and boot the install key. Since the installation key should be the only
+attached bootable media this should not require any additional steps on your part.
 
-Once booted, select the graphical installer.
+Once booted, use arrow keys to select the "Advanced options..." and hit the return key.
+This brings up a second menu. Use arrow keys to select "Graphical Automated Installs"
+and hit return. A bunch of screens will march along with actions being taken including
+an attempt to autoconfigure networking. This should succeed if you have a valid dhcp
+server on the local lan and an internet connection.
 
-The first step prior to continuing with the installation which is waiting for input
-at the first step is to insert the USB which will become the target of the install
-(the new Gold Master).
+This should end at a page titled "Download debconf preconfiguration file".
 
-You'll have to play around with navigating this installer but the first few steps
-are basic keyboard and network configuration questions. Any asks for firmware for,
-say, wifi, you can say no to (for now). It is not stricly necessary to have
-networking up to perform this setup.
+At this point insert the USB which will become the target of the install
+(the new Gold Master) into the system.
 
-Next it will ask for a root password to be set- use 'orthanc'.
-Next it will ask for a normal user's name- use 'Saruman B Orthanc'
-Next it will ask for the login id- use 'orthanc' and password 'orthanc'.
-
-Then it will spin you to the disk partitioning menu. It may ask you about
-forcing UEFI (say yes).
-
-You'll select 'manual' for partitioning. It will then print out a list of devices.
-Find the target disk device- presumably it will be the only one in the 32G or whatever
-size range you have the USB. That is, an internal drive is likely 250GB or
-larger and the installer is like 8GB.
-
-Fiddle around with the installation to make sure that there is a front sided
-partition of ~1GB as the ESP efi boot partition (this should actually show
-up mostly automatically).
-
-Create a second partition 16GB in size, type ext4, create it, have it mount on '/' (root filesystem). Select done with this partition.
-Create a third partition 2GB in size, type swap. Select done with this partition.
-
-Select done with partitioning.
-
-Installation should then proceed automatically for quite some time.
-
-The 'tasksel' selection should show up- Desktop Debian, Gnome, standard utilities.
-
-Then it will ask about installing a boot block (this only happens if you've left
-your original internal drive(s) in place in this machine). Do *not* say, yes update
-the primary boot device with grub - this will replace the boot stuff on the original
-internal device which is probably not what you want. You want to figure out which
-sd device the target Gold Master is and say you want things installed on that in
-the window after this.
-
-When the installation is done, reboot to gold master USB key.
+In the entry box presented on the screen enter "https://feralsw.com/cdpw/debian/cdpw_preseed"
+and click the Continue option. The installer should do its job on the basic system install,
+possibly pausing to ask you about disks (select "use entire disk" and then pick the 16GB
+target device you want installed upon, and when complete it will power down the system.
+When that occurs, remove the Debian Installation USB key and power on the system again to
+boot up the just installed system.
 
 It will come up with a standard graphical login screen for user orthanc.
-You can log in with orthanc/orthanc.
+You can log in using the password orthanc.
 
 3. Fire up and configure FireFox
 
@@ -96,85 +81,64 @@ Enter about:config in URL bar, say yes,
 Search for 'resume' and set browser.sessionstore.resume_from_crash to false and
 max_resumed_crashes to zero.
 
-Search on 'restore' and set browser.sessionstore.restore_on_demand to false'
+Search 'browser.sessionstore.restore_on_demand' and make sure it is set to false
+
 
 4. Get icons on the desktop and a bottom task bar and clean things up
 
-Fire up firefox and go to https://extensions.gnome.org/extension/2087/desktop-icons-ng-ding
-and install that. In an Konsole as root, then: apt install gir1.2-gnomedesktop-3.0 after this.
+Fire up firefox and go to https://extensions.gnome.org/extension/5263/gtk4-desktop-icons-ng-ding
+and install that.
 
 Go to https://extensions.gnome.org/extension/1160/dash-to-panel and install that.
 
 This then should all of a sudden create a bar across the bottom of the screen which you
 can then clean up. 
 
-Fire up a Kconsole and pin it to the task bar.
+Fire up a Terminal (select slot upper left to reveal apps to invoke) and pin it to the task bar
+via a pull right over the icon on the task bar.
 
 Fire up 'Settings' and pin to the task bar.
 
-Remove other crap from the bottom bar.
+Remove other crap from the bottom bar (pull right over icon and check 'unpin').
 
-Use gnome-tweaks to enable maximize/minimize buttons on windows.
+Search for (click grid icon on bottom bar all the way to the left and enter in search box) and use
+gnome-tweaks to enable maximize/minimize buttons on windows.
 
-5. Clean up background + other desktop
-
-Pull right on desktop and select half light gray/half dark gray appearance
-You will need to pull right over the icons on the desktop to click 'allow launching' since that has to be manually done.
-Set 'Keep arranged' from pull right over desktop. You can turn off home and tash on dekstop.
+Set background by opening up System and going to Appearance and selecting half light gray/half
+dark gray appearance. It takes a moment or two for all of the possible backgrounds to populate
+in the frame, so be patient.
 
 
-6. Update and get the fixed amdgpu module unsigned kernel and install it on our system
-
-Get a Kconsole and do 'su -' (orthanc password). Do apt update and upgrade -y. This step will
-go away in the future when we settle on the correct subversion of Debian 13 to start and stay
-with.
-
-This is not the default kernel we boot. It's the kernel we use for Barco
-adapters- but it requires Secure Boot to be disabled on the system we boot
-from.
-
-Follow instructions from kernel-changes for building.
-
-Use firefox or whatever to download the image file, put it in /tmp, su to root
-and apt install it.
-
-Remove via apt all but the latest linux images. Using 'dpkg -l linux-*|grep ^ii' is a
-good way of finding them.
-
-Once done, make sure that GRUB_DISABLE_OS_PROBER is uncommented and set to true
-in /etc/default/grub. then issue 'update-grub'.
-
-Reboot to confirm the unsigned kernel is available under Advanced options.
-
-7. Prepare for CDPW packages
+5. Prepare for CDPW packages
 
 There are two ways to go forward here depending upon whether you want the patient data
 on the same volume as the boot key or on a second device.
 
 For both cases, do the following
 
- + Get into a Konsole, su to root
+ + Get into a Terminal, enter 'sudo su -' to become root (enter orthanc password)
  + mkdir /code_dark
- + echo '#LABEL=CODE_DARK /code_dark auto defaults 0 2' >> /etc/fstab
 
 For the case of patient data on the same boot key:
 
  + Determine root device via 'df /' - the device + part number is in the 1st column.
    The root device is without the number (e.g., /dev/sda1 - root device is /dev/sda)
- + Issue the command: echo 'size=2G,type=linux' | sfdisk --append --no-reread --no-tell-kernel /dev/XXX
-   (where XXX is the root device)
- + Reboot so you come up with a fresh partition table
- + Get back into a Konsole and su to root
- + Use fdisk to find the device name of the last Linux partition (which you just added)
+ + Use 'fdisk -l ROOT_DEVICE' to find the device name of the last Linux partition
+   (it should be the second of two marked 'Linux Filesystem')
  + Issue: mkfs.ext4 -L CODE_DARK /dev/XXX (e.g., /dev/sda4)
- + Edit /etc/fstab and remove the '#' in front of the LABEL line
+ + echo 'LABEL=CODE_DARK /code_dark auto defaults 0 2' >> /etc/fstab
  + Issue: systemctl daemon-reload
  + Issue: mount /code_dark - df should show /code_dark mounted
 
 For the case of patient data on a separate device:
 
- + Make sure a device created with the mkfs.ext4 listed above gets attached to the system
- + Issue: mkdir /code_dark; echo 'LABEL=CODE_DARK /code_dark ext4 defaults 0 2' >> /etc/fstab
+ + Make sure a device created with the mkfs.ext4 listed above gets attached to the system and unlocked
+   (if needed). You should have received it already correctly formatted and labeled if this is the
+   Apricorn secure storage device.
+ + Verify its existence by issuing in Terminal as root the command 'blkid|grep CODE_DARK'. If anything
+   other than one device shows up, stop and go no ruther.
+ + Issue: echo 'LABEL=CODE_DARK /code_dark ext4 defaults 0 2' >> /etc/fstab
+ + echo 'LABEL=CODE_DARK /code_dark auto defaults 0 2' >> /etc/fstab
  + Issue: systemctl daemon-reload
  + Issue: mount /code_dark - df should show /code_dark mounted
 
@@ -182,15 +146,16 @@ For the case of patient data on a separate device:
  packages will ensure that the mounted device is correctly populated for usage with orthanc
  and cdpw.
 
-8. Install our cdpw packages
+6. Install our cdpw packages
 
 Fetch the latest set of installable cdpw packages with firefox at https://feralsw.com/cdpw-
-you want both cdpw-2*.deb and cdpw-ohif*.deb. After fetching them to Download, use Kconsole
+you want both cdpw-2*.deb and cdpw-ohif*.deb. After fetching them to Download, use Terminal
 to move them to /tmp, su to root, and install them via apt.
 
  + Use firefox and go to: https://feralsw.com/cdpw
  + Download the latest cdpw-*.deb and cdpw-ohif*.deb packages
- + Open a Konsole, su to root
+ + Open a Terminal, 'sudo su -' to root.
+ + Issue: apt update
  + Issue: rm -rf /var/tmp/packages
  + Issue: mkdir -p /var/tmp/packages
  + Issue: mv ~orthanc/Downloads/cdpw-*.deb /var/tmp/packages
@@ -208,7 +173,7 @@ been put onto the desktop. Do a pull right menu over them and select the "Allow 
 This is an unfortunate aspect of Gnome3 that doesn't allow one to do this programmatically
 at installation time.
 
-Issue, as root, in a Konsole:
+Issue, as root, in a Terminal:
 
   touch /noresize
 
@@ -217,7 +182,7 @@ of this created image first.
 
 9. Set up login screen to have the right login logo
 
-Get a Kconsole up and and issue:
+Get a Terminal up and and issue:
   cp /usr/share/cdpw/KaiserRedSmall.png /usr/share/images/vendor-logos.
 
 Edit /etc/gdm3/greeter.dconf-defaults and change
@@ -235,24 +200,38 @@ banner-message-text='Code Dark PACS Workstation Release 2.0'
 
 Then issue: dpkg-reconfigure gdm3
 
+Disable upgrade timers:
+
+sudo systemctl stop apt-daily-upgrade.timer
+sudo systemctl disable apt-daily-upgrade.timer   
+
 10. Reboot
 
-Log in as orthanc, get a Konsole up and issue 'systemctl status orthanc'. You should see orthanc running without errors.
+Log in as orthanc, get a Terminal up and issue 'systemctl status orthanc'. You should see orthanc running without errors.
 Do 'ls /code_dark'- you should see:
 
 config database logs lost+found reports
 
-You have successfully created a key.
+Issue as root: rm -f /noresize
+
+You have successfully created a Gold Image master key.
+
+11. Next steps
+
+If you are planning to use this key directly instead of being a Gold Master image,
+you can then just reboot. Otherwise.....
+
+Halt the system and take this key and remove it. Procedures for making
+copies of the Gold master will be communicated separately.
+
+in. Find out which sd device it is and use the following command
+to bring in a copyable image:
+
 
 If you have /code_dark mounted on the same volume as this boot key,
 remove /noresize. The next reboot will resize the code_dark partition
 and filesystem to the rest of the available space on the disk.
 
-If you are planning to use this key, you can then reboot. If you
-are planning this to be a gold file image to create keys from,
-halt the system and take this key to a linux system and plug it
-in. Find out which sd device it is and use the following command
-to bring in a copyable image:
 
 dd if=/dev/sdX of=CDW_BOOT_IMAGE.img bs=1M count=20480 status=progress
 
@@ -263,12 +242,3 @@ have written to.
 
 11. Disable software updates
 
-sudo systemctl stop apt-daily-upgrade.timer
-sudo systemctl disable apt-daily-upgrade.timer   
-
-Edit/Create /etc/apt/apt.conf.d/20auto-upgrades and have this as content:
-
-APT::Periodic::Update-Package-Lists "0";
-APT::Periodic::Download-Upgradeable-Packages "0";
-APT::Periodic::AutocleanInterval "0";
-APT::Periodic::Unattended-Upgrade "0";   

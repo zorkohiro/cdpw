@@ -16,16 +16,25 @@ LOG=/tmp/fs_resize_partition.log
     echo Resizing inhibited
     exit 0
   fi
+  # See if we have already been resized
+  if [[ -f /resized ]]; then
+    echo Resizing already done
+    exit 0
+  fi
   # Find the code_dark device and find out whether it has any unpartioned space to fill
   echo code_dark full device is $cfull
   cdev=$(echo $cfull | sed 's/[1-9]*$//')
   echo code_dark base device is $cdev 
+  echo make sure GPT is correct because otherwise unpartitioned space cannot be determined
+  echo w | fdisk $cdev
+  echo attempting to resize $cdev part $part
   part=$(echo $cfull | sed "s,$cdev,,")
   echo code_dark part is $part
   unpartitioned_space=$(sfdisk $cdev --list-free |grep Unpart|awk ' { print $(NF-1)}')
   echo unpartitioned space in sectors is $unpartitioned_space
   if [[ $unpartitioned_space -eq 0 ]]; then
     echo "no unpartitioned space to add"
+    touch /resized
     exit 0
   fi
   o_active=$(systemctl is-active orthanc.service)
@@ -54,10 +63,6 @@ LOG=/tmp/fs_resize_partition.log
     echo "/code_dark not mounted"
   fi
 
-  echo make sure GPT is correct
-  echo w | fdisk $cdev
-
-  echo attempting to resize $cdev part $part
   parted -s $cdev resizepart $part 100%
   if [[ $? -ne 0 ]]; then
     echo did not resize the partition successfully
@@ -91,5 +96,6 @@ LOG=/tmp/fs_resize_partition.log
       exit 1
     fi
   fi
+  touch /resized
   exit 0
 } > $LOG 2>&1
