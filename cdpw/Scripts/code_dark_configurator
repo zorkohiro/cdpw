@@ -8,11 +8,16 @@ from tkinter import messagebox
 import argparse
 import datetime
 import json
+import ipaddress
 import subprocess
-from os import path
 
 """
 We need to be able to configure the following items:
+
+ Networking
+  Static IP Address/CIDR for connections from Modalities
+  Empty means "use dhcp"
+  "system" means do nothing- let regular system networking configuration do its job
 
  DICOM
   Static Orthanc Port number to receive DICOM data
@@ -31,6 +36,7 @@ We need to be able to configure the following items:
 PT = "DicomPort"
 AE = "DicomAet"
 PH = "physicians"
+BAR = "==================================================================="
 
 cdpwconfig = "/code_dark/config"
 jsonfile = cdpwconfig + "/" + "configurator.json"
@@ -42,6 +48,7 @@ fontfamily = 'Times'
 fontsize = 12
 fontstring = fontfamily + ' ' + str(fontsize)
 boxsize = 5
+curip = "dhcp"
 
 """ Argument Parsing """
 
@@ -163,14 +170,23 @@ if cdw_version != "":
     version = tk.Label(root, text="Code Dark Version: " + cdw_version, font=(fontfamily, fontsize + 1))
     version.grid(sticky=tk.W + tk.N, row=rowvar, column=1)
 rowvar = rowvar + 1
-rowvar = add_label("============================================================", rowvar, 0)
+rowvar = add_label(BAR, rowvar, 0)
 rowvar = rowvar + 1
 
 rowvar = add_section_label("DICOM PARAMETERS", rowvar)
 port_entry, rowvar = add_label_entry("Listening Port", aetp_data[PT], rowvar, 16)
 aet_entry, rowvar = add_label_entry("AET", aetp_data[AE], rowvar, 16)
 rowvar = rowvar + 1
-rowvar = add_label("============================================================", rowvar, 0)
+
+rowvar = add_label(BAR, rowvar, 0)
+rowvar = rowvar + 1
+
+rowvar = add_section_label("NETWORKING (enter 'dhcp' for automatic, otherwise addr/mask, e.g. 10.0.0.12/24)", rowvar)
+ip_entry, rowvar = add_label_entry("IP Address/CIDR (e.g. 10.0.0.12/24)", curip, rowvar, 16)
+rowvar = rowvar + 1
+
+rowvar = add_label(BAR, rowvar, 0)
+rowvar = rowvar + 1
 
 rowvar = add_section_label("AUTHORIZED RADIOLOGISTS", rowvar)
 rowvar = add_label("Edit List (this is a comma separated list so do not use any commas in names)", rowvar, 0)

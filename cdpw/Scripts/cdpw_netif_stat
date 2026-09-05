@@ -1,0 +1,43 @@
+#!/bin/bash
+set -e
+set -u
+declare -a ifaces itypes states
+# Find list of wifi or ethernet connections
+n=0
+while read ename type; do
+    ifaces[n]=$ename
+    itypes[n]=$type
+    states[n]=$(ethtool $ename 2>/dev/null |grep Link | awk ' { print $NF }' | sed -e 's/yes/up/' -e 's/no/down/')
+    manage[n]=$(nmcli d |awk "/$ename/{ print \$3 }")
+    n=$((n + 1))
+done < <(nmcli d |awk ' { if ($2 == "wifi" || $2 == "ethernet") print $1, $2 }')
+for ifn in "${!ifaces[@]}"; do
+    ifc=${ifaces[ifn]}
+    itp=${itypes[ifn]}
+    stt=${states[ifn]}
+    if [[ "${manage[ifn]}" == "unmanaged" ]]; then
+        if [[ -f /etc/network/interfaces ]]; then
+           mthd=$(grep $ifc /etc/network/interfaces | awk '{ if ($1 == "iface") print $NF }')
+        fi
+        if [[ -z ${mthd} ]]; then
+            mthd="${manage[ifn]}"
+        fi
+        iam=$(ip addr show $ifc |grep 'inet '|awk ' { print $2 }')
+        printf "%8s %8s %4s %11s $iam\n" $ifc $itp $stt $mthd
+    elif [[ "${manage[ifn]}" == "unavailable" ]]; then
+        mthd=""
+        stt="down"
+        iam=""
+        printf "%8s %8s %4s %11s $iam\n" $ifc $itp $stt $mthd
+    elif [[ $stt == "up" ]]; then
+        iam=$(ip addr show $ifc |grep 'inet '|awk ' { print $2 }')
+        iid=$(nmcli c | awk " { if (\$NF == \"$ifc\") print \$2  }")
+        mthd=$(nmcli c show $iid |grep ipv4.method|awk ' { print $NF }')
+        if [[ $mthd == "auto" ]];  then
+            mthd="dhcp"
+        fi
+        printf "%8s %8s %4s %11s $iam\n" $ifc $itp $stt $mthd
+    else
+        printf "%8s %8s %4s\n" $ifc $itp $stt
+    fi
+done
