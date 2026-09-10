@@ -180,7 +180,7 @@ Issue, as root, in a Terminal:
 This inhibits the partition resizing. This allows you to do some validation
 of this created image first.
 
-9. Set up login screen to have the right login logo
+7. Set up login screen to have the right login logo
 
 Get a Terminal up and and issue:
   cp /usr/share/cdpw/KaiserRedSmall.png /usr/share/images/vendor-logos.
@@ -205,7 +205,19 @@ Disable upgrade timers:
 sudo systemctl stop apt-daily-upgrade.timer
 sudo systemctl disable apt-daily-upgrade.timer   
 
-10. Reboot
+Disable software updates:
+
+sudo systemctl stop apt-daily-upgrade.timer
+sudo systemctl disable apt-daily-upgrade.timer   
+
+Edit/Create /etc/apt/apt.conf.d/20auto-upgrades and have this as content:
+
+APT::Periodic::Update-Package-Lists "0";
+APT::Periodic::Download-Upgradeable-Packages "0";
+APT::Periodic::AutocleanInterval "0";
+APT::Periodic::Unattended-Upgrade "0";   
+
+8. Reboot
 
 Log in as orthanc, get a Terminal up and issue 'systemctl status orthanc'. You should see orthanc running without errors.
 Do 'ls /code_dark'- you should see:
@@ -216,29 +228,10 @@ Issue as root: rm -f /noresize
 
 You have successfully created a Gold Image master key.
 
-11. Next steps
+9. Next steps
 
 If you are planning to use this key directly instead of being a Gold Master image,
 you can then just reboot. Otherwise.....
 
 Halt the system and take this key and remove it. Procedures for making
 copies of the Gold master will be communicated separately.
-
-in. Find out which sd device it is and use the following command
-to bring in a copyable image:
-
-
-If you have /code_dark mounted on the same volume as this boot key,
-remove /noresize. The next reboot will resize the code_dark partition
-and filesystem to the rest of the available space on the disk.
-
-
-dd if=/dev/sdX of=CDW_BOOT_IMAGE.img bs=1M count=20480 status=progress
-
-The CDW_BOOT_IMAGE.img can then be written back out to other keys.
-If this is a volumn with /code_dark on the same volume, the 1st
-boot will resize that partiont to the length of the device you
-have written to.
-
-11. Disable software updates
-
