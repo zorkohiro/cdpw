@@ -6,6 +6,10 @@ the bulk of the installation work. Also, fix fs resizing-
 we are sometimes getting no available space because the
 GPT label needs to be rewritten first.
 
+Kernel moved to 6.12.111 and we now are using an unofficial
+build again (no secure boot) because there are too many
+systems with Barco adapters out there.
+
 Release Debian 2.0.1 Alpha1
 
 Fix a bug where code_dark_configurator restarts (attempts) cdpw, not
