@@ -22,10 +22,18 @@ The local changes here are to add a patch for the amdgpu driver.
 This is a bit hard to automate, but start with the section 4.6 described above
 while in this directory:
 
-sudo apt-get install build-essential rsync git devscripts
-sudo apt-get build-dep linux
-cd debian_kernel_build
-debvian/rules orig
-debian/rules debian/control
+ sudo apt-get install build-essential rsync git devscripts
+ sudo apt-get build-dep linux
+ cd debian_kernel_build
+ debvian/rules orig
+ debian/rules debian/control  # Ignore what looks like an error exit
+ dpkg-buildpackage -B -nc -uc
 
-(incomplete).
+Expect the last step to fail, but not before producing the .deb
+file neeeed:
+
+  linux-image-6.12-amd64-unsigned_6.12.XXX-2030~exp1_amd64.deb
+
+where XXX right now is 111 (later it might be something else).
+
+
