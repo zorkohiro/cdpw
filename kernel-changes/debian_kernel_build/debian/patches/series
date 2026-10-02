@@ -76,6 +76,7 @@ bugfix/all/disable-some-marvell-phys.patch
 bugfix/all/fs-add-module_softdep-declarations-for-hard-coded-cr.patch
 bugfix/all/documentation-use-relative-source-paths-in-abi-documentation.patch
 bugfix/all/perf-tests-Change-shebang-for-stat_bpf_counters.sh-t.patch
+bugfix/all/amdgpu_drv.c.patch
 
 # Miscellaneous features
 

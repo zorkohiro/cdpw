@@ -1,3 +1,9 @@
+linux (6.12.111-2030~exp1) experimental; urgency=medium
+
+  [ Matthew Jacob ]
+  * Apply update to recognize 2 nominally windows only Barco adapters
+ -- Matthew Jacob <mjacob@feralsw.com>  Fri, 19 Jun 2026 11:45:46 -0700
+
 linux (6.12.111-1) trixie-security; urgency=high
 
   * New upstream stable update:
@@ -69498,5 +69504,5 @@ linux (4.19.37-6) unstable; urgency=high
   [ Cyril Brulebois ]
   * [arm] Backport DTB support for Rasperry Pi Compute Module 3.
   * [arm64] Backport DTB support for Rasperry Pi Compute Module 3.
-
  -- Salvatore Bonaccorso <carnil@debian.org>  Fri, 19 Jul 2019 00:23:17 +0200
+
