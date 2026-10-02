@@ -1,139 +1,31 @@
+Current Debian kernel release forked from: 6.12.111-1.
+
 This is a change to the amdgpu driver to add some Barco adapter support.
+The changes have been integrated into the linux kernel as of June 2026,
+but it is unclear when this will make it into an official Debian 13
+release.
 
-You need to build a separate kernel package, per this URL:
+The changes are needed to recognize some Barco adapters that use the
+AMD GPU chipset but nominally are only released or supported for Windows.
 
-https://kernel-team.pages.debian.net/kernel-handbook/ch-common-tasks.html#s-common-official
+The result of having to do this means we cannot support Secure Boot enabled
+on CDPW workstations (we cannot build signed kernels). Here we build
+a kernel and install that in place of the distribution kernel/modules.
 
-and use it to upgrade the CODE_DARK bootable image we create.
+This URL in the Debian kernel handbook that describes how to build this is:
 
-This cannot be easily automated.
+https://kernel-team.pages.debian.net/kernel-handbook/ch-common-tasks.html#s-common-official-vcs
 
-The amdgpu.c driver file gets the patch applied from the tree.
+However, results are bit tricky and not quite is reported in the handbook.
+The local changes here are to add a patch for the amdgpu driver.
 
-Here is, in short, the steps needed to be taken under Debian 13.
+This is a bit hard to automate, but start with the section 4.6 described above
+while in this directory:
 
-1. Update to the latest (sudo apt update; sudo apt upgrade -y). Reboot
-if the kernel was updated.
+sudo apt-get install build-essential rsync git devscripts
+sudo apt-get build-dep linux
+cd debian_kernel_build
+debvian/rules orig
+debian/rules debian/control
 
-2. Find a build directory- next to where you have this tree checked out is good.
-Go there.
-
-3. Issue these commands:
-
-    sudo apt-get install build-essential
-    sudo apt-get build-dep linux
-    apt-get source linux
-    cd linux-*
-    export MAKEFLAGS=-j$(nproc)
-    export DEB_BUILD_PROFILES='pkg.linux.nokerneldbg pkg.linux.nokerneldbginfo'
-
-4. Modify changelog.
-
-Edit debian/changelog and stick this clause at the top (enclosed between ++++):
-
-++++
-linux (6.12.2030-1~exp1) experimental; urgency=medium
-
-* Patches to amdgpu driver for Barco adapters:
-[ Matthew Jacob ]
-* Manually apply update to recognize 2 nominally windows only Barco adapters
-
--- Matthew Jacob <lydianconcepts@gmail.com>  Mon, 11 May 2026 12:54:02 +0800
-++++
-
-Change the name/email address for you. Probably to make sure you are higher
-than other packages, change 2030-1 to 2031-1 or something.
-
-5. Patch the amd gpu driver (assuming we are a peer tree to cdpw):
-
- patch -p1 < ../../cdpw/kernel-changes/amdgpu_drv.c.diff
-
-If this fails, you'll have to figure out how to modify things.
-
-6. Build
-
- dpkg-buildpackage -B -nc -uc
-
-This may fail once at first (telling you why it is, but you can ignore that).
-The last failure is known but you should still have
-
-  linux-image-6.12.XX+deb13-amd64-unsigned_6.12.XX-1_amd64.deb
-
-In the directory one above here. This is what you'll be installing on
-the USB key. The XX will change depending upon when you fork the
-source to rebuild the kernel.
-
-
-
-
-
-
-
-  git commit -am'add support for additional Barco adapters'
-
-(obviously look for failure to patch correctly!).
-
-Edit the changelog under debian.<version>, e.g. debian.hwe-6.14/changelog
-so as to make a distinct ABI to make this different from the standard
-release. Here is an example diff:
-
-index 1ff980a1987c..a964fd32bbac 100644
---- a/debian.hwe-6.14/changelog
-+++ b/debian.hwe-6.14/changelog
-@@ -1,4 +1,4 @@
--linux-hwe-6.14 (6.14.0-32.32~24.04.1) noble; urgency=medium
-+linux-hwe-6.14 (6.14.0-1030.32~24.04.1) noble; urgency=medium
-
-* noble/linux-hwe-6.14: 6.14.0-32.32~24.04.1 -proposed tracker (LP: #2120124)
-
-Now you can just build more or less as documented, but here's
-a cheat sheet:
-
-  chmod a+x debian/rules
-  chmod a+x debian/scripts/*
-  chmod a+x debian/scripts/misc/*
-  fakeroot debian/rules clean
-  fakeroot debian/rules binary
-
-Go out for lunch and to the gym- even on a fast system with an
-SSD, it'll take a few hours.
-
-When it completes, the directory above will have all of the requisite
-packages. In the example case:
-
-  mjacob@orthanc > ls -1 ../*.deb
-  ../linux-buildinfo-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
-  ../linux-cloud-tools-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
-  ../linux-headers-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
-  ../linux-hwe-6.14-cloud-tools-6.14.0-1030_6.14.0-1030.32~24.04.1_amd64.deb
-  ../linux-hwe-6.14-headers-6.14.0-1030_6.14.0-1030.32~24.04.1_all.deb
-  ../linux-hwe-6.14-tools-6.14.0-1030_6.14.0-1030.32~24.04.1_amd64.deb
-  ../linux-image-unsigned-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
-  ../linux-lib-rust-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
-  ../linux-modules-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
-  ../linux-modules-extra-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
-  ../linux-modules-ipu6-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
-  ../linux-modules-ipu7-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
-  ../linux-modules-iwlwifi-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
-  ../linux-modules-usbio-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
-  ../linux-modules-vision-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
-  ../linux-tools-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
-
-You only really need 3:
-
-  linux-image-unsigned-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
-  linux-modules-extra-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
-  linux-modules-6.14.0-1030-generic_6.14.0-1030.32~24.04.1_amd64.deb
-
-Put this into a tarball and when you are creating a gold master, you'll do
-the following:
-
-Clean /var/tmp:
-  sudo rm -f /var/tmp/linux*.deb
-
-Extra from your tarball those packages to /var/tmp and do:
-
-  sudo apt install /var/tmp/linux*.deb
-
-This should install and the next boot should give you a kernel with extra
-Barco support which is the only reason this is being done at all.
+(incomplete).
