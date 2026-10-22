@@ -1,0 +1,46 @@
+Thu Oct 22 10:42:03 AM PDT 2026
+
+The following linux open source packages have been used
+to validate network access security for a system
+running orthanc:
+
+  nmap  (general port security)
+  nikto (http specific security)
+
+Last test results:
+
+===============================================================
+NMAP
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-10-22 12:47 PDT
+Nmap scan report for 192.168.1.149
+Host is up (0.0091s latency).
+Not shown: 998 closed tcp ports (reset)
+PORT     STATE SERVICE
+4242/tcp open  vrml-multi-use
+8042/tcp open  fs-agent
+MAC Address: 2C:8D:B1:67:C8:CF (Intel Corporate)
+
+Nmap done: 1 IP address (1 host up) scanned in 0.63 seconds
+
+===============================================================
+NIKTO
+cpc% nikto  -p 4242 -h 192.168.1.149
+- Nikto v2.1.5
+---------------------------------------------------------------------------
+cpc% nikto  -p 8042 -h 192.168.1.149
+- Nikto v2.1.5
+---------------------------------------------------------------------------
++ Target IP:          192.168.1.149
++ Target Hostname:    192.168.1.149
++ Target Port:        8042
++ Start Time:         2026-10-22 12:56:01 (GMT-7)
+---------------------------------------------------------------------------
++ Server: No banner retrieved
++ The anti-clickjacking X-Frame-Options header is not present.
++ Uncommon header 'x-content-type-options' found, with contents: nosniff
++ No CGI Directories found (use '-C all' to force check all possible dirs)
++ /postnuke/modules.php?op=modload&name=Web_Links&file=index&req=viewlinkdetails&lid=666&ttitle=Mocosoft Utilities\"%3<script>alert('Vulnerable')</script>: Postnuke Phoenix 0.7.2.3 is vulnerable to Cross Site Scripting (XSS). http://www.cert.org/advisories/CA-2000-02.html.
++ 6544 items checked: 14 error(s) and 3 item(s) reported on remote host
++ End Time:           2026-10-22 12:56:45 (GMT-7) (44 seconds)
+---------------------------------------------------------------------------
++ 1 host(s) tested
