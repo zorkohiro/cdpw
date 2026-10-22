@@ -239,14 +239,14 @@ def studies_to_review():
     if ns == 0:
         messagebox.showinfo("", NoStudies)
     else:
-        print("subwindow_active True")
+        log_n_print("subwindow_active True in studies_to_review")
         subwindow_active = True
         if ns == 1:
             present_table("One Study to begin reviewing", out, review_button_add)
         else:
             present_table(str(ns) + " Studies to begin reviewing", out, review_button_add)
+        log_n_print("subwindow_active False in studies_to_review")
         subwindow_active = False
-        print("subwindow_active False")
 
 def studies_to_edit():
     """
@@ -279,11 +279,13 @@ def studies_to_edit():
     if ns == 0:
         messagebox.showinfo("", NoStudies)
     else:
+        log_n_print("subwindow_active True in studies_to_edit")
         subwindow_active = True
         if ns == 1:
             present_table("One Study to continue reviewing", out, edit_button_add)
         else:
             present_table(str(ns) + " Studies to continue reviewing", out, edit_button_add)
+        log_n_print("subwindow_active False in studies_to_edit")
         subwindow_active = False
 
 def studies_to_sign():
@@ -320,11 +322,13 @@ def studies_to_sign():
     if ns == 0:
         messagebox.showinfo("", NoStudies)
     else:
+        log_n_print("subwindow_active True in studies_to_sign")
         subwindow_active = True
         if ns == 1:
             present_table("One Study ready for signing", out, None)
         else:
             present_table(str(ns) + " Studies ready for signing", out, None)
+        log_n_print("subwindow_active False in studies_to_sign")
         subwindow_active = False
 
 def studies_to_print():
@@ -365,11 +369,13 @@ def studies_to_print():
     if ns == 0:
         messagebox.showinfo("", NoStudies)
     else:
+        log_n_print("subwindow_active True in studies_to_print")
         subwindow_active = True
         if ns == 1:
             present_table("One signed study ready for printing", out, None)
         else:
             present_table(str(ns) + " studies ready for printing", out, None)
+        log_n_print("subwindow_active False in studies_to_print")
         subwindow_active = False
 
 def delete_report(uuid):
@@ -443,11 +449,13 @@ def studies_to_delete():
     if ns == 0:
         messagebox.showinfo("", NoStudies)
     else:
+        log_n_print("subwindow_active True in studies_to_delete")
         subwindow_active = True
         if ns == 1:
             present_table("One possible report to delete", out, delete_button_add)
         else:
             present_table(str(ns) + " possible reports to delete", out, delete_button_add)
+        log_n_print("subwindow_active False in studies_to_delete")
         subwindow_active = False
 
 def all_studies():
@@ -460,8 +468,10 @@ def all_studies():
         messagebox.showerror(title="Error", message="Cannot find any studies at all!")
     else:
         sulist = response.json()
+        log_n_print("subwindow_active True in all_studies")
         subwindow_active = True
         present_table("All " + str(len(sulist)) + " Studies", sulist, None)
+        log_n_print("subwindow_active False in all_studies")
         subwindow_active = False
 
 """ Begin Main Code section """
