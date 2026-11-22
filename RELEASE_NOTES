@@ -1,3 +1,12 @@
+Release Debian 2.0.2 Alpha2 Build 4
+
+No functional changes to packages. However, the Debian 13
+stable release kernel 6.12.117 and later now has support
+for the Barco Windows only amdgpu based graphics adapters.
+We can now skip a patched kernel for this, go with a
+Debian built kernel and leave Secure Boot enabled for
+the viewing workstations.
+
 Release Debian 2.0.2 Alpha2 Build 3
 
 No functional changes to packages. Instead, redo Debian 13
