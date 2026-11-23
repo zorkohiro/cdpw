@@ -3,8 +3,8 @@
 #
 MAJORV  ?= 2
 MINORV  ?= 0
-RLEASE  ?= 2
-BUILDV  ?= -deb13-4
+RLEASE  ?= 3
+BUILDV  ?= -deb13-1
 BASE    := cdpw
 RELEASE := $(MAJORV).$(MINORV).$(RLEASE)$(BUILDV)
 PKGNAME := $(BASE)-$(RELEASE)

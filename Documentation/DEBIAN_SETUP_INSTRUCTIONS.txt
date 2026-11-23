@@ -1,4 +1,4 @@
-Wed 12 Aug 13:21:11 PDT 2026
+Sun 22 Nov 11:28:54 PST 2026
 
 Note that there are two variants of images we can build. One is with
 an integral code_dark data filesystem on the same volume as what
@@ -30,36 +30,43 @@ You will need this sytem to be on a LAN with a DHCP server and to be
 connected to the internet and be able to access https://feralsw.com/cdpw
 to perform the following steps.
 
-1. Copy Debian 13.6.0 full iso image (debian-13.6.0-amd64-DVD-1.iso) to the USB
-install image from any debian mirror. This image may be found at:
+1. Copy Debian 13.8.0 network iso image (debian-13.8.0-amd64-netinst.iso)
+   to the USB install image from any debian mirror. This image may be found at:
 
-	https://feralsw.com/cdpw/debian/debian-13.6.0-amd64-DVD-1.iso
+	https://feralsw.com/cdpw/debian/debian-13.8.0-amd64-netinst.iso
 
-Create the Install USB key from this with dd on a linux system or Rufus on a Windows system.
+Create the Install USB key from this with dd on a linux system or Rufus
+on a Windows system.
 
 2. Create a Bootable Initial Gold Image CDPW System
 
 Take the install key to x86_64 system and insert it.
 
-Power on and and boot the install key. Since the installation key should be the only
-attached bootable media this should not require any additional steps on your part.
+Power on and and boot the install key. Since the installation key should
+be the only attached bootable media this should not require any additional
+steps on your part.
 
-Once booted, use arrow keys to select the "Advanced options..." and hit the return key.
-This brings up a second menu. Use arrow keys to select "Graphical Automated Installs"
-and hit return. A bunch of screens will march along with actions being taken including
-an attempt to autoconfigure networking. This should succeed if you have a valid dhcp
-server on the local lan and an internet connection.
+Once booted, use arrow keys to select the "Advanced options..." and hit
+the return key.  This brings up a second menu. Use arrow keys to select
+"Graphical Automated Installs" and hit return. A bunch of screens will
+march along with actions being taken including an attempt to autoconfigure
+networking. This should succeed if you have a valid dhcp server on the
+local lan and an internet connection.
 
 This should end at a page titled "Download debconf preconfiguration file".
 
 At this point insert the USB which will become the target of the install
 (the new Gold Master) into the system.
 
-In the entry box presented on the screen enter "https://feralsw.com/cdpw/debian/cdpw_preseed"
-and click the Continue option. The installer should do its job on the basic system install,
-possibly pausing to ask you about disks (select "use entire disk" and then pick the 16GB
-target device you want installed upon, and when complete it will power down the system.
-When that occurs, remove the Debian Installation USB key and power on the system again to
+In the entry box presented on the screen enter
+
+ https://feralsw.com/cdpw/debian/cdpw_preseed"
+
+and click the Continue option. The installer should do its job on the
+basic system install, possibly pausing to ask you about disks (select
+"use entire disk" and then pick the 16GB target device you want installed
+upon, and when complete it will power down the system.  When that occurs,
+remove the Debian Installation USB key and power on the system again to
 boot up the just installed system.
 
 It will come up with a standard graphical login screen for user orthanc.
@@ -69,88 +76,67 @@ You can log in using the password orthanc.
 
 Find and fire up Firefox. Go to Settings.
 
-Under General uncheck 'Open links in tabs instead of new windows'..
+Under 'Tabs and Browsing':
 
-Under Home:
+  + Uncheck 'Open links in tabs instead of new windows'
+
+Under 'Home and startup' :
+
   + Homepage and new windows: http://localhost:8042
   + New tabs: Blank page
-  + uncheck all of Home content
 
 Enter about:config in URL bar, say yes,
 
-Search for 'resume' and set browser.sessionstore.resume_from_crash to false and
-max_resumed_crashes to zero.
+Search for 'resume' and set browser.sessionstore.resume_from_crash to
+false and max_resumed_crashes to zero.
 
-Search 'browser.sessionstore.restore_on_demand' and make sure it is set to false
+Search 'browser.sessionstore.restore_on_demand' and make sure it is set
+to false
 
+You can clean up other crap as necessary/desired.
 
 4. Get icons on the desktop and a bottom task bar and clean things up
 
-Fire up firefox and go to https://extensions.gnome.org/extension/5263/gtk4-desktop-icons-ng-ding
+Fire up firefox and go to
+
+  https://extensions.gnome.org/extension/5263/gtk4-desktop-icons-ng-ding
+
+and install that. Be syre ti check the box 'Always allow https:....'.
+
+Go to
+
+  https://extensions.gnome.org/extension/1160/dash-to-panel
+
 and install that.
 
-Go to https://extensions.gnome.org/extension/1160/dash-to-panel and install that.
+This then should all of a sudden create a bar across the bottom of the
+screen which you can then clean up.
 
-This then should all of a sudden create a bar across the bottom of the screen which you
-can then clean up. 
-
-Fire up a Terminal (select slot upper left to reveal apps to invoke) and pin it to the task bar
-via a pull right over the icon on the task bar.
+Fire up a Terminal (select slot upper left to reveal apps to invoke)
+and pin it to the task bar via a pull right over the icon on the task bar.
 
 Fire up 'Settings' and pin to the task bar.
 
 Remove other crap from the bottom bar (pull right over icon and check 'unpin').
 
-Search for (click grid icon on bottom bar all the way to the left and enter in search box) and use
-gnome-tweaks to enable maximize/minimize buttons on windows.
+Search for (click grid icon on bottom bar all the way to the left and
+enter in search box) and use gnome-tweaks to enable maximize/minimize
+buttons on windows.
 
-Set background by opening up System and going to Appearance and selecting half light gray/half
-dark gray appearance. It takes a moment or two for all of the possible backgrounds to populate
-in the frame, so be patient.
+Set background by opening up Settings and going to Appearance and selecting
+half light gray/half dark gray appearance. It takes a moment or two for
+all of the possible backgrounds to populate in the frame, so be patient.
 
+Search for Date and Time in settings and set the timezone to
+Los Angeles. Set to 24 hour clock. Minor other tweaks like icon
+size can also be done if desired.
 
-5. Prepare for CDPW packages
+5. Install our cdpw packages
 
-There are two ways to go forward here depending upon whether you want the patient data
-on the same volume as the boot key or on a second device.
-
-For both cases, do the following
-
- + Get into a Terminal, enter 'sudo su -' to become root (enter orthanc password)
- + mkdir /code_dark
-
-For the case of patient data on the same boot key:
-
- + Determine root device via 'df /' - the device + part number is in the 1st column.
-   The root device is without the number (e.g., /dev/sda1 - root device is /dev/sda)
- + Use 'fdisk -l ROOT_DEVICE' to find the device name of the last Linux partition
-   (it should be the second of two marked 'Linux Filesystem')
- + Issue: mkfs.ext4 -L CODE_DARK /dev/XXX (e.g., /dev/sda4)
- + echo 'LABEL=CODE_DARK /code_dark auto defaults 0 2' >> /etc/fstab
- + Issue: systemctl daemon-reload
- + Issue: mount /code_dark - df should show /code_dark mounted
-
-For the case of patient data on a separate device:
-
- + Make sure a device created with the mkfs.ext4 listed above gets attached to the system and unlocked
-   (if needed). You should have received it already correctly formatted and labeled if this is the
-   Apricorn secure storage device.
- + Verify its existence by issuing in Terminal as root the command 'blkid|grep CODE_DARK'. If anything
-   other than one device shows up, stop and go no ruther.
- + Issue: echo 'LABEL=CODE_DARK /code_dark ext4 defaults 0 2' >> /etc/fstab
- + echo 'LABEL=CODE_DARK /code_dark auto defaults 0 2' >> /etc/fstab
- + Issue: systemctl daemon-reload
- + Issue: mount /code_dark - df should show /code_dark mounted
-
- Note that this can just be a temporary data device- another USB key for example. The CDPW
- packages will ensure that the mounted device is correctly populated for usage with orthanc
- and cdpw.
-
-6. Install our cdpw packages
-
-Fetch the latest set of installable cdpw packages with firefox at https://feralsw.com/cdpw-
-you want both cdpw-2*.deb and cdpw-ohif*.deb. After fetching them to Download, use Terminal
-to move them to /tmp, su to root, and install them via apt.
+Fetch the latest set of installable cdpw packages with firefox
+at https://feralsw.com/cdpw- you want both cdpw-*.deb and
+cdpw-ohif*.deb. After fetching them to Download, use Terminal to move
+them to /tmp, su to root, and install them via apt.
 
  + Use firefox and go to: https://feralsw.com/cdpw
  + Download the latest cdpw-*.deb and cdpw-ohif*.deb packages
@@ -161,17 +147,21 @@ to move them to /tmp, su to root, and install them via apt.
  + Issue: mv ~orthanc/Downloads/cdpw-*.deb /var/tmp/packages
  + Issue: apt install -y /var/tmp/packages/*.deb
  + Issue: rm -rf /var/tmp/packages
+ + Fire up Firefox. Enter: http://localhost:8042
+   You should see the Orthanc at this URL.  Bookmark that page.
  + Issue: systemctl stop orthanc
- + Edit the file /usr/lib/systemd/system/orthanc.service so that the ExecStart line says:
+ + Issue: rm -rf /var/lib/orthanc
+ + Edit the file /usr/lib/systemd/system/orthanc.service so that the
+   ExecStart line says:
 
-  ExecStart=/usr/sbin/Orthanc --logdir=/code_dark/logs/orthanc /code_dark/config/orthanc
+ExecStart=/usr/sbin/Orthanc --logdir=/code_dark/logs/orthanc /code_dark/config/orthanc
 
 Now...
 
-Find where code_dark_configurator and code_dark_study_tool and 'about code dark' icons
-been put onto the desktop. Do a pull right menu over them and select the "Allow Launch" option.
-This is an unfortunate aspect of Gnome3 that doesn't allow one to do this programmatically
-at installation time.
+Find where code_dark_configurator and code_dark_study_tool and 'about code
+dark' icons been put onto the desktop. Do a pull right menu over them and
+select the "Allow Launch" option.  This is an unfortunate aspect of Gnome3
+that doesn't allow one to do this programmatically at installation time.
 
 Issue, as root, in a Terminal:
 
@@ -180,10 +170,12 @@ Issue, as root, in a Terminal:
 This inhibits the partition resizing. This allows you to do some validation
 of this created image first.
 
-7. Set up login screen to have the right login logo
+
+6. Set up login screen to have the right login logo
 
 Get a Terminal up and and issue:
-  cp /usr/share/cdpw/KaiserRedSmall.png /usr/share/images/vendor-logos.
+
+  cp /usr/share/cdpw/KaiserRedSmall.png /usr/share/images/vendor-logos
 
 Edit /etc/gdm3/greeter.dconf-defaults and change
 
@@ -200,26 +192,59 @@ banner-message-text='Code Dark PACS Workstation Release 2.0'
 
 Then issue: dpkg-reconfigure gdm3
 
-Disable upgrade timers:
+Disable network source upgrades-
 
-sudo systemctl stop apt-daily-upgrade.timer
-sudo systemctl disable apt-daily-upgrade.timer   
+In a Terminal as root issue:
 
-Disable software updates:
+ mv /etc/apt/sources.list /etc/apt/sources.list.diabled
 
-sudo systemctl stop apt-daily-upgrade.timer
-sudo systemctl disable apt-daily-upgrade.timer   
+7. Prepare for code_dark config and data
 
-Edit/Create /etc/apt/apt.conf.d/20auto-upgrades and have this as content:
+There are two ways to go forward here depending upon whether you want
+the patient data on the same volume as the boot key or on a second device.
 
-APT::Periodic::Update-Package-Lists "0";
-APT::Periodic::Download-Upgradeable-Packages "0";
-APT::Periodic::AutocleanInterval "0";
-APT::Periodic::Unattended-Upgrade "0";   
+For both cases, do the following
+
+ + Get into a Terminal, enter 'sudo su -' to become root (enter orthanc
+   password)
+ + mkdir /code_dark
+
+For the case of patient data on the same boot key:
+
+ + Determine root device via 'df /' - the device + part number is in the 1st
+   column. The root device is without the number (e.g., /dev/sda1 -
+   root device is /dev/sda)
+ + Use 'fdisk -l ROOT_DEVICE' to find the device name of the last Linux
+   partition (it should be the second of two marked 'Linux Filesystem').
+ + Issue: mkfs.ext4 -L CODE_DARK /dev/XXX (e.g., /dev/sda4)
+ + echo 'LABEL=CODE_DARK /code_dark auto defaults 0 2' >> /etc/fstab
+ + Issue: systemctl daemon-reload
+ + Issue: mount /code_dark - df should show /code_dark mounted
+
+For the case of patient data on a separate device:
+
+ + Make sure a device created with the mkfs.ext4 listed above gets attached to
+   the system and unlocked (if needed). You should have received it already
+   correctly formatted and labeled if this is the Apricorn secure storage
+   device.
+ + Verify its existence by issuing in Terminal as root the command
+   'blkid|grep CODE_DARK'. If anything other than one device shows up,
+   stop and go no ruther.
+ + Issue: echo 'LABEL=CODE_DARK /code_dark ext4 defaults 0 2' >> /etc/fstab
+ + echo 'LABEL=CODE_DARK /code_dark auto defaults 0 2' >> /etc/fstab
+ + Issue: systemctl daemon-reload
+ + Issue: mount /code_dark - df should show /code_dark mounted
+
+ Note that this can just be a temporary data device- another USB key
+ for example. The CDPW packages will ensure that the mounted device is
+ correctly populated for usage with orthanc and cdpw.
+
 
 8. Reboot
 
-Log in as orthanc, get a Terminal up and issue 'systemctl status orthanc'. You should see orthanc running without errors.
+Log in as orthanc, get a Terminal up and issue 'systemctl status
+orthanc'. You should see orthanc running without errors.
+
 Do 'ls /code_dark'- you should see:
 
 config database logs lost+found reports
@@ -230,8 +255,8 @@ You have successfully created a Gold Image master key.
 
 9. Next steps
 
-If you are planning to use this key directly instead of being a Gold Master image,
-you can then just reboot. Otherwise.....
+If you are planning to use this key directly instead of being a Gold
+Master image, you can then just reboot. Otherwise.....
 
 Halt the system and take this key and remove it. Procedures for making
 copies of the Gold master will be communicated separately.

@@ -1,3 +1,16 @@
+Release Debian 2.0.3 Alpha2 Build 1
+
+No functional changes to packages. Wrapped the image
+around Debian 13.8.0 which has 6.12.118 as the kernel.
+Updated the setup instructions to make some changes
+smaller and easier.
+
+By default we generally are going to be making a single
+image from now on (although the steps don't reflect that
+yet). You can always move the single image to a multi-image
+by stopping orthanc, umounting /code_dark and doing
+a wipefs -fs on the USB key's code_dark partition.
+
 Release Debian 2.0.2 Alpha2 Build 4
 
 No functional changes to packages. However, the Debian 13
